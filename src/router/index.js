@@ -13,8 +13,17 @@ const router = createRouter({
       }
     },
     {
+      path: '/lost-items',
+      name: 'LostItemList',
+      component: () => import('../views/common/LostItemListView.vue'),
+      meta: {
+        title: '失物浏览',
+        requiresAuth: false
+      }
+    },
+    {
       path: '/',
-      redirect: '/login'
+      redirect: '/lost-items'
     }
   ],
 })
