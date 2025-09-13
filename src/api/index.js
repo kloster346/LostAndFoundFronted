@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { handleError, withRetry, ERROR_TYPES, ERROR_LEVELS } from '@/utils/error'
 
 // 创建 axios 实例
 const request = axios.create({
@@ -62,6 +63,7 @@ request.interceptors.response.use(
       const error = new Error(data.message || '请求失败')
       error.code = data.code
       error.data = data
+      error.response = response
       throw error
     }
     
@@ -69,47 +71,30 @@ request.interceptors.response.use(
     return data
   },
   (error) => {
-    console.error('❌ Response Error:', error)
-    
-    // 网络错误或超时
-    if (!error.response) {
-      const networkError = new Error('网络连接失败，请检查网络设置')
-      networkError.code = 'NETWORK_ERROR'
-      throw networkError
+    // 使用新的错误处理工具
+    const context = {
+      url: error.config?.url,
+      method: error.config?.method,
+      params: error.config?.params,
+      data: error.config?.data
     }
     
-    // HTTP 状态码错误
-    const { status, data } = error.response
-    let message = '请求失败'
-    
-    switch (status) {
-      case 400:
-        message = '请求参数错误'
-        break
-      case 401:
-        message = '未授权，请重新登录'
-        // 清除本地存储的认证信息
-        localStorage.removeItem('token')
-        localStorage.removeItem('userInfo')
-        // 可以在这里触发跳转到登录页面
-        break
-      case 403:
-        message = '拒绝访问'
-        break
-      case 404:
-        message = '请求的资源不存在'
-        break
-      case 500:
-        message = '服务器内部错误'
-        break
-      default:
-        message = data?.message || `请求失败 (${status})`
+    // 处理特殊情况
+    if (error.response?.status === 401) {
+      // 清除本地存储的认证信息
+      localStorage.removeItem('token')
+      localStorage.removeItem('userInfo')
+      // 可以在这里触发跳转到登录页面
+      window.dispatchEvent(new CustomEvent('auth:logout'))
     }
     
-    const apiError = new Error(message)
-    apiError.code = status
-    apiError.response = error.response
-    throw apiError
+    // 使用统一错误处理
+    const appError = handleError(error, context, {
+      notify: true, // 显示错误提示
+      showMessage: true
+    })
+    
+    throw appError
   }
 )
 
@@ -117,41 +102,49 @@ request.interceptors.response.use(
 export default request
 
 // 导出常用的请求方法
-export const get = (url, params = {}) => {
-  return request({
+export const get = (url, params = {}, options = {}) => {
+  const requestFn = () => request({
     method: 'GET',
     url,
     params
   })
+  
+  return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
-export const post = (url, data = {}) => {
-  return request({
+export const post = (url, data = {}, options = {}) => {
+  const requestFn = () => request({
     method: 'POST',
     url,
     data
   })
+  
+  return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
-export const put = (url, data = {}) => {
-  return request({
+export const put = (url, data = {}, options = {}) => {
+  const requestFn = () => request({
     method: 'PUT',
     url,
     data
   })
+  
+  return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
-export const del = (url, params = {}) => {
-  return request({
+export const del = (url, params = {}, options = {}) => {
+  const requestFn = () => request({
     method: 'DELETE',
     url,
     params
   })
+  
+  return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
 // 文件上传方法
-export const upload = (url, formData) => {
-  return request({
+export const upload = (url, formData, options = {}) => {
+  const requestFn = () => request({
     method: 'POST',
     url,
     data: formData,
@@ -159,4 +152,23 @@ export const upload = (url, formData) => {
       'Content-Type': 'multipart/form-data'
     }
   })
+  
+  return options.retry ? withRetry(requestFn, options.retry) : requestFn()
+}
+
+// 带重试的请求方法
+export const getWithRetry = (url, params = {}, retryOptions = {}) => {
+  return get(url, params, { retry: retryOptions })
+}
+
+export const postWithRetry = (url, data = {}, retryOptions = {}) => {
+  return post(url, data, { retry: retryOptions })
+}
+
+export const putWithRetry = (url, data = {}, retryOptions = {}) => {
+  return put(url, data, { retry: retryOptions })
+}
+
+export const delWithRetry = (url, params = {}, retryOptions = {}) => {
+  return del(url, params, { retry: retryOptions })
 }

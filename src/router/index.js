@@ -52,6 +52,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/error-test',
+      name: 'ErrorTest',
+      component: () => import('../views/ErrorTestPage.vue'),
+      meta: {
+        title: '错误处理测试',
+        requiresAuth: false
+      }
+    },
+    {
       path: '/',
       redirect: '/lost-items'
     },
