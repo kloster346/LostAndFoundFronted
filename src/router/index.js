@@ -22,6 +22,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/profile',
+      name: 'Profile',
+      component: () => import('../views/user/ProfileView.vue'),
+      meta: {
+        title: '个人信息',
+        requiresAuth: true
+      }
+    },
+    {
       path: '/',
       redirect: '/lost-items'
     }
