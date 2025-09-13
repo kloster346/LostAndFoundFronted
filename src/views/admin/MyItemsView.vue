@@ -1,309 +1,225 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="my-items-container">
+    <div class="content-wrapper">
       <!-- 页面标题和操作 -->
-      <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">我发布的失物</h1>
-          <p class="mt-2 text-gray-600">管理您发布的所有失物信息</p>
-        </div>
-        <div class="mt-4 sm:mt-0">
-          <router-link
-            to="/admin/publish"
-            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-          >
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
+      <el-row class="header-section" justify="space-between" align="middle">
+        <el-col :span="16">
+          <h1 class="page-title">我发布的失物</h1>
+          <p class="page-subtitle">管理您发布的所有失物信息</p>
+        </el-col>
+        <el-col :span="8" class="header-actions">
+          <el-button type="primary" @click="$router.push('/admin/publish')">
+            <el-icon><Plus /></el-icon>
             发布新失物
-          </router-link>
-        </div>
-      </div>
+          </el-button>
+        </el-col>
+      </el-row>
 
       <!-- 筛选和搜索 -->
-      <div class="bg-white shadow rounded-lg p-6 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <el-card class="filter-section">
+        <el-row :gutter="16">
           <!-- 搜索框 -->
-          <div class="md:col-span-2">
-            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">
-              搜索失物
-            </label>
-            <input
-              id="search"
-              v-model="filters.search"
-              type="text"
-              placeholder="搜索物品名称、地点或描述..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              @input="debouncedSearch"
-            />
-          </div>
+          <el-col :span="12">
+            <el-form-item label="搜索失物">
+              <el-input
+                v-model="filters.search"
+                placeholder="搜索物品名称、地点或描述..."
+                @input="debouncedSearch"
+                clearable
+              >
+                <template #prefix>
+                  <el-icon><Search /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-col>
 
           <!-- 状态筛选 -->
-          <div>
-            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
-              状态
-            </label>
-            <select
-              id="status"
-              v-model="filters.status"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              @change="loadItems"
-            >
-              <option value="">全部状态</option>
-              <option
-                v-for="option in statusOptions"
-                :key="option.value"
-                :value="option.value"
+          <el-col :span="6">
+            <el-form-item label="状态">
+              <el-select
+                v-model="filters.status"
+                placeholder="全部状态"
+                @change="loadItems"
+                clearable
               >
-                {{ option.label }}
-              </option>
-            </select>
-          </div>
+                <el-option
+                  v-for="option in statusOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
           <!-- 类型筛选 -->
-          <div>
-            <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
-              类型
-            </label>
-            <select
-              id="type"
-              v-model="filters.type"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              @change="loadItems"
-            >
-              <option value="">全部类型</option>
-              <option
-                v-for="option in itemTypeOptions"
-                :key="option.value"
-                :value="option.value"
+          <el-col :span="6">
+            <el-form-item label="类型">
+              <el-select
+                v-model="filters.type"
+                placeholder="全部类型"
+                @change="loadItems"
+                clearable
               >
-                {{ option.label }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
+                <el-option
+                  v-for="option in itemTypeOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-card>
 
       <!-- 统计信息 -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-5">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-              </div>
-              <div class="ml-5 w-0 flex-1">
-                <dl>
-                  <dt class="text-sm font-medium text-gray-500 truncate">总发布数</dt>
-                  <dd class="text-lg font-medium text-gray-900">{{ statistics.total }}</dd>
-                </dl>
+      <el-row :gutter="16" class="stats-section">
+        <el-col :span="6">
+          <el-card class="stat-card">
+            <div class="stat-content">
+              <el-icon class="stat-icon"><Document /></el-icon>
+              <div class="stat-info">
+                <div class="stat-label">总发布数</div>
+                <div class="stat-value">{{ statistics.total }}</div>
               </div>
             </div>
-          </div>
-        </div>
+          </el-card>
+        </el-col>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-5">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                  <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              <div class="ml-5 w-0 flex-1">
-                <dl>
-                  <dt class="text-sm font-medium text-gray-500 truncate">待认领</dt>
-                  <dd class="text-lg font-medium text-gray-900">{{ statistics.unclaimed }}</dd>
-                </dl>
+        <el-col :span="6">
+          <el-card class="stat-card">
+            <div class="stat-content">
+              <el-icon class="stat-icon pending"><Clock /></el-icon>
+              <div class="stat-info">
+                <div class="stat-label">待认领</div>
+                <div class="stat-value">{{ statistics.unclaimed }}</div>
               </div>
             </div>
-          </div>
-        </div>
+          </el-card>
+        </el-col>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-5">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              <div class="ml-5 w-0 flex-1">
-                <dl>
-                  <dt class="text-sm font-medium text-gray-500 truncate">已认领</dt>
-                  <dd class="text-lg font-medium text-gray-900">{{ statistics.claimed }}</dd>
-                </dl>
+        <el-col :span="6">
+          <el-card class="stat-card">
+            <div class="stat-content">
+              <el-icon class="stat-icon claimed"><CircleCheck /></el-icon>
+              <div class="stat-info">
+                <div class="stat-label">已认领</div>
+                <div class="stat-value">{{ statistics.claimed }}</div>
               </div>
             </div>
-          </div>
-        </div>
+          </el-card>
+        </el-col>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-5">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                  <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </div>
-              </div>
-              <div class="ml-5 w-0 flex-1">
-                <dl>
-                  <dt class="text-sm font-medium text-gray-500 truncate">已删除</dt>
-                  <dd class="text-lg font-medium text-gray-900">{{ statistics.deleted }}</dd>
-                </dl>
+        <el-col :span="6">
+          <el-card class="stat-card">
+            <div class="stat-content">
+              <el-icon class="stat-icon deleted"><Delete /></el-icon>
+              <div class="stat-info">
+                <div class="stat-label">已删除</div>
+                <div class="stat-value">{{ statistics.deleted }}</div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </el-card>
+        </el-col>
+      </el-row>
 
       <!-- 失物列表 -->
-      <div class="bg-white shadow rounded-lg">
+      <el-card class="items-list">
         <!-- 加载状态 -->
-        <div v-if="loading" class="p-8 text-center">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p class="mt-2 text-gray-600">加载中...</p>
+        <div v-if="loading" class="loading-container">
+          <el-icon class="is-loading"><Loading /></el-icon>
+          <p class="loading-text">加载中...</p>
         </div>
 
         <!-- 空状态 -->
-        <div v-else-if="items.length === 0" class="p-8 text-center">
-          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <h3 class="mt-2 text-sm font-medium text-gray-900">暂无失物</h3>
-          <p class="mt-1 text-sm text-gray-500">您还没有发布任何失物信息</p>
-          <div class="mt-6">
-            <router-link
-              to="/admin/publish"
-              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-            >
-              发布第一个失物
-            </router-link>
-          </div>
-        </div>
+        <el-empty v-else-if="items.length === 0" description="您还没有发布任何失物信息">
+          <el-button type="primary" @click="$router.push('/admin/publish')">
+            <el-icon><Plus /></el-icon>
+            发布第一个失物
+          </el-button>
+        </el-empty>
 
         <!-- 失物列表 -->
-        <div v-else class="divide-y divide-gray-200">
-          <div
-            v-for="item in items"
-            :key="item.id"
-            class="p-6 hover:bg-gray-50 transition-colors"
-          >
-            <div class="flex items-start justify-between">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center space-x-3">
-                  <h3 class="text-lg font-medium text-gray-900 truncate">
-                    {{ item.itemName }}
-                  </h3>
-                  <span
-                    :class="getStatusClass(item.status)"
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+        <div v-else class="items-container">
+          <div v-for="item in items" :key="item.id" class="item-row">
+            <el-row align="middle" :gutter="16">
+              <el-col :span="2">
+                <!-- 物品图片 -->
+                <el-image
+                  v-if="item.images && item.images.length > 0"
+                  :src="item.images[0]"
+                  :alt="item.itemName"
+                  class="item-image"
+                  fit="cover"
+                />
+                <div v-else class="item-image-placeholder">
+                  <el-icon><Picture /></el-icon>
+                </div>
+              </el-col>
+
+              <el-col :span="14">
+                <!-- 物品信息 -->
+                <div class="item-info">
+                  <div class="item-header">
+                    <h3 class="item-name">{{ item.itemName }}</h3>
+                    <div class="item-meta">
+                      <el-tag :type="getStatusTagType(item.status)" size="small">
+                        {{ getStatusName(item.status) }}
+                      </el-tag>
+                      <span class="item-date">{{ formatDate(item.foundTime) }}</span>
+                    </div>
+                  </div>
+                  <div class="item-details">
+                    <span class="item-type">{{ getItemTypeName(item.itemType) }}</span>
+                    <span class="item-location">{{ item.location }}</span>
+                  </div>
+                  <p class="item-description">{{ item.description }}</p>
+                </div>
+              </el-col>
+
+              <el-col :span="8" class="item-actions">
+                <!-- 操作按钮 -->
+                <el-button-group>
+                  <el-button @click="viewItem(item)" size="small">
+                    查看
+                  </el-button>
+                  <el-button 
+                    v-if="item.status === 'UNCLAIMED'"
+                    @click="editItem(item)" 
+                    type="primary" 
+                    size="small"
                   >
-                    {{ getStatusName(item.status) }}
-                  </span>
-                </div>
-                
-                <div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                  <div class="flex items-center">
-                    <svg class="mr-1.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    {{ getItemTypeName(item.itemType) }}
-                  </div>
-                  
-                  <div class="flex items-center">
-                    <svg class="mr-1.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {{ item.location }}
-                  </div>
-                  
-                  <div class="flex items-center">
-                    <svg class="mr-1.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {{ formatDate(item.foundTime) }}
-                  </div>
-                </div>
-                
-                <p v-if="item.description" class="mt-2 text-sm text-gray-600 line-clamp-2">
-                  {{ item.description }}
-                </p>
-              </div>
-              
-              <!-- 操作按钮 -->
-              <div class="ml-6 flex items-center space-x-2">
-                <button
-                  @click="viewItem(item)"
-                  class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  查看
-                </button>
-                
-                <button
-                  v-if="item.status === 'UNCLAIMED'"
-                  @click="editItem(item)"
-                  class="inline-flex items-center px-3 py-1.5 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  编辑
-                </button>
-                
-                <button
-                  v-if="item.status === 'UNCLAIMED'"
-                  @click="deleteItem(item)"
-                  class="inline-flex items-center px-3 py-1.5 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
-                >
-                  删除
-                </button>
-              </div>
-            </div>
+                    编辑
+                  </el-button>
+                  <el-button 
+                    v-if="item.status === 'UNCLAIMED'"
+                    @click="deleteItem(item)" 
+                    type="danger" 
+                    size="small"
+                  >
+                    删除
+                  </el-button>
+                </el-button-group>
+              </el-col>
+            </el-row>
           </div>
         </div>
 
         <!-- 分页 -->
-        <div v-if="pagination.total > pagination.pageSize" class="px-6 py-4 border-t border-gray-200">
-          <div class="flex items-center justify-between">
-            <div class="text-sm text-gray-700">
-              显示第 {{ (pagination.current - 1) * pagination.pageSize + 1 }} - 
-              {{ Math.min(pagination.current * pagination.pageSize, pagination.total) }} 条，
-              共 {{ pagination.total }} 条记录
-            </div>
-            
-            <div class="flex items-center space-x-2">
-              <button
-                @click="changePage(pagination.current - 1)"
-                :disabled="pagination.current <= 1"
-                class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                上一页
-              </button>
-              
-              <span class="text-sm text-gray-700">
-                第 {{ pagination.current }} / {{ Math.ceil(pagination.total / pagination.pageSize) }} 页
-              </span>
-              
-              <button
-                @click="changePage(pagination.current + 1)"
-                :disabled="pagination.current >= Math.ceil(pagination.total / pagination.pageSize)"
-                class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                下一页
-              </button>
-            </div>
-          </div>
+        <div v-if="pagination.total > pagination.pageSize" class="pagination-container">
+          <el-pagination
+            v-model:current-page="pagination.current"
+            v-model:page-size="pagination.pageSize"
+            :total="pagination.total"
+            :page-sizes="[10, 20, 50, 100]"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="loadItems"
+            @current-change="loadItems"
+          />
         </div>
-      </div>
+      </el-card>
     </div>
   </div>
 </template>
@@ -319,6 +235,16 @@ import {
   CLAIM_STATUS, 
   CLAIM_STATUS_NAMES 
 } from '@/constants/enums'
+import {
+  Plus,
+  Search,
+  Document,
+  Clock,
+  CircleCheck,
+  Delete,
+  Loading,
+  Picture
+} from '@element-plus/icons-vue'
 
 export default {
   name: 'MyItemsView',
@@ -376,14 +302,14 @@ export default {
       return true
     }
 
-    // 获取状态样式类
-    const getStatusClass = (status) => {
-      const statusClasses = {
-        'UNCLAIMED': 'bg-yellow-100 text-yellow-800',
-        'CLAIMED': 'bg-green-100 text-green-800',
-        'DELETED': 'bg-red-100 text-red-800'
+    // 获取状态标签类型
+    const getStatusTagType = (status) => {
+      const statusTypes = {
+        'UNCLAIMED': 'warning',
+        'CLAIMED': 'success',
+        'DELETED': 'danger'
       }
-      return statusClasses[status] || 'bg-gray-100 text-gray-800'
+      return statusTypes[status] || 'info'
     }
 
     // 获取状态名称
@@ -524,7 +450,7 @@ export default {
       statistics,
       statusOptions,
       itemTypeOptions,
-      getStatusClass,
+      getStatusTagType,
       getStatusName,
       getItemTypeName,
       formatDate,
@@ -538,6 +464,219 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.my-items-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 2rem 0;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header-section {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #303133;
+  margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+  color: #909399;
+  margin: 0;
+}
+
+.filter-section {
+  margin-bottom: 1.5rem;
+}
+
+.stats-section {
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  height: 100%;
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  color: #909399;
+}
+
+.stat-icon.pending {
+  color: #e6a23c;
+}
+
+.stat-icon.found,
+.stat-icon.claimed {
+  color: #67c23a;
+}
+
+.stat-icon.closed,
+.stat-icon.deleted {
+  color: #f56c6c;
+}
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #909399;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #303133;
+}
+
+.items-list {
+  min-height: 400px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+.loading-text {
+  color: #909399;
+  margin: 0;
+}
+
+.items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item-row {
+  padding: 1rem;
+  border-bottom: 1px solid #ebeef5;
+  transition: background-color 0.3s;
+}
+
+.item-row:hover {
+  background-color: #f5f7fa;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.item-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+
+.item-image-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c0c4cc;
+  font-size: 1.5rem;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.item-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #303133;
+  margin: 0;
+}
+
+.item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.item-date {
+  font-size: 0.875rem;
+  color: #909399;
+}
+
+.item-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.item-type,
+.item-location {
+  font-size: 0.875rem;
+  color: #606266;
+}
+
+.item-type::after {
+  content: '·';
+  margin-left: 0.5rem;
+  color: #c0c4cc;
+}
+
+.item-description {
+  font-size: 0.875rem;
+  color: #909399;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+  border-top: 1px solid #ebeef5;
+  margin-top: 1rem;
+}
+
+.header-actions {
+  text-align: right;
+}
+
+.item-actions {
+  text-align: right;
+}
+</style>
 
 <style scoped>
 /* 自定义样式 */

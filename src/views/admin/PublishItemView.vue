@@ -1,226 +1,171 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- 页面标题 -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">发布失物</h1>
-        <p class="mt-2 text-gray-600">填写失物信息，帮助失主找回物品</p>
-      </div>
+  <div class="publish-item-container">
+    <el-container>
+      <el-main>
+        <!-- 页面标题 -->
+        <div class="header-section">
+          <h1 class="page-title">发布失物</h1>
+          <p class="page-subtitle">填写失物信息，帮助失主找回物品</p>
+        </div>
 
-      <!-- 发布表单 -->
-      <div class="bg-white shadow-lg rounded-lg p-6">
-        <form @submit.prevent="handleSubmit" class="space-y-6">
-          <!-- 物品基本信息 -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- 物品名称 -->
-            <div>
-              <label for="itemName" class="block text-sm font-medium text-gray-700 mb-2">
-                物品名称 <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="itemName"
-                v-model="form.itemName"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="请输入物品名称"
-              />
-            </div>
+        <!-- 发布表单 -->
+        <el-card class="form-card">
+          <el-form @submit.prevent="handleSubmit" :model="form" label-width="120px" class="publish-form">
+            <!-- 物品基本信息 -->
+            <el-row :gutter="20">
+              <!-- 物品名称 -->
+              <el-col :span="12">
+                <el-form-item label="物品名称" required>
+                  <el-input
+                    v-model="form.itemName"
+                    placeholder="请输入物品名称"
+                    clearable
+                  />
+                </el-form-item>
+              </el-col>
 
-            <!-- 物品类型 -->
-            <div>
-              <label for="itemType" class="block text-sm font-medium text-gray-700 mb-2">
-                物品类型 <span class="text-red-500">*</span>
-              </label>
-              <select
-                id="itemType"
-                v-model="form.itemType"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">请选择物品类型</option>
-                <option
-                  v-for="option in itemTypeOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
-                  {{ option.label }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <!-- 物品颜色和发现地点 -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- 物品颜色 -->
-            <div>
-              <label for="color" class="block text-sm font-medium text-gray-700 mb-2">
-                物品颜色
-              </label>
-              <select
-                id="color"
-                v-model="form.color"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">请选择颜色</option>
-                <option
-                  v-for="option in colorOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
-                  {{ option.label }}
-                </option>
-              </select>
-            </div>
-
-            <!-- 发现地点 -->
-            <div>
-              <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
-                发现地点 <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="location"
-                v-model="form.location"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="请输入发现地点"
-              />
-            </div>
-          </div>
-
-          <!-- 发现时间 -->
-          <div>
-            <label for="foundTime" class="block text-sm font-medium text-gray-700 mb-2">
-              发现时间 <span class="text-red-500">*</span>
-            </label>
-            <input
-              id="foundTime"
-              v-model="form.foundTime"
-              type="datetime-local"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          <!-- 物品描述 -->
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-              物品描述
-            </label>
-            <textarea
-              id="description"
-              v-model="form.description"
-              rows="4"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="请详细描述物品特征，有助于失主识别"
-            ></textarea>
-          </div>
-
-          <!-- 物品图片上传 -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              物品图片
-            </label>
-            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
-              <div class="space-y-1 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <div class="flex text-sm text-gray-600">
-                  <label for="imageUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                    <span>上传图片</span>
-                    <input
-                      id="imageUpload"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      class="sr-only"
-                      @change="handleImageUpload"
+              <!-- 物品类型 -->
+              <el-col :span="12">
+                <el-form-item label="物品类型" required>
+                  <el-select
+                    v-model="form.itemType"
+                    placeholder="请选择物品类型"
+                    style="width: 100%"
+                    clearable
+                  >
+                    <el-option
+                      v-for="option in itemTypeOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
                     />
-                  </label>
-                  <p class="pl-1">或拖拽到此处</p>
-                </div>
-                <p class="text-xs text-gray-500">PNG, JPG, GIF 最大 10MB</p>
-              </div>
-            </div>
-            
-            <!-- 图片预览 -->
-            <div v-if="imagePreview.length > 0" class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div
-                v-for="(image, index) in imagePreview"
-                :key="index"
-                class="relative group"
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <!-- 物品颜色和发现地点 -->
+            <el-row :gutter="20">
+              <!-- 物品颜色 -->
+              <el-col :span="12">
+                <el-form-item label="物品颜色">
+                  <el-select
+                    v-model="form.color"
+                    placeholder="请选择颜色"
+                    style="width: 100%"
+                    clearable
+                  >
+                    <el-option
+                      v-for="option in colorOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <!-- 发现地点 -->
+              <el-col :span="12">
+                <el-form-item label="发现地点" required>
+                  <el-input
+                    v-model="form.location"
+                    placeholder="请输入发现地点"
+                    clearable
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <!-- 发现时间 -->
+            <el-form-item label="发现时间" required>
+              <el-date-picker
+                v-model="form.foundTime"
+                type="datetime"
+                placeholder="请选择发现时间"
+                style="width: 100%"
+                format="YYYY-MM-DD HH:mm"
+                value-format="YYYY-MM-DDTHH:mm"
+              />
+            </el-form-item>
+
+            <!-- 物品描述 -->
+            <el-form-item label="物品描述">
+              <el-input
+                v-model="form.description"
+                type="textarea"
+                :rows="4"
+                placeholder="请详细描述物品特征，有助于失主识别"
+                show-word-limit
+                maxlength="500"
+              />
+            </el-form-item>
+
+            <!-- 物品图片上传 -->
+            <el-form-item label="物品图片">
+              <el-upload
+                class="upload-demo"
+                drag
+                action="#"
+                multiple
+                :auto-upload="false"
+                :on-change="handleImageUpload"
+                :file-list="imagePreview"
+                accept="image/*"
+                :limit="5"
               >
-                <img
-                  :src="image.url"
-                  :alt="`预览图片 ${index + 1}`"
-                  class="w-full h-24 object-cover rounded-lg border border-gray-200"
-                />
-                <button
-                  type="button"
-                  @click="removeImage(index)"
-                  class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          </div>
+                <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                <div class="el-upload__text">
+                  将图片拖到此处，或<em>点击上传</em>
+                </div>
+                <template #tip>
+                  <div class="el-upload__tip">
+                    支持 PNG, JPG, GIF 格式，单个文件不超过 10MB，最多上传 5 张
+                  </div>
+                </template>
+              </el-upload>
+            </el-form-item>
 
-          <!-- 联系方式 -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- 联系人 -->
-            <div>
-              <label for="contactName" class="block text-sm font-medium text-gray-700 mb-2">
-                联系人 <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="contactName"
-                v-model="form.contactName"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="请输入联系人姓名"
-              />
-            </div>
+            <!-- 联系方式 -->
+            <el-row :gutter="20">
+              <!-- 联系人 -->
+              <el-col :span="12">
+                <el-form-item label="联系人" required>
+                  <el-input
+                    v-model="form.contactName"
+                    placeholder="请输入联系人姓名"
+                    clearable
+                  />
+                </el-form-item>
+              </el-col>
 
-            <!-- 联系电话 -->
-            <div>
-              <label for="contactPhone" class="block text-sm font-medium text-gray-700 mb-2">
-                联系电话 <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="contactPhone"
-                v-model="form.contactPhone"
-                type="tel"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="请输入联系电话"
-              />
-            </div>
-          </div>
+              <!-- 联系电话 -->
+              <el-col :span="12">
+                <el-form-item label="联系电话" required>
+                  <el-input
+                    v-model="form.contactPhone"
+                    placeholder="请输入联系电话"
+                    clearable
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <!-- 提交按钮 -->
-          <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-            <button
-              type="button"
-              @click="resetForm"
-              class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-            >
-              重置
-            </button>
-            <button
-              type="submit"
-              :disabled="isSubmitting"
-              class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {{ isSubmitting ? '发布中...' : '发布失物' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            <!-- 提交按钮 -->
+            <el-form-item class="submit-buttons">
+              <el-button @click="resetForm">重置</el-button>
+              <el-button 
+                type="primary" 
+                @click="handleSubmit"
+                :loading="isSubmitting"
+              >
+                {{ isSubmitting ? '发布中...' : '发布失物' }}
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
@@ -230,6 +175,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LostItemAPI from '@/api/lostItem'
 import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '@/constants/enums'
+import { UploadFilled } from '@element-plus/icons-vue'
 
 export default {
   name: 'PublishItemView',
@@ -278,35 +224,30 @@ export default {
     }
 
     // 处理图片上传
-    const handleImageUpload = (event) => {
-      const files = Array.from(event.target.files)
+    const handleImageUpload = (uploadFile, uploadFiles) => {
+      const file = uploadFile.raw
       
-      files.forEach(file => {
-        if (file.size > 10 * 1024 * 1024) { // 10MB限制
-          alert(`文件 ${file.name} 超过10MB限制`)
-          return
-        }
-        
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          imagePreview.value.push({
-            file,
-            url: e.target.result,
-            name: file.name
-          })
-          form.images.push(file)
-        }
-        reader.readAsDataURL(file)
-      })
+      if (file.size > 10 * 1024 * 1024) { // 10MB限制
+        ElMessage.error(`文件 ${file.name} 超过10MB限制`)
+        return false
+      }
       
-      // 清空input值，允许重复选择同一文件
-      event.target.value = ''
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        uploadFile.url = e.target.result
+        form.images.push(file)
+      }
+      reader.readAsDataURL(file)
+      
+      return true
     }
 
-    // 移除图片
-    const removeImage = (index) => {
-      imagePreview.value.splice(index, 1)
-      form.images.splice(index, 1)
+    // 移除图片（Element Plus 上传组件自带移除功能）
+    const removeImage = (uploadFile, uploadFiles) => {
+      const index = form.images.findIndex(file => file.name === uploadFile.raw?.name)
+      if (index > -1) {
+        form.images.splice(index, 1)
+      }
     }
 
     // 重置表单
@@ -380,34 +321,82 @@ export default {
       handleImageUpload,
       removeImage,
       resetForm,
-      handleSubmit
+      handleSubmit,
+      UploadFilled
     }
   }
 }
 </script>
 
 <style scoped>
-/* 自定义样式 */
-.transition-colors {
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+/* 页面容器 */
+.publish-item-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px 0;
 }
 
-/* 文件上传区域悬停效果 */
-.border-dashed:hover {
-  border-color: #9CA3AF;
+/* 页面标题区域 */
+.header-section {
+  margin-bottom: 32px;
+  text-align: center;
 }
 
-/* 图片预览悬停效果 */
-.group:hover .absolute {
-  opacity: 1;
+.page-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #303133;
+  margin: 0 0 8px 0;
 }
 
-.group .absolute {
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+.page-subtitle {
+  color: #909399;
+  font-size: 14px;
+  margin: 0;
 }
 
-.group:hover .absolute {
-  opacity: 1;
+/* 表单卡片 */
+.form-card {
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 表单样式 */
+.publish-form {
+  padding: 20px;
+}
+
+/* 提交按钮区域 */
+.submit-buttons {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ebeef5;
+}
+
+.submit-buttons .el-button {
+  margin: 0 10px;
+  padding: 12px 30px;
+}
+
+/* 上传组件样式 */
+.upload-demo {
+  width: 100%;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .publish-item-container {
+    padding: 10px;
+  }
+  
+  .form-card {
+    margin: 0 10px;
+  }
+  
+  .page-title {
+    font-size: 24px;
+  }
 }
 </style>
