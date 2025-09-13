@@ -80,12 +80,13 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import { USER_ROLES, USER_ROLE_NAMES } from '../../constants/enums.js'
 
 // 路由和状态管理
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 // 表单数据
@@ -132,7 +133,7 @@ const handleLogin = async () => {
     // 使用认证store的loginByRole方法进行登录
     const response = await authStore.loginByRole(loginData, role)
 
-    // 登录成功，根据角色跳转到不同页面
+    // 登录成功，根据重定向参数或角色跳转到不同页面
     if (response && response.data) {
       const redirectPath = getRedirectPath(role)
       await router.push(redirectPath)
@@ -173,15 +174,24 @@ const handleLogin = async () => {
 
 // 根据角色获取重定向路径
 const getRedirectPath = (role) => {
+  // 优先使用URL查询参数中的重定向路径
+  const redirectParam = route.query.redirect
+  if (redirectParam && typeof redirectParam === 'string') {
+    // 验证重定向路径的安全性，确保是内部路径
+    if (redirectParam.startsWith('/') && !redirectParam.startsWith('//')) {
+      return redirectParam
+    }
+  }
+  
+  // 根据角色返回默认路径
   switch (role) {
     case USER_ROLES.NORMAL_USER:
-      return '/'
+      return '/lost-items'
     case USER_ROLES.LOST_ITEM_ADMIN:
-      return '/admin/items'
     case USER_ROLES.SUPER_ADMIN:
-      return '/admin/dashboard'
+      return '/admin/my-items'
     default:
-      return '/'
+      return '/lost-items'
   }
 }
 
