@@ -37,6 +37,33 @@ export const API_PATHS = {
   }
 }
 
+// API 端点常量（为了向后兼容和更好的语义化）
+export const API_ENDPOINTS = {
+  // 普通用户接口
+  USER: {
+    LOGIN: '/api/user/login',
+    PROFILE: '/api/user/profile'
+  },
+  
+  // 管理员接口
+  ADMIN: {
+    LOST_ITEM_LOGIN: '/api/admin/lost-item/login',
+    SUPER_LOGIN: '/api/admin/super/login',
+    LOST_ITEM_PROFILE: '/api/admin/lost-item/profile'
+  },
+  
+  // 失物接口
+  LOST_ITEMS: {
+    PUBLISH: '/api/lost-items/publish',
+    CLAIM: '/api/lost-items/claim',
+    DETAIL: '/api/lost-items',
+    DELETE: '/api/lost-items',
+    SEARCH: '/api/lost-items/search',
+    ALL: '/api/lost-items/all',
+    BY_ADMIN: '/api/lost-items/admin'
+  }
+}
+
 // 请求方法常量
 export const HTTP_METHODS = {
   GET: 'GET',
