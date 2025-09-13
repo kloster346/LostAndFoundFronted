@@ -1,4 +1,4 @@
-import { request } from './index.js'
+import request from './index.js'
 import { API_ENDPOINTS } from '../constants/api.js'
 
 /**

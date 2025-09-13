@@ -111,7 +111,7 @@ export class RequestUtil {
    */
   static handleResponse(response) {
     const { data, status } = response
-    
+
     return {
       success: true,
       data: data.data || data,
@@ -128,7 +128,7 @@ export class RequestUtil {
    */
   static handleError(error) {
     console.error('Request Error:', error)
-    
+
     const errorResponse = {
       success: false,
       data: null,
@@ -185,7 +185,7 @@ export class RequestUtil {
     try {
       const promises = requests.map(request => {
         const { method, url, data, params, options } = request
-        
+
         switch (method.toLowerCase()) {
           case 'get':
             return this.get(url, params, options)
@@ -201,7 +201,7 @@ export class RequestUtil {
       })
 
       const results = await Promise.allSettled(promises)
-      
+
       return results.map((result, index) => ({
         index,
         success: result.status === 'fulfilled',
@@ -223,14 +223,14 @@ export class RequestUtil {
    */
   static async retry(requestFn, maxRetries = 3, delay = 1000) {
     let lastError
-    
+
     for (let i = 0; i <= maxRetries; i++) {
       try {
         const result = await requestFn()
         return result
       } catch (error) {
         lastError = error
-        
+
         if (i < maxRetries) {
           console.warn(`请求失败，${delay}ms后进行第${i + 1}次重试...`)
           await new Promise(resolve => setTimeout(resolve, delay))
@@ -238,7 +238,7 @@ export class RequestUtil {
         }
       }
     }
-    
+
     throw lastError
   }
 }

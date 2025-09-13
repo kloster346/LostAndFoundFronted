@@ -13,18 +13,18 @@ export const API_PATHS = {
     PROFILE: '/api/user/profile',
     PROFILE_BY_ID: (id) => `/api/user/profile/${id}`
   },
-  
+
   // 失物管理员接口
   LOST_ITEM_ADMIN: {
     LOGIN: '/api/admin/lost-item/login',
     PROFILE: (id) => `/api/admin/lost-item/profile/${id}`
   },
-  
+
   // 总管理员接口
   SUPER_ADMIN: {
     LOGIN: '/api/admin/super/login'
   },
-  
+
   // 失物接口
   LOST_ITEMS: {
     PUBLISH: '/api/lost-items/publish',
@@ -44,14 +44,14 @@ export const API_ENDPOINTS = {
     LOGIN: '/api/user/login',
     PROFILE: '/api/user/profile'
   },
-  
+
   // 管理员接口
   ADMIN: {
     LOST_ITEM_LOGIN: '/api/admin/lost-item/login',
     SUPER_LOGIN: '/api/admin/super/login',
     LOST_ITEM_PROFILE: '/api/admin/lost-item/profile'
   },
-  
+
   // 失物接口
   LOST_ITEMS: {
     PUBLISH: '/api/lost-items/publish',
@@ -138,12 +138,12 @@ export const buildQueryString = (params) => {
   if (!params || Object.keys(params).length === 0) {
     return ''
   }
-  
+
   const queryParams = Object.entries(params)
     .filter(([key, value]) => value !== null && value !== undefined && value !== '')
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join('&')
-  
+
   return queryParams ? `?${queryParams}` : ''
 }
 
@@ -158,34 +158,34 @@ export const getErrorMessage = (error) => {
     const status = error.response.status
     return ERROR_MESSAGES[status] || ERROR_MESSAGES.UNKNOWN
   }
-  
+
   if (error.code === 'ECONNABORTED') {
     return ERROR_MESSAGES.TIMEOUT
   }
-  
+
   if (error.message === 'Network Error') {
     return ERROR_MESSAGES.NETWORK_ERROR
   }
-  
+
   return error.message || ERROR_MESSAGES.UNKNOWN
 }
 
 // 验证文件类型和大小
 export const validateFile = (file) => {
   const errors = []
-  
+
   if (!file) {
     errors.push('请选择文件')
     return errors
   }
-  
+
   if (file.size > UPLOAD_CONFIG.MAX_SIZE) {
     errors.push(`文件大小不能超过 ${UPLOAD_CONFIG.MAX_SIZE / 1024 / 1024}MB`)
   }
-  
+
   if (!UPLOAD_CONFIG.ALLOWED_TYPES.includes(file.type)) {
     errors.push(`只支持 ${UPLOAD_CONFIG.ALLOWED_EXTENSIONS.join(', ')} 格式的图片`)
   }
-  
+
   return errors
 }

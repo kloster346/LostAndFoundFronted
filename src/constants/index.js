@@ -15,7 +15,7 @@ export const ROUTE_PATHS = {
   // 公共路由
   HOME: '/',
   LOGIN: '/login',
-  
+
   // 普通用户路由
   USER: {
     DASHBOARD: '/user/dashboard',
@@ -24,7 +24,7 @@ export const ROUTE_PATHS = {
     PROFILE: '/user/profile',
     CLAIM_HISTORY: '/user/claim-history'
   },
-  
+
   // 失物管理员路由
   LOST_ITEM_ADMIN: {
     DASHBOARD: '/admin/lost-item/dashboard',
@@ -33,7 +33,7 @@ export const ROUTE_PATHS = {
     MANAGE: '/admin/lost-item/manage',
     PROFILE: '/admin/lost-item/profile'
   },
-  
+
   // 总管理员路由
   SUPER_ADMIN: {
     DASHBOARD: '/admin/super/dashboard',
@@ -42,7 +42,7 @@ export const ROUTE_PATHS = {
     ADMIN_MANAGE: '/admin/super/admin-manage',
     PROFILE: '/admin/super/profile'
   },
-  
+
   // 错误页面
   NOT_FOUND: '/404',
   FORBIDDEN: '/403',
@@ -53,28 +53,28 @@ export const ROUTE_PATHS = {
 export const ROUTE_NAMES = {
   [ROUTE_PATHS.HOME]: '首页',
   [ROUTE_PATHS.LOGIN]: '登录',
-  
+
   // 普通用户
   [ROUTE_PATHS.USER.DASHBOARD]: '用户首页',
   [ROUTE_PATHS.USER.BROWSE]: '浏览失物',
   [ROUTE_PATHS.USER.SEARCH]: '搜索失物',
   [ROUTE_PATHS.USER.PROFILE]: '个人信息',
   [ROUTE_PATHS.USER.CLAIM_HISTORY]: '领取记录',
-  
+
   // 失物管理员
   [ROUTE_PATHS.LOST_ITEM_ADMIN.DASHBOARD]: '管理员首页',
   [ROUTE_PATHS.LOST_ITEM_ADMIN.PUBLISH]: '发布失物',
   [ROUTE_PATHS.LOST_ITEM_ADMIN.MY_ITEMS]: '我的发布',
   [ROUTE_PATHS.LOST_ITEM_ADMIN.MANAGE]: '失物管理',
   [ROUTE_PATHS.LOST_ITEM_ADMIN.PROFILE]: '个人信息',
-  
+
   // 总管理员
   [ROUTE_PATHS.SUPER_ADMIN.DASHBOARD]: '系统首页',
   [ROUTE_PATHS.SUPER_ADMIN.SYSTEM_MANAGE]: '系统管理',
   [ROUTE_PATHS.SUPER_ADMIN.USER_MANAGE]: '用户管理',
   [ROUTE_PATHS.SUPER_ADMIN.ADMIN_MANAGE]: '管理员管理',
   [ROUTE_PATHS.SUPER_ADMIN.PROFILE]: '个人信息',
-  
+
   // 错误页面
   [ROUTE_PATHS.NOT_FOUND]: '页面不存在',
   [ROUTE_PATHS.FORBIDDEN]: '权限不足',
