@@ -11,7 +11,7 @@
         重置
       </BaseButton>
     </div>
-    
+
     <div class="search-form__content">
       <!-- 关键词搜索 -->
       <div class="search-form__field">
@@ -23,7 +23,7 @@
           @enter="handleSubmit"
         />
       </div>
-      
+
       <!-- 物品类型选择 -->
       <div class="search-form__field">
         <label class="search-form__label">物品类型</label>
@@ -43,7 +43,7 @@
           </select>
         </div>
       </div>
-      
+
       <!-- 颜色选择 -->
       <div class="search-form__field">
         <label class="search-form__label">颜色</label>
@@ -64,7 +64,7 @@
           </button>
         </div>
       </div>
-      
+
       <!-- 发现地点 -->
       <div class="search-form__field">
         <BaseInput
@@ -74,7 +74,7 @@
           clearable
         />
       </div>
-      
+
       <!-- 日期范围 -->
       <div class="search-form__field">
         <label class="search-form__label">发现时间</label>
@@ -94,7 +94,7 @@
           />
         </div>
       </div>
-      
+
       <!-- 领取状态 -->
       <div class="search-form__field">
         <label class="search-form__label">领取状态</label>
@@ -112,7 +112,7 @@
             />
             <span class="search-form__radio-label">{{ name }}</span>
           </label>
-          
+
           <label class="search-form__radio-option">
             <input
               v-model="formData.claimStatus"
@@ -124,7 +124,7 @@
           </label>
         </div>
       </div>
-      
+
       <!-- 高级选项 -->
       <div class="search-form__field">
         <button
@@ -137,7 +137,7 @@
             ▼
           </span>
         </button>
-        
+
         <div v-if="showAdvanced" class="search-form__advanced">
           <!-- 排序选项 -->
           <div class="search-form__sort">
@@ -148,14 +148,14 @@
                 <option value="foundTime">发现时间</option>
                 <option value="name">物品名称</option>
               </select>
-              
+
               <select v-model="formData.sortOrder" class="search-form__select search-form__select--small">
                 <option value="desc">降序</option>
                 <option value="asc">升序</option>
               </select>
             </div>
           </div>
-          
+
           <!-- 其他筛选 -->
           <div class="search-form__filters">
             <label class="search-form__checkbox">
@@ -170,7 +170,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 操作按钮 -->
     <div class="search-form__actions">
       <BaseButton
@@ -180,7 +180,7 @@
       >
         搜索
       </BaseButton>
-      
+
       <BaseButton
         type="secondary"
         :disabled="loading"
@@ -282,7 +282,7 @@ const toggleColor = (color) => {
   } else {
     formData.value.color = color
   }
-  
+
   if (props.autoSubmit) {
     debouncedSubmit()
   }
@@ -290,14 +290,14 @@ const toggleColor = (color) => {
 
 const handleSubmit = () => {
   const searchParams = { ...formData.value }
-  
+
   // 清理空值
   Object.keys(searchParams).forEach(key => {
     if (searchParams[key] === '' || searchParams[key] === null || searchParams[key] === undefined) {
       delete searchParams[key]
     }
   })
-  
+
   emit('search', searchParams)
 }
 
@@ -314,9 +314,9 @@ const handleReset = () => {
     sortOrder: 'desc',
     showOnlyUnclaimed: false
   }
-  
+
   emit('reset')
-  
+
   if (props.autoSubmit) {
     handleSubmit()
   }
@@ -326,7 +326,7 @@ const debouncedSubmit = () => {
   if (debounceTimer) {
     clearTimeout(debounceTimer)
   }
-  
+
   debounceTimer = setTimeout(() => {
     handleSubmit()
   }, props.debounceDelay)
@@ -337,7 +337,7 @@ watch(
   formData,
   (newValue) => {
     emit('change', newValue)
-    
+
     if (props.autoSubmit) {
       debouncedSubmit()
     }
@@ -581,25 +581,25 @@ watch(
   .search-form {
     padding: 16px;
   }
-  
+
   .search-form__color-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .search-form__date-range {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .search-form__radio-group {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .search-form__sort-options {
     flex-direction: column;
   }
-  
+
   .search-form__actions {
     flex-direction: column;
   }

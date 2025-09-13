@@ -134,7 +134,7 @@ export default {
     if (capturePromiseRejection) {
       window.addEventListener('unhandledrejection', (event) => {
         const error = event.reason
-        
+
         // 创建应用错误对象
         const appError = new AppError(
           error?.message || '未处理的 Promise 拒绝',
@@ -256,7 +256,7 @@ async function reportError(error, context = {}) {
   try {
     // 这里可以集成第三方错误监控服务
     // 比如 Sentry, LogRocket, Bugsnag 等
-    
+
     const errorReport = {
       message: error.message,
       type: error.type,

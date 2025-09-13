@@ -18,8 +18,8 @@
       <!-- 主导航菜单 -->
       <div class="navbar-menu" :class="{ 'is-active': isMobileMenuOpen }">
         <div class="navbar-nav">
-          <router-link 
-            to="/lost-items" 
+          <router-link
+            to="/lost-items"
             class="nav-link"
             active-class="active"
           >
@@ -30,9 +30,9 @@
             失物浏览
           </router-link>
 
-          <router-link 
-            v-if="authStore.isLoggedIn" 
-            to="/profile" 
+          <router-link
+            v-if="authStore.isLoggedIn"
+            to="/profile"
             class="nav-link"
             active-class="active"
           >
@@ -43,9 +43,9 @@
             个人信息
           </router-link>
 
-          <router-link 
-            v-if="authStore.isAdmin" 
-            to="/admin/publish" 
+          <router-link
+            v-if="authStore.isAdmin"
+            to="/admin/publish"
             class="nav-link"
             active-class="active"
           >
@@ -56,9 +56,9 @@
             发布失物
           </router-link>
 
-          <router-link 
-            v-if="authStore.isAdmin" 
-            to="/admin/my-items" 
+          <router-link
+            v-if="authStore.isAdmin"
+            to="/admin/my-items"
             class="nav-link"
             active-class="active"
           >
@@ -86,7 +86,7 @@
               <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          
+
           <div class="user-dropdown" :class="{ 'is-active': isUserDropdownOpen }">
             <div class="user-role">{{ getRoleText(authStore.userRole) }}</div>
             <div class="dropdown-divider"></div>
@@ -100,7 +100,7 @@
             </button>
           </div>
         </div>
-        
+
         <router-link v-else to="/login" class="login-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 3H19A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H15" stroke="currentColor" stroke-width="2"/>
@@ -112,9 +112,9 @@
       </div>
 
       <!-- 移动端菜单按钮 -->
-      <button 
-        v-if="showSidebarToggle" 
-        class="mobile-menu-btn" 
+      <button
+        v-if="showSidebarToggle"
+        class="mobile-menu-btn"
         @click="emit('toggle-sidebar')"
         title="打开菜单"
       >
@@ -124,11 +124,11 @@
           <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
-      
+
       <!-- 普通移动端菜单按钮 -->
-      <button 
+      <button
         v-else
-        class="mobile-menu-btn" 
+        class="mobile-menu-btn"
         @click="toggleMobileMenu"
         title="打开菜单"
       >

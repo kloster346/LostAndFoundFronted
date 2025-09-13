@@ -12,7 +12,7 @@
         </div>
         <span class="brand-text">管理后台</span>
       </div>
-      
+
       <button class="collapse-btn" @click="toggleCollapse" :title="isCollapsed ? '展开侧边栏' : '收起侧边栏'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -38,10 +38,10 @@
     <nav class="sidebar-nav">
       <div class="nav-section">
         <div class="nav-title" v-show="!isCollapsed">主要功能</div>
-        
+
         <!-- 失物浏览 -->
-        <router-link 
-          to="/lost-items" 
+        <router-link
+          to="/lost-items"
           class="nav-item"
           active-class="active"
           :title="isCollapsed ? '失物浏览' : ''"
@@ -56,9 +56,9 @@
         </router-link>
 
         <!-- 个人信息 -->
-        <router-link 
+        <router-link
           v-if="authStore.isLoggedIn"
-          to="/profile" 
+          to="/profile"
           class="nav-item"
           active-class="active"
           :title="isCollapsed ? '个人信息' : ''"
@@ -76,10 +76,10 @@
       <!-- 管理员功能 -->
       <div class="nav-section" v-if="authStore.isAdmin">
         <div class="nav-title" v-show="!isCollapsed">管理功能</div>
-        
+
         <!-- 发布失物 -->
-        <router-link 
-          to="/admin/publish" 
+        <router-link
+          to="/admin/publish"
           class="nav-item"
           active-class="active"
           :title="isCollapsed ? '发布失物' : ''"
@@ -94,8 +94,8 @@
         </router-link>
 
         <!-- 我的失物 -->
-        <router-link 
-          to="/admin/my-items" 
+        <router-link
+          to="/admin/my-items"
           class="nav-item"
           active-class="active"
           :title="isCollapsed ? '我的失物' : ''"
@@ -113,9 +113,9 @@
       <!-- 系统功能 -->
       <div class="nav-section">
         <div class="nav-title" v-show="!isCollapsed">系统</div>
-        
+
         <!-- 退出登录 -->
-        <button 
+        <button
           v-if="authStore.isLoggedIn"
           class="nav-item nav-button"
           @click="handleLogout"
@@ -132,9 +132,9 @@
         </button>
 
         <!-- 登录 -->
-        <router-link 
+        <router-link
           v-else
-          to="/login" 
+          to="/login"
           class="nav-item"
           active-class="active"
           :title="isCollapsed ? '登录' : ''"

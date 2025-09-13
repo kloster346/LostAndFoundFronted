@@ -164,3 +164,72 @@ export const getUserRoleName = (role) => {
 export const getClaimStatusName = (status) => {
   return CLAIM_STATUS_NAMES[status] || '未知状态'
 }
+
+// 楼栋编号枚举（与后端BuildingEnum保持一致）
+export const BUILDINGS = {
+  XUEYOU_LOU: 1,
+  XIAOYOU_LOU: 2,
+  WENZONG_LOU: 3,
+  YIFU_LOU: 4,
+  XINGZHENG_LOU: 5,
+  AI_COLLEGE: 6,
+  WEN_COLLEGE: 7,
+  MATH_PHYSICS_COLLEGE: 8,
+  LAW_COLLEGE: 9,
+  PEOPLE_ARMED_COLLEGE: 10,
+  SI_SLOP_CANTEEN: 11,
+  WU_SLOP_CANTEEN: 12,
+  BA_SLOP_CANTEEN: 13,
+  DAFENG_COURT: 14,
+  TRACK_FIELD: 15,
+  GYM: 16,
+  ROADSIDE: 17,
+  LAKESIDE_FOUR_SLOP: 18,
+  LAKESIDE_FIVE_SLOP: 19,
+  SOUTH_GATE: 20,
+  NORTH_GATE: 21,
+  EAST_GATE: 22,
+  SUBWAY_GATE: 23,
+  OTHER: 24
+}
+
+// 楼栋名称映射
+export const BUILDING_NAMES = {
+  [BUILDINGS.XUEYOU_LOU]: '学友楼',
+  [BUILDINGS.XIAOYOU_LOU]: '校友楼',
+  [BUILDINGS.WENZONG_LOU]: '文综楼',
+  [BUILDINGS.YIFU_LOU]: '逸夫楼',
+  [BUILDINGS.XINGZHENG_LOU]: '行政楼',
+  [BUILDINGS.AI_COLLEGE]: '人工智能学院',
+  [BUILDINGS.WEN_COLLEGE]: '文学院',
+  [BUILDINGS.MATH_PHYSICS_COLLEGE]: '数学与物理学院',
+  [BUILDINGS.LAW_COLLEGE]: '法学院',
+  [BUILDINGS.PEOPLE_ARMED_COLLEGE]: '人民武装学院',
+  [BUILDINGS.SI_SLOP_CANTEEN]: '四坡食堂',
+  [BUILDINGS.WU_SLOP_CANTEEN]: '五坡食堂',
+  [BUILDINGS.BA_SLOP_CANTEEN]: '八坡食堂',
+  [BUILDINGS.DAFENG_COURT]: '大丰球场',
+  [BUILDINGS.TRACK_FIELD]: '田径场',
+  [BUILDINGS.GYM]: '体育馆',
+  [BUILDINGS.ROADSIDE]: '路边',
+  [BUILDINGS.LAKESIDE_FOUR_SLOP]: '湖边（四坡）',
+  [BUILDINGS.LAKESIDE_FIVE_SLOP]: '湖边（五坡）',
+  [BUILDINGS.SOUTH_GATE]: '南门',
+  [BUILDINGS.NORTH_GATE]: '北门',
+  [BUILDINGS.EAST_GATE]: '东门',
+  [BUILDINGS.SUBWAY_GATE]: '地铁小门',
+  [BUILDINGS.OTHER]: '其他'
+}
+
+// 获取楼栋选项列表
+export const getBuildingOptions = () => {
+  return Object.entries(BUILDINGS).map(([key, value]) => ({
+    value,
+    label: BUILDING_NAMES[value]
+  }))
+}
+
+// 根据值获取楼栋名称
+export const getBuildingName = (building) => {
+  return BUILDING_NAMES[building] || '未知楼栋'
+}

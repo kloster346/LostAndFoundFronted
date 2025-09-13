@@ -2,7 +2,7 @@
   <div class="error-boundary">
     <!-- 正常渲染子组件 -->
     <slot v-if="!hasError" />
-    
+
     <!-- 错误状态显示 -->
     <div v-else class="error-boundary__content">
       <!-- 自定义错误插槽 -->
@@ -14,38 +14,38 @@
               <WarningFilled />
             </el-icon>
           </div>
-          
+
           <h3 class="error-boundary__title">
             {{ errorTitle }}
           </h3>
-          
+
           <p class="error-boundary__message">
             {{ errorMessage }}
           </p>
-          
+
           <!-- 错误详情（开发环境） -->
           <details v-if="showDetails" class="error-boundary__details">
             <summary>错误详情</summary>
             <pre class="error-boundary__stack">{{ errorStack }}</pre>
           </details>
-          
+
           <!-- 操作按钮 -->
           <div class="error-boundary__actions">
-            <el-button 
-              type="primary" 
+            <el-button
+              type="primary"
               @click="retry"
               :loading="retrying"
             >
               重试
             </el-button>
-            
-            <el-button 
+
+            <el-button
               @click="reset"
             >
               重置
             </el-button>
-            
-            <el-button 
+
+            <el-button
               v-if="showReportButton"
               type="warning"
               @click="reportError"
@@ -133,7 +133,7 @@ const errorKey = ref(0)
 const errorTitle = computed(() => {
   if (props.customTitle) return props.customTitle
   if (!error.value) return '出现错误'
-  
+
   const errorTitles = {
     [ERROR_TYPES.NETWORK_ERROR]: '网络连接错误',
     [ERROR_TYPES.TIMEOUT_ERROR]: '请求超时',
@@ -146,14 +146,14 @@ const errorTitle = computed(() => {
     [ERROR_TYPES.USER_INPUT_ERROR]: '输入错误',
     [ERROR_TYPES.UNKNOWN_ERROR]: '未知错误'
   }
-  
+
   return errorTitles[error.value.type] || '组件渲染错误'
 })
 
 const errorMessage = computed(() => {
   if (props.customMessage) return props.customMessage
   if (!error.value) return '组件渲染时发生了错误'
-  
+
   return error.value.message || '组件渲染时发生了错误，请稍后重试'
 })
 
@@ -164,7 +164,7 @@ const errorStack = computed(() => {
 // 错误捕获
 onErrorCaptured((err, instance, info) => {
   console.error('ErrorBoundary caught error:', err, info)
-  
+
   // 创建应用错误对象
   const appError = new AppError(
     err.message || '组件渲染错误',
@@ -176,11 +176,11 @@ onErrorCaptured((err, instance, info) => {
       instance: instance?.$options?.name || 'Unknown'
     }
   )
-  
+
   // 设置错误状态
   hasError.value = true
   error.value = appError
-  
+
   // 处理错误（记录日志等）
   handleError(appError, {
     component: 'ErrorBoundary',
@@ -189,22 +189,22 @@ onErrorCaptured((err, instance, info) => {
   }, {
     notify: false // 不显示通知，由组件自己处理
   })
-  
+
   // 调用错误回调
   if (props.onError) {
     props.onError(appError, info)
   }
-  
+
   // 触发错误事件
   emit('error', appError, info)
-  
+
   // 自动重试
   if (props.autoRetry && retryCount.value < props.maxRetries) {
     setTimeout(() => {
       retry()
     }, props.retryDelay)
   }
-  
+
   // 阻止错误继续向上传播
   return false
 })
@@ -215,25 +215,25 @@ const retry = async () => {
     ElMessage.warning(`已达到最大重试次数 (${props.maxRetries})`)
     return
   }
-  
+
   retrying.value = true
   retryCount.value++
-  
+
   try {
     // 调用重试回调
     if (props.onRetry) {
       await props.onRetry(error.value)
     }
-    
+
     // 触发重试事件
     emit('retry', error.value, retryCount.value)
-    
+
     // 重置错误状态
     await nextTick()
     hasError.value = false
     error.value = null
     errorKey.value++
-    
+
     ElMessage.success('重试成功')
   } catch (err) {
     console.error('Retry failed:', err)
@@ -248,30 +248,30 @@ const reset = () => {
   if (props.onReset) {
     props.onReset(error.value)
   }
-  
+
   // 触发重置事件
   emit('reset', error.value)
-  
+
   // 重置所有状态
   hasError.value = false
   error.value = null
   retryCount.value = 0
   retrying.value = false
   errorKey.value++
-  
+
   ElMessage.success('已重置组件状态')
 }
 
 const reportError = () => {
   if (!error.value) return
-  
+
   // 触发报告事件
   emit('report', error.value)
-  
+
   // 这里可以集成错误报告服务
   // 比如发送到 Sentry、LogRocket 等
   console.log('Reporting error:', error.value)
-  
+
   ElMessage.success('错误报告已提交')
 }
 
@@ -366,19 +366,19 @@ defineExpose({
     padding: 16px;
     min-height: 150px;
   }
-  
+
   .error-boundary__title {
     font-size: 18px;
   }
-  
+
   .error-boundary__message {
     font-size: 13px;
   }
-  
+
   .error-boundary__actions {
     gap: 8px;
   }
-  
+
   .error-boundary__actions .el-button {
     flex: 1;
     min-width: 80px;

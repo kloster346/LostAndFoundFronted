@@ -185,18 +185,18 @@
                   <el-button @click="viewItem(item)" size="small">
                     查看
                   </el-button>
-                  <el-button 
+                  <el-button
                     v-if="item.status === 'UNCLAIMED'"
-                    @click="editItem(item)" 
-                    type="primary" 
+                    @click="editItem(item)"
+                    type="primary"
                     size="small"
                   >
                     编辑
                   </el-button>
-                  <el-button 
+                  <el-button
                     v-if="item.status === 'UNCLAIMED'"
-                    @click="deleteItem(item)" 
-                    type="danger" 
+                    @click="deleteItem(item)"
+                    type="danger"
                     size="small"
                   >
                     删除
@@ -229,11 +229,11 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LostItemAPI from '@/api/lostItem'
-import { 
-  ITEM_TYPES, 
-  ITEM_TYPE_NAMES, 
-  CLAIM_STATUS, 
-  CLAIM_STATUS_NAMES 
+import {
+  ITEM_TYPES,
+  ITEM_TYPE_NAMES,
+  CLAIM_STATUS,
+  CLAIM_STATUS_NAMES
 } from '@/constants/enums'
 import {
   Plus,
@@ -251,24 +251,24 @@ export default {
   setup() {
     const router = useRouter()
     const authStore = useAuthStore()
-    
+
     const loading = ref(false)
     const items = ref([])
-    
+
     // 筛选条件
     const filters = reactive({
       search: '',
       status: '',
       type: ''
     })
-    
+
     // 分页信息
     const pagination = reactive({
       current: 1,
       pageSize: 10,
       total: 0
     })
-    
+
     // 统计信息
     const statistics = reactive({
       total: 0,
@@ -338,10 +338,10 @@ export default {
     // 加载失物列表
     const loadItems = async () => {
       if (!checkAdminPermission()) return
-      
+
       try {
         loading.value = true
-        
+
         const params = {
           page: pagination.current,
           pageSize: pagination.pageSize,
@@ -350,20 +350,20 @@ export default {
           itemType: filters.type || undefined,
           publisherId: authStore.user?.id // 只获取当前管理员发布的失物
         }
-        
+
         // 移除空值参数
         Object.keys(params).forEach(key => {
           if (params[key] === undefined || params[key] === '') {
             delete params[key]
           }
         })
-        
+
         const response = await LostItemAPI.getLostItems(params)
-        
+
         if (response.success) {
           items.value = response.data.items || []
           pagination.total = response.data.total || 0
-          
+
           // 更新统计信息
           updateStatistics()
         } else {
@@ -419,10 +419,10 @@ export default {
       if (!confirm(`确定要删除失物「${item.itemName}」吗？此操作不可恢复。`)) {
         return
       }
-      
+
       try {
         const response = await LostItemAPI.deleteLostItem(item.id)
-        
+
         if (response.success) {
           alert('删除成功')
           loadItems() // 重新加载列表

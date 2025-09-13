@@ -44,7 +44,7 @@
               </el-col>
             </el-row>
 
-            <!-- 物品颜色和发现地点 -->
+            <!-- 物品颜色和楼栋选择 -->
             <el-row :gutter="20">
               <!-- 物品颜色 -->
               <el-col :span="12">
@@ -65,12 +65,33 @@
                 </el-form-item>
               </el-col>
 
-              <!-- 发现地点 -->
+              <!-- 楼栋选择 -->
               <el-col :span="12">
-                <el-form-item label="发现地点" required>
+                <el-form-item label="发现楼栋" required>
+                  <el-select
+                    v-model="form.building"
+                    placeholder="请选择楼栋"
+                    style="width: 100%"
+                    clearable
+                  >
+                    <el-option
+                      v-for="option in buildingOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <!-- 具体位置 -->
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="具体位置">
                   <el-input
                     v-model="form.location"
-                    placeholder="请输入发现地点"
+                    placeholder="请输入具体位置（如房间号、楼层等）"
                     clearable
                   />
                 </el-form-item>
@@ -154,8 +175,8 @@
             <!-- 提交按钮 -->
             <el-form-item class="submit-buttons">
               <el-button @click="resetForm">重置</el-button>
-              <el-button 
-                type="primary" 
+              <el-button
+                type="primary"
                 @click="handleSubmit"
                 :loading="isSubmitting"
               >
@@ -174,7 +195,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LostItemAPI from '@/api/lostItem'
-import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '@/constants/enums'
+import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES, BUILDINGS, getBuildingOptions } from '@/constants/enums'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 
@@ -185,12 +206,13 @@ export default {
     const authStore = useAuthStore()
     const isSubmitting = ref(false)
     const imagePreview = ref([])
-    
+
     // 表单数据
     const form = reactive({
       itemName: '',
       itemType: '',
       color: '',
+      building: '',
       location: '',
       foundTime: '',
       description: '',
@@ -215,6 +237,11 @@ export default {
       }))
     })
 
+    // 楼栋选项
+    const buildingOptions = computed(() => {
+      return getBuildingOptions()
+    })
+
     // 检查管理员权限
     const checkAdminPermission = () => {
       if (!authStore.isLoggedIn || !authStore.isAdmin) {
@@ -227,19 +254,19 @@ export default {
     // 处理图片上传
     const handleImageUpload = (uploadFile, uploadFiles) => {
       const file = uploadFile.raw
-      
+
       if (file.size > 10 * 1024 * 1024) { // 10MB限制
         ElMessage.error(`文件 ${file.name} 超过10MB限制`)
         return false
       }
-      
+
       const reader = new FileReader()
       reader.onload = (e) => {
         uploadFile.url = e.target.result
         form.images.push(file)
       }
       reader.readAsDataURL(file)
-      
+
       return true
     }
 
@@ -266,15 +293,22 @@ export default {
     // 提交表单
     const handleSubmit = async () => {
       if (!checkAdminPermission()) return
-      
+
       try {
         isSubmitting.value = true
-        
+
+        // 检查管理员权限和ID
+        if (!authStore.isAdmin || !authStore.currentUser?.id) {
+          throw new Error('管理员信息无效，请重新登录')
+        }
+
         // 构建提交数据
         const submitData = {
+          adminId: authStore.currentUser.id, // 添加管理员ID
           itemName: form.itemName,
           itemType: form.itemType,
           color: form.color || null,
+          building: form.building,
           location: form.location,
           foundTime: form.foundTime,
           description: form.description || null,
@@ -282,10 +316,10 @@ export default {
           contactPhone: form.contactPhone,
           images: form.images
         }
-        
+
         // 调用API发布失物
         const response = await LostItemAPI.publishLostItem(submitData)
-        
+
         if (response.success) {
           alert('失物发布成功！')
           resetForm()
@@ -305,7 +339,7 @@ export default {
     // 组件挂载时检查权限
     onMounted(() => {
       checkAdminPermission()
-      
+
       // 设置默认联系人信息（如果用户已登录）
       if (authStore.user) {
         form.contactName = authStore.user.name || ''
@@ -319,6 +353,7 @@ export default {
       imagePreview,
       itemTypeOptions,
       colorOptions,
+      buildingOptions,
       handleImageUpload,
       removeImage,
       resetForm,
@@ -391,11 +426,11 @@ export default {
   .publish-item-container {
     padding: 10px;
   }
-  
+
   .form-card {
     margin: 0 10px;
   }
-  
+
   .page-title {
     font-size: 24px;
   }

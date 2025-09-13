@@ -102,7 +102,7 @@
           共 {{ pagination.total }} 条记录
         </span>
       </div>
-      
+
       <div class="pagination-controls">
         <BaseButton
           type="secondary"
@@ -112,7 +112,7 @@
         >
           上一页
         </BaseButton>
-        
+
         <div class="page-numbers">
           <BaseButton
             v-for="page in visiblePages"
@@ -125,7 +125,7 @@
             {{ page }}
           </BaseButton>
         </div>
-        
+
         <BaseButton
           type="secondary"
           size="small"
@@ -191,15 +191,15 @@ const visiblePages = computed(() => {
   const current = pagination.value.currentPage
   const total = pagination.value.totalPages
   const pages = []
-  
+
   // 显示当前页前后各2页
   const start = Math.max(1, current - 2)
   const end = Math.min(total, current + 2)
-  
+
   for (let i = start; i <= end; i++) {
     pages.push(i)
   }
-  
+
   return pages
 })
 
@@ -209,7 +209,7 @@ const handleSearch = (searchData) => {
   if (searchDebounceTimer.value) {
     clearTimeout(searchDebounceTimer.value)
   }
-  
+
   // 设置防抖
   searchDebounceTimer.value = setTimeout(() => {
     updateSearchParams(searchData)
@@ -270,9 +270,13 @@ const handleLoadMore = () => {
 }
 
 // 生命周期
-onMounted(() => {
-  // 页面加载时获取失物列表
-  getAllItems()
+onMounted(async () => {
+  try {
+    // 页面加载时获取失物列表
+    await getAllItems()
+  } catch (err) {
+    console.error('页面初始化失败:', err)
+  }
 })
 
 // 监听路由变化，重新加载数据
@@ -515,37 +519,37 @@ onUnmounted(() => {
   .lost-item-list-view {
     padding: 1rem 0.5rem;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }
-  
+
   .items-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .skeleton-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .search-stats {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
   }
-  
+
   .pagination-info {
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
   }
-  
+
   .pagination-controls {
     flex-wrap: wrap;
     gap: 0.25rem;
   }
-  
+
   .page-numbers {
     order: 2;
     width: 100%;
@@ -559,12 +563,12 @@ onUnmounted(() => {
   .error-state {
     padding: 2rem 1rem;
   }
-  
+
   .empty-icon,
   .error-icon {
     font-size: 3rem;
   }
-  
+
   .pagination-section {
     padding: 1rem;
   }

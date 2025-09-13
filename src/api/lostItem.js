@@ -9,36 +9,49 @@ class LostItemAPI {
   /**
    * 发布失物
    * @param {Object} lostItemData - 失物信息
-   * @param {string} lostItemData.name - 失物名称
-   * @param {string} lostItemData.type - 失物类型
-   * @param {string} lostItemData.color - 失物颜色
-   * @param {string} lostItemData.description - 失物描述
-   * @param {string} lostItemData.foundLocation - 发现地点
-   * @param {string} lostItemData.building - 所在建筑
+   * @param {string} lostItemData.name - 物品名称
+   * @param {number} lostItemData.type - 物品类型
+   * @param {number} lostItemData.color - 颜色
+   * @param {string} lostItemData.description - 物品描述
+   * @param {number} lostItemData.building - 楼栋编号
    * @param {string} lostItemData.specificLocation - 具体位置
-   * @param {string} [lostItemData.imageUrl] - 失物图片URL
-   * @param {number} lostItemData.adminId - 管理员ID
+   * @param {Array<File>} [lostItemData.images] - 失物图片文件数组
+   * @param {number} adminId - 管理员ID
    * @returns {Promise<Object>} 发布结果
    */
-  static async publishLostItem(lostItemData) {
-    try {
-      if (!lostItemData || typeof lostItemData !== 'object') {
-        throw new Error('失物信息不能为空')
-      }
-
-      const requiredFields = ['name', 'type', 'color', 'description', 'foundLocation', 'building', 'specificLocation', 'adminId']
-      for (const field of requiredFields) {
-        if (!lostItemData[field]) {
-          throw new Error(`${field} 字段不能为空`)
-        }
-      }
-
-      const response = await request.post(API_ENDPOINTS.LOST_ITEMS.PUBLISH, lostItemData)
-      return response.data
-    } catch (error) {
-      console.error('发布失物失败:', error)
-      throw error
+  static async publishLostItem(lostItemData, adminId) {
+    // 参数校验
+    if (!lostItemData || typeof lostItemData !== 'object') {
+      throw new Error('失物信息不能为空')
     }
+    
+    if (!adminId) {
+      throw new Error('管理员ID不能为空')
+    }
+
+    // 构建 FormData
+    const formData = new FormData()
+    
+    // 构建 request 对象（不包含 images）
+    const requestData = {
+      name: lostItemData.name,
+      type: lostItemData.type,
+      color: lostItemData.color,
+      description: lostItemData.description,
+      building: lostItemData.building,
+      specificLocation: lostItemData.specificLocation
+    }
+    
+    // 添加 request 数据作为 JSON 字符串
+    formData.append('request', JSON.stringify(requestData))
+    
+    // 添加图片文件（如果有的话）
+    if (lostItemData.images && lostItemData.images.length > 0) {
+      // 只取第一张图片，因为接口只支持单张图片
+      formData.append('image', lostItemData.images[0])
+    }
+
+    return request.upload(`${API_ENDPOINTS.LOST_ITEMS.PUBLISH}?adminId=${adminId}`, formData)
   }
 
   /**
@@ -126,12 +139,26 @@ class LostItemAPI {
     try {
       const response = await request.get(API_ENDPOINTS.LOST_ITEMS.SEARCH, {
         params: {
-          page: 1,
-          size: 10,
-          ...searchParams
+          pageNum: searchParams.page || 1,
+          pageSize: searchParams.size || 10,
+          keyword: searchParams.keyword,
+          type: searchParams.type,
+          color: searchParams.color,
+          building: searchParams.building,
+          startDate: searchParams.startDate,
+          endDate: searchParams.endDate
         }
       })
-      return response.data
+
+      // 转换后端分页格式为前端期望格式
+      const backendData = response.data
+      return {
+        items: backendData.records || [],
+        currentPage: backendData.current || 1,
+        pageSize: backendData.size || 10,
+        total: backendData.total || 0,
+        totalPages: backendData.pages || 0
+      }
     } catch (error) {
       console.error('搜索失物失败:', error)
       throw error
@@ -149,12 +176,20 @@ class LostItemAPI {
     try {
       const response = await request.get(API_ENDPOINTS.LOST_ITEMS.ALL, {
         params: {
-          page: 1,
-          size: 10,
-          ...pageParams
+          pageNum: pageParams.page || 1,
+          pageSize: pageParams.size || 10
         }
       })
-      return response.data
+
+      // 转换后端分页格式为前端期望格式
+      const backendData = response.data
+      return {
+        items: backendData.records || [],
+        currentPage: backendData.current || 1,
+        pageSize: backendData.size || 10,
+        total: backendData.total || 0,
+        totalPages: backendData.pages || 0
+      }
     } catch (error) {
       console.error('获取未领取失物列表失败:', error)
       throw error
@@ -177,12 +212,20 @@ class LostItemAPI {
 
       const response = await request.get(`${API_ENDPOINTS.LOST_ITEMS.BY_ADMIN}/${adminId}`, {
         params: {
-          page: 1,
-          size: 10,
-          ...pageParams
+          pageNum: pageParams.page || 1,
+          pageSize: pageParams.size || 10
         }
       })
-      return response.data
+
+      // 转换后端分页格式为前端期望格式
+      const backendData = response.data
+      return {
+        items: backendData.records || [],
+        currentPage: backendData.current || 1,
+        pageSize: backendData.size || 10,
+        total: backendData.total || 0,
+        totalPages: backendData.pages || 0
+      }
     } catch (error) {
       console.error('获取管理员失物列表失败:', error)
       throw error

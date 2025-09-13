@@ -12,23 +12,23 @@
       <div v-else class="lost-item-card__placeholder">
         <span class="lost-item-card__placeholder-text">{{ getItemTypeIcon(item.type) }}</span>
       </div>
-      
+
       <!-- 状态标签 -->
       <div class="lost-item-card__status" :class="statusClasses">
         {{ getStatusText(item.claimStatus) }}
       </div>
     </div>
-    
+
     <!-- 失物信息 -->
     <div class="lost-item-card__content">
       <h3 class="lost-item-card__title">{{ item.name }}</h3>
-      
+
       <div class="lost-item-card__meta">
         <div class="lost-item-card__meta-item">
           <span class="lost-item-card__meta-label">类型:</span>
           <span class="lost-item-card__meta-value">{{ getItemTypeName(item.type) }}</span>
         </div>
-        
+
         <div v-if="item.color" class="lost-item-card__meta-item">
           <span class="lost-item-card__meta-label">颜色:</span>
           <span class="lost-item-card__meta-value">
@@ -36,23 +36,23 @@
             {{ getColorName(item.color) }}
           </span>
         </div>
-        
+
         <div class="lost-item-card__meta-item">
           <span class="lost-item-card__meta-label">发现地点:</span>
           <span class="lost-item-card__meta-value">{{ item.foundLocation }}</span>
         </div>
-        
+
         <div class="lost-item-card__meta-item">
           <span class="lost-item-card__meta-label">发现时间:</span>
           <span class="lost-item-card__meta-value">{{ formatDate(item.foundTime) }}</span>
         </div>
       </div>
-      
+
       <p v-if="item.description" class="lost-item-card__description">
         {{ truncateText(item.description, maxDescriptionLength) }}
       </p>
     </div>
-    
+
     <!-- 操作按钮 -->
     <div class="lost-item-card__actions">
       <BaseButton
@@ -62,7 +62,7 @@
       >
         查看详情
       </BaseButton>
-      
+
       <BaseButton
         v-if="showClaimButton"
         size="small"
@@ -72,7 +72,7 @@
       >
         申请认领
       </BaseButton>
-      
+
       <BaseButton
         v-if="showEditButton"
         size="small"
@@ -132,17 +132,17 @@ const imageError = ref(false)
 const cardClasses = computed(() => {
   const classes = ['lost-item-card']
   classes.push(`lost-item-card--${props.size}`)
-  
+
   if (props.item.claimStatus === CLAIM_STATUS.CLAIMED) {
     classes.push('lost-item-card--claimed')
   }
-  
+
   return classes
 })
 
 const statusClasses = computed(() => {
   const classes = ['lost-item-card__status']
-  
+
   switch (props.item.claimStatus) {
     case CLAIM_STATUS.UNCLAIMED:
       classes.push('lost-item-card__status--unclaimed')
@@ -156,7 +156,7 @@ const statusClasses = computed(() => {
     default:
       classes.push('lost-item-card__status--unknown')
   }
-  
+
   return classes
 })
 
@@ -214,7 +214,7 @@ const getItemTypeIcon = (type) => {
 
 const formatDate = (dateString) => {
   if (!dateString) return ''
-  
+
   try {
     const date = new Date(dateString)
     return date.toLocaleDateString('zh-CN', {
@@ -429,11 +429,11 @@ const handleEdit = () => {
   .lost-item-card {
     max-width: 100%;
   }
-  
+
   .lost-item-card__actions {
     flex-direction: column;
   }
-  
+
   .lost-item-card__actions .base-button {
     width: 100%;
   }
