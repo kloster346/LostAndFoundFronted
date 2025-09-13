@@ -206,47 +206,69 @@ export default {
       shouldComponentError.value = true
     }
 
-    // API 错误测试
-    const testNetworkError = async () => {
-      try {
-        await get('/api/non-existent-endpoint')
-      } catch (error) {
-        console.log('网络错误已被捕获:', error)
-      }
+    // API 错误测试 - 直接调用错误处理函数
+    const testNetworkError = () => {
+      // 创建网络错误对象
+      const error = new AppError(
+        '网络连接失败，请检查网络设置',
+        ERROR_TYPES.NETWORK_ERROR,
+        ERROR_LEVELS.HIGH
+      )
+      
+      // 直接调用错误处理函数
+      handleError(error, { component: 'ErrorTestPage', action: 'testNetworkError' })
     }
 
-    const testAuthError = async () => {
-      try {
-        // 模拟 401 错误
-        await get('/api/protected-resource')
-      } catch (error) {
-        console.log('认证错误已被捕获:', error)
-      }
+    const testAuthError = () => {
+      // 创建认证错误对象
+      const error = new AppError(
+        '未授权，请重新登录',
+        ERROR_TYPES.PERMISSION_ERROR,
+        ERROR_LEVELS.HIGH,
+        401
+      )
+      
+      // 直接调用错误处理函数
+      handleError(error, { component: 'ErrorTestPage', action: 'testAuthError' })
     }
 
-    const testPermissionError = async () => {
-      try {
-        // 模拟 403 错误
-        await get('/api/admin-only-resource')
-      } catch (error) {
-        console.log('权限错误已被捕获:', error)
-      }
+    const testPermissionError = () => {
+      // 创建权限错误对象
+      const error = new AppError(
+        '权限不足，无法访问该资源',
+        ERROR_TYPES.PERMISSION_ERROR,
+        ERROR_LEVELS.MEDIUM,
+        403
+      )
+      
+      // 直接调用错误处理函数
+      handleError(error, { component: 'ErrorTestPage', action: 'testPermissionError' })
     }
 
-    const testNotFoundError = async () => {
-      try {
-        await get('/api/non-existent-resource/123')
-      } catch (error) {
-        console.log('404错误已被捕获:', error)
-      }
+    const testNotFoundError = () => {
+      // 创建资源不存在错误对象
+      const error = new AppError(
+        '请求的资源不存在',
+        ERROR_TYPES.API_ERROR,
+        ERROR_LEVELS.LOW,
+        404
+      )
+      
+      // 直接调用错误处理函数
+      handleError(error, { component: 'ErrorTestPage', action: 'testNotFoundError' })
     }
 
-    const testServerError = async () => {
-      try {
-        await post('/api/trigger-server-error', { test: true })
-      } catch (error) {
-        console.log('服务器错误已被捕获:', error)
-      }
+    const testServerError = () => {
+      // 创建服务器错误对象
+      const error = new AppError(
+        '服务器内部错误，请稍后重试',
+        ERROR_TYPES.SYSTEM_ERROR,
+        ERROR_LEVELS.CRITICAL,
+        500
+      )
+      
+      // 直接调用错误处理函数
+      handleError(error, { component: 'ErrorTestPage', action: 'testServerError' })
     }
 
     const testRetryMechanism = async () => {
