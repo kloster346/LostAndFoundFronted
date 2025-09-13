@@ -13,12 +13,12 @@
     </div>
 
     <div class="search-form__content">
-      <!-- 关键词搜索 -->
+      <!-- 物品名称 -->
       <div class="search-form__field">
         <BaseInput
-          v-model="formData.keyword"
-          label="关键词"
-          placeholder="请输入物品名称、描述或发现地点"
+          v-model="formData.name"
+          label="物品名称"
+          placeholder="请输入物品名称"
           clearable
           @enter="handleSubmit"
         />
@@ -65,108 +65,26 @@
         </div>
       </div>
 
-      <!-- 发现地点 -->
+      <!-- 楼栋选择 -->
       <div class="search-form__field">
-        <BaseInput
-          v-model="formData.foundLocation"
-          label="发现地点"
-          placeholder="请输入具体地点"
-          clearable
-        />
-      </div>
-
-      <!-- 日期范围 -->
-      <div class="search-form__field">
-        <label class="search-form__label">发现时间</label>
-        <div class="search-form__date-range">
-          <BaseInput
-            v-model="formData.startDate"
-            type="date"
-            placeholder="开始日期"
-            size="small"
-          />
-          <span class="search-form__date-separator">至</span>
-          <BaseInput
-            v-model="formData.endDate"
-            type="date"
-            placeholder="结束日期"
-            size="small"
-          />
-        </div>
-      </div>
-
-      <!-- 领取状态 -->
-      <div class="search-form__field">
-        <label class="search-form__label">领取状态</label>
-        <div class="search-form__radio-group">
-          <label
-            v-for="(name, status) in CLAIM_STATUS_NAMES"
-            :key="status"
-            class="search-form__radio-option"
+        <label class="search-form__label">楼栋</label>
+        <div class="search-form__select-group">
+          <select
+            v-model="formData.building"
+            class="search-form__select"
           >
-            <input
-              v-model="formData.claimStatus"
-              type="radio"
-              :value="status"
-              class="search-form__radio"
-            />
-            <span class="search-form__radio-label">{{ name }}</span>
-          </label>
-
-          <label class="search-form__radio-option">
-            <input
-              v-model="formData.claimStatus"
-              type="radio"
-              value=""
-              class="search-form__radio"
-            />
-            <span class="search-form__radio-label">全部状态</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- 高级选项 -->
-      <div class="search-form__field">
-        <button
-          type="button"
-          class="search-form__toggle"
-          @click="showAdvanced = !showAdvanced"
-        >
-          <span>高级选项</span>
-          <span class="search-form__toggle-icon" :class="{ 'search-form__toggle-icon--open': showAdvanced }">
-            ▼
-          </span>
-        </button>
-
-        <div v-if="showAdvanced" class="search-form__advanced">
-          <!-- 排序选项 -->
-          <div class="search-form__sort">
-            <label class="search-form__label">排序方式</label>
-            <div class="search-form__sort-options">
-              <select v-model="formData.sortBy" class="search-form__select search-form__select--small">
-                <option value="publishTime">发布时间</option>
-                <option value="foundTime">发现时间</option>
-                <option value="name">物品名称</option>
-              </select>
-
-              <select v-model="formData.sortOrder" class="search-form__select search-form__select--small">
-                <option value="desc">降序</option>
-                <option value="asc">升序</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- 其他筛选 -->
-          <div class="search-form__filters">
-            <label class="search-form__checkbox">
-              <input
-                v-model="formData.showOnlyUnclaimed"
-                type="checkbox"
-                class="search-form__checkbox-input"
-              />
-              <span class="search-form__checkbox-label">只显示未领取</span>
-            </label>
-          </div>
+            <option value="">全部楼栋</option>
+            <option value="1">1号楼</option>
+            <option value="2">2号楼</option>
+            <option value="3">3号楼</option>
+            <option value="4">4号楼</option>
+            <option value="5">5号楼</option>
+            <option value="6">6号楼</option>
+            <option value="7">7号楼</option>
+            <option value="8">8号楼</option>
+            <option value="9">9号楼</option>
+            <option value="10">10号楼</option>
+          </select>
         </div>
       </div>
     </div>
@@ -196,7 +114,7 @@
 import { ref, computed, watch } from 'vue'
 import BaseInput from '../common/BaseInput.vue'
 import BaseButton from '../common/BaseButton.vue'
-import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES, CLAIM_STATUS, CLAIM_STATUS_NAMES } from '../../constants/enums.js'
+import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '../../constants/enums.js'
 
 // Props定义
 const props = defineProps({
@@ -222,19 +140,11 @@ const props = defineProps({
 const emit = defineEmits(['search', 'reset', 'change'])
 
 // 响应式数据
-const showAdvanced = ref(false)
-
 const formData = ref({
-  keyword: '',
+  name: '',
   type: '',
   color: '',
-  foundLocation: '',
-  startDate: '',
-  endDate: '',
-  claimStatus: '',
-  sortBy: 'publishTime',
-  sortOrder: 'desc',
-  showOnlyUnclaimed: false,
+  building: '',
   ...props.initialValues
 })
 
@@ -244,9 +154,6 @@ let debounceTimer = null
 // 计算属性
 const hasActiveFilters = computed(() => {
   return Object.entries(formData.value).some(([key, value]) => {
-    if (key === 'sortBy' && value === 'publishTime') return false
-    if (key === 'sortOrder' && value === 'desc') return false
-    if (key === 'showOnlyUnclaimed' && value === false) return false
     return value !== '' && value !== null && value !== undefined
   })
 })
@@ -303,16 +210,10 @@ const handleSubmit = () => {
 
 const handleReset = () => {
   formData.value = {
-    keyword: '',
+    name: '',
     type: '',
     color: '',
-    foundLocation: '',
-    startDate: '',
-    endDate: '',
-    claimStatus: '',
-    sortBy: 'publishTime',
-    sortOrder: 'desc',
-    showOnlyUnclaimed: false
+    building: ''
   }
 
   emit('reset')
@@ -460,112 +361,7 @@ watch(
   color: #374151;
 }
 
-/* 日期范围 */
-.search-form__date-range {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
 
-.search-form__date-separator {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* 单选按钮 */
-.search-form__radio-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.search-form__radio-option {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
-.search-form__radio {
-  width: 16px;
-  height: 16px;
-  accent-color: #3b82f6;
-}
-
-.search-form__radio-label {
-  font-size: 14px;
-  color: #374151;
-}
-
-/* 高级选项 */
-.search-form__toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 12px 0;
-  border: none;
-  background: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: #3b82f6;
-  cursor: pointer;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.search-form__toggle-icon {
-  transition: transform 0.2s ease;
-}
-
-.search-form__toggle-icon--open {
-  transform: rotate(180deg);
-}
-
-.search-form__advanced {
-  padding-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.search-form__sort {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.search-form__sort-options {
-  display: flex;
-  gap: 12px;
-}
-
-.search-form__sort-options .search-form__select {
-  flex: 1;
-}
-
-.search-form__filters {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.search-form__checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.search-form__checkbox-input {
-  width: 16px;
-  height: 16px;
-  accent-color: #3b82f6;
-}
-
-.search-form__checkbox-label {
-  font-size: 14px;
-  color: #374151;
-}
 
 /* 操作按钮 */
 .search-form__actions {
@@ -584,20 +380,6 @@ watch(
 
   .search-form__color-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .search-form__date-range {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-form__radio-group {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .search-form__sort-options {
-    flex-direction: column;
   }
 
   .search-form__actions {

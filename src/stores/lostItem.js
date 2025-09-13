@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import LostItemAPI from '../api/lostItem.js'
-import { CLAIM_STATUS, ITEM_TYPES, COLORS } from '../constants/enums.js'
+import { ITEM_TYPES, COLORS } from '../constants/enums.js'
 
 /**
  * 失物状态管理 Store
@@ -26,12 +26,10 @@ export const useLostItemStore = defineStore('lostItem', () => {
 
   // 搜索条件
   const searchParams = ref({
-    keyword: '', // 关键词搜索
+    name: '', // 物品名称
     type: null, // 物品类型
     color: null, // 物品颜色
-    building: '', // 建筑
-    foundLocation: '', // 发现地点
-    claimStatus: null // 领取状态
+    building: '' // 建筑
   })
 
   // 分页信息
@@ -42,12 +40,8 @@ export const useLostItemStore = defineStore('lostItem', () => {
     totalPages: 0
   })
 
-  // 筛选器状态
-  const filters = ref({
-    showOnlyUnclaimed: false, // 只显示未领取
-    sortBy: 'publishTime', // 排序字段
-    sortOrder: 'desc' // 排序方向
-  })
+  // 筛选器状态（已简化）
+  const filters = ref({})
 
   // ==================== 计算属性 ====================
 
@@ -66,26 +60,9 @@ export const useLostItemStore = defineStore('lostItem', () => {
     return pagination.value.currentPage < pagination.value.totalPages
   })
 
-  // 筛选后的失物列表
+  // 筛选后的失物列表（已简化为直接返回items）
   const filteredItems = computed(() => {
-    let result = [...items.value]
-
-    // 只显示未领取的失物
-    if (filters.value.showOnlyUnclaimed) {
-      result = result.filter(item => item.claimStatus === CLAIM_STATUS.UNCLAIMED)
-    }
-
-    // 按关键词筛选
-    if (searchParams.value.keyword) {
-      const keyword = searchParams.value.keyword.toLowerCase()
-      result = result.filter(item =>
-        item.name.toLowerCase().includes(keyword) ||
-        item.description.toLowerCase().includes(keyword) ||
-        item.foundLocation.toLowerCase().includes(keyword)
-      )
-    }
-
-    return result
+    return [...items.value]
   })
 
   // 搜索状态

@@ -125,12 +125,10 @@ class LostItemAPI {
   /**
    * 搜索失物
    * @param {Object} searchParams - 搜索参数
-   * @param {string} [searchParams.keyword] - 关键词
+   * @param {string} [searchParams.name] - 物品名称
    * @param {string} [searchParams.type] - 失物类型
    * @param {string} [searchParams.color] - 失物颜色
    * @param {string} [searchParams.building] - 所在建筑
-   * @param {string} [searchParams.startDate] - 开始日期
-   * @param {string} [searchParams.endDate] - 结束日期
    * @param {number} [searchParams.page=1] - 页码
    * @param {number} [searchParams.size=10] - 每页大小
    * @returns {Promise<Object>} 搜索结果
@@ -141,12 +139,10 @@ class LostItemAPI {
         params: {
           pageNum: searchParams.page || 1,
           pageSize: searchParams.size || 10,
-          keyword: searchParams.keyword,
+          name: searchParams.name,
           type: searchParams.type,
           color: searchParams.color,
-          building: searchParams.building,
-          startDate: searchParams.startDate,
-          endDate: searchParams.endDate
+          building: searchParams.building
         }
       })
 
