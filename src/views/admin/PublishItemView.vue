@@ -176,6 +176,7 @@ import { useAuthStore } from '@/stores/auth'
 import LostItemAPI from '@/api/lostItem'
 import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '@/constants/enums'
 import { UploadFilled } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 export default {
   name: 'PublishItemView',

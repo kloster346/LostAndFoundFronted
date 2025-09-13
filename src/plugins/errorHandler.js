@@ -1,5 +1,6 @@
 import { handleError, ErrorLogger, ERROR_TYPES, ERROR_LEVELS, AppError } from '@/utils/error'
 import { ElMessage, ElNotification } from 'element-plus'
+import { h } from 'vue'
 
 /**
  * 全局错误处理插件
@@ -300,7 +301,7 @@ export function withErrorBoundary(options = {}) {
         ErrorBoundary: () => import('@/components/common/ErrorBoundary.vue')
       },
       render() {
-        return h(ErrorBoundary, options, {
+        return h(this.$options.components.ErrorBoundary, options, {
           default: () => h(WrappedComponent, this.$attrs, this.$slots)
         })
       }

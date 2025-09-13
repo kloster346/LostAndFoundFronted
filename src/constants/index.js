@@ -2,6 +2,9 @@
 export * from './enums.js'
 export * from './api.js'
 
+// 显式导入需要在本文件中使用的常量
+import { USER_ROLES } from './enums.js'
+
 // 应用配置常量
 export const APP_CONFIG = {
   NAME: '校园失物招领系统',

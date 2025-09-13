@@ -255,16 +255,23 @@ const hasActiveFilters = computed(() => {
 const getColorValue = (color) => {
   const colorMap = {
     [COLORS.RED]: '#ef4444',
-    [COLORS.BLUE]: '#3b82f6',
+    [COLORS.LIGHT_RED]: '#fca5a5',
+    [COLORS.DARK_RED]: '#b91c1c',
     [COLORS.GREEN]: '#10b981',
+    [COLORS.LIGHT_GREEN]: '#6ee7b7',
+    [COLORS.DARK_GREEN]: '#047857',
+    [COLORS.BLUE]: '#3b82f6',
+    [COLORS.LIGHT_BLUE]: '#93c5fd',
+    [COLORS.DARK_BLUE]: '#1d4ed8',
     [COLORS.YELLOW]: '#f59e0b',
+    [COLORS.ORANGE]: '#f97316',
+    [COLORS.PURPLE]: '#8b5cf6',
+    [COLORS.PINK]: '#ec4899',
+    [COLORS.BROWN]: '#92400e',
+    [COLORS.GRAY]: '#6b7280',
     [COLORS.BLACK]: '#1f2937',
     [COLORS.WHITE]: '#f9fafb',
-    [COLORS.GRAY]: '#6b7280',
-    [COLORS.BROWN]: '#92400e',
-    [COLORS.PINK]: '#ec4899',
-    [COLORS.PURPLE]: '#8b5cf6',
-    [COLORS.ORANGE]: '#f97316'
+    [COLORS.OTHER]: '#9ca3af'
   }
   return colorMap[color] || '#6b7280'
 }
