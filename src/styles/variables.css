@@ -1,0 +1,145 @@
+/* CSS变量定义 - 统一的设计token */
+
+:root {
+  /* 主色调 */
+  --primary-color: #409eff;
+  --primary-light: #79bbff;
+  --primary-dark: #337ecc;
+  --primary-lighter: #a0cfff;
+  --primary-darker: #2b73b3;
+
+  /* 辅助色 */
+  --success-color: #67c23a;
+  --warning-color: #e6a23c;
+  --danger-color: #f56c6c;
+  --info-color: #909399;
+
+  /* 中性色 */
+  --text-primary: #303133;
+  --text-regular: #606266;
+  --text-secondary: #909399;
+  --text-placeholder: #c0c4cc;
+  --text-disabled: #c0c4cc;
+
+  /* 边框色 */
+  --border-base: #dcdfe6;
+  --border-light: #e4e7ed;
+  --border-lighter: #ebeef5;
+  --border-extra-light: #f2f6fc;
+
+  /* 背景色 */
+  --bg-color: #ffffff;
+  --bg-page: #f9fafb;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+  --bg-mask: rgba(255, 255, 255, 0.9);
+
+  /* 阴影 */
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  --shadow-base: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.12);
+  --shadow-dark: 0 4px 8px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.12);
+
+  /* 字体 */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-size-extra-large: 20px;
+  --font-size-large: 18px;
+  --font-size-medium: 16px;
+  --font-size-base: 14px;
+  --font-size-small: 13px;
+  --font-size-extra-small: 12px;
+
+  /* 行高 */
+  --line-height-base: 1.5;
+  --line-height-small: 1.4;
+  --line-height-large: 1.6;
+
+  /* 字重 */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+  --font-weight-bolder: 700;
+
+  /* 间距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* 圆角 */
+  --border-radius-small: 2px;
+  --border-radius-base: 4px;
+  --border-radius-large: 6px;
+  --border-radius-round: 20px;
+  --border-radius-circle: 50%;
+
+  /* 过渡动画 */
+  --transition-base: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  --transition-fade: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  --transition-md-fade: transform 0.3s, opacity 0.3s;
+  --transition-border: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  --transition-box-shadow: box-shadow 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  --transition-color: color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  /* Z-index层级 */
+  --z-index-normal: 1;
+  --z-index-top: 1000;
+  --z-index-popper: 2000;
+  --z-index-message: 3000;
+  --z-index-overlay: 4000;
+
+  /* 布局尺寸 */
+  --header-height: 64px;
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 80px;
+  --content-max-width: 1200px;
+
+  /* 断点 */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 992px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1920px;
+}
+
+/* 深色主题变量 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #e5eaf3;
+    --text-regular: #cfd3dc;
+    --text-secondary: #a3a6ad;
+    --text-placeholder: #8d9095;
+    --text-disabled: #6c6e72;
+
+    --border-base: #4c4d4f;
+    --border-light: #414243;
+    --border-lighter: #363637;
+    --border-extra-light: #2b2b2c;
+
+    --bg-color: #1d1e1f;
+    --bg-page: #0a0a0a;
+    --bg-overlay: rgba(0, 0, 0, 0.8);
+    --bg-mask: rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* 主题切换类 */
+.theme-dark {
+  --text-primary: #e5eaf3;
+  --text-regular: #cfd3dc;
+  --text-secondary: #a3a6ad;
+  --text-placeholder: #8d9095;
+  --text-disabled: #6c6e72;
+
+  --border-base: #4c4d4f;
+  --border-light: #414243;
+  --border-lighter: #363637;
+  --border-extra-light: #2b2b2c;
+
+  --bg-color: #1d1e1f;
+  --bg-page: #0a0a0a;
+  --bg-overlay: rgba(0, 0, 0, 0.8);
+  --bg-mask: rgba(0, 0, 0, 0.9);
+}
