@@ -31,14 +31,14 @@ class LostItemAPI {
 
     // 构建 FormData（直接添加字段，不使用JSON包装）
     const formData = new FormData()
-    
+
     // 添加必填字段
     formData.append('adminId', lostItemData.adminId)
     formData.append('name', lostItemData.itemName)
     formData.append('type', lostItemData.itemType)
     formData.append('building', lostItemData.building)
     formData.append('specificLocation', lostItemData.location)
-    
+
     // 添加可选字段
     if (lostItemData.color) {
       formData.append('color', lostItemData.color)
@@ -113,15 +113,26 @@ class LostItemAPI {
   /**
    * 删除失物
    * @param {number} id - 失物ID
+   * @param {number} adminId - 管理员ID
+   * @param {boolean} isSuperAdmin - 是否为超级管理员
    * @returns {Promise<Object>} 删除结果
    */
-  static async deleteLostItem(id) {
+  static async deleteLostItem(id, adminId, isSuperAdmin) {
     try {
       if (!id || typeof id !== 'number') {
         throw new Error('失物ID不能为空且必须为数字')
       }
 
-      const response = await request.delete(`${API_ENDPOINTS.LOST_ITEMS.DELETE}/${id}`)
+      if (!adminId || typeof adminId !== 'number') {
+        throw new Error('管理员ID不能为空且必须为数字')
+      }
+
+      const response = await request.delete(`${API_ENDPOINTS.LOST_ITEMS.DELETE}/${id}`, {
+        params: {
+          adminId,
+          isSuperAdmin: isSuperAdmin || false
+        }
+      })
       return response.data
     } catch (error) {
       console.error('删除失物失败:', error)

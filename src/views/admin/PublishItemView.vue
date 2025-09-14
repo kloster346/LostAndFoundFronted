@@ -327,7 +327,7 @@ export default {
 
         // 调用API发布失物
         const response = await LostItemAPI.publishLostItem(submitData)
-        
+
         // 调试：打印实际响应数据
         console.log('API响应数据:', response)
         console.log('响应类型:', typeof response)

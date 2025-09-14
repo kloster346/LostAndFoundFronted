@@ -134,7 +134,7 @@
         </div>
 
         <!-- 空状态 -->
-        <el-empty v-else-if="items.length === 0" description="您还没有发布任何失物信息">
+        <el-empty v-else-if="lostItemStore.items.length === 0" description="您还没有发布任何失物信息">
           <el-button type="primary" @click="$router.push('/admin/publish')">
             <el-icon><Plus /></el-icon>
             发布第一个失物
@@ -143,16 +143,17 @@
 
         <!-- 失物列表 -->
         <div v-else class="items-container">
-          <div v-for="item in items" :key="item.id" class="item-row">
+          <div v-for="item in lostItemStore.items" :key="item.id" class="item-row">
             <el-row align="middle" :gutter="16">
               <el-col :span="2">
                 <!-- 物品图片 -->
                 <el-image
-                  v-if="item.images && item.images.length > 0"
-                  :src="item.images[0]"
-                  :alt="item.itemName"
+                  v-if="item.imageUrl"
+                  :src="getImageUrl(item.imageUrl)"
+                  :alt="item.name"
                   class="item-image"
                   fit="cover"
+                  @error="(e) => handleImageError(e, item.type)"
                 />
                 <div v-else class="item-image-placeholder">
                   <el-icon><Picture /></el-icon>
@@ -163,17 +164,17 @@
                 <!-- 物品信息 -->
                 <div class="item-info">
                   <div class="item-header">
-                    <h3 class="item-name">{{ item.itemName }}</h3>
+                    <h3 class="item-name">{{ item.name }}</h3>
                     <div class="item-meta">
-                      <el-tag :type="getStatusTagType(item.status)" size="small">
-                        {{ getStatusName(item.status) }}
+                      <el-tag :type="getStatusTagType(item.isClaimed)" size="small">
+                        {{ getStatusName(item.isClaimed) }}
                       </el-tag>
-                      <span class="item-date">{{ formatDate(item.foundTime) }}</span>
+                      <span class="item-date">{{ formatDate(item.publishTime) }}</span>
                     </div>
                   </div>
                   <div class="item-details">
-                    <span class="item-type">{{ getItemTypeName(item.itemType) }}</span>
-                    <span class="item-location">{{ item.location }}</span>
+                    <span class="item-type">{{ getItemTypeName(item.type) }}</span>
+                    <span class="item-location">{{ getBuildingName(item.building) }} {{ item.specificLocation }}</span>
                   </div>
                   <p class="item-description">{{ item.description }}</p>
                 </div>
@@ -184,7 +185,7 @@
                 <el-button-group>
                   <el-button @click="viewItem(item)" size="small"> 查看 </el-button>
                   <el-button
-                    v-if="item.status === 'UNCLAIMED'"
+                    v-if="item.isClaimed === 0"
                     @click="editItem(item)"
                     type="primary"
                     size="small"
@@ -192,7 +193,7 @@
                     编辑
                   </el-button>
                   <el-button
-                    v-if="item.status === 'UNCLAIMED'"
+                    v-if="item.isClaimed === 0"
                     @click="deleteItem(item)"
                     type="danger"
                     size="small"
@@ -206,16 +207,16 @@
         </div>
 
         <!-- 分页 -->
-        <div v-if="pagination.total > pagination.pageSize" class="pagination-container">
+        <div v-if="lostItemStore.pagination.total > lostItemStore.pagination.pageSize" class="pagination-container">
           <el-pagination
-            v-model:current-page="pagination.current"
-            v-model:page-size="pagination.pageSize"
-            :total="pagination.total"
-            :page-sizes="[10, 20, 50, 100]"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="loadItems"
-            @current-change="loadItems"
-          />
+          v-model:current-page="lostItemStore.pagination.currentPage"
+          v-model:page-size="lostItemStore.pagination.pageSize"
+          :total="lostItemStore.pagination.total"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
         </div>
       </el-card>
     </div>
@@ -223,18 +224,25 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
+import { useLostItemStore } from '@/stores/lostItem'
+import { useUserStore } from '@/stores/user'
+import { debounce } from 'lodash-es'
 import LostItemAPI from '@/api/lostItem'
-import { ITEM_TYPES, ITEM_TYPE_NAMES, CLAIM_STATUS, CLAIM_STATUS_NAMES } from '@/constants/enums'
-// 移除未使用的图标导入
+import { ITEM_TYPES, ITEM_TYPE_NAMES, CLAIM_STATUS, CLAIM_STATUS_NAMES, BUILDINGS, BUILDING_NAMES } from '@/constants/enums'
+import { Plus, Search, Picture, Edit, Delete, View, Document, Clock, CircleCheck, Loading } from '@element-plus/icons-vue'
+import { getImageUrl, handleImageError } from '@/utils/imageUtils'
 
 export default {
   name: 'MyItemsView',
   setup() {
     const router = useRouter()
     const authStore = useAuthStore()
+    const lostItemStore = useLostItemStore()
+    const userStore = useUserStore()
 
     const loading = ref(false)
     const items = ref([])
@@ -246,12 +254,7 @@ export default {
       type: '',
     })
 
-    // 分页信息
-    const pagination = reactive({
-      current: 1,
-      pageSize: 10,
-      total: 0,
-    })
+
 
     // 统计信息
     const statistics = reactive({
@@ -287,23 +290,23 @@ export default {
     }
 
     // 获取状态标签类型
-    const getStatusTagType = status => {
-      const statusTypes = {
-        UNCLAIMED: 'warning',
-        CLAIMED: 'success',
-        DELETED: 'danger',
-      }
-      return statusTypes[status] || 'info'
+    const getStatusTagType = isClaimed => {
+      return isClaimed === 0 ? 'success' : 'info'
     }
 
     // 获取状态名称
-    const getStatusName = status => {
-      return CLAIM_STATUS_NAMES[status] || status
+    const getStatusName = isClaimed => {
+      return isClaimed === 0 ? '未认领' : '已认领'
     }
 
     // 获取物品类型名称
     const getItemTypeName = type => {
       return ITEM_TYPE_NAMES[type] || type
+    }
+
+    // 获取建筑物名称
+    const getBuildingName = buildingCode => {
+      return BUILDING_NAMES[buildingCode] || '未知楼栋'
     }
 
     // 格式化日期
@@ -321,43 +324,25 @@ export default {
 
     // 加载失物列表
     const loadItems = async () => {
-      if (!checkAdminPermission()) return
-
       try {
         loading.value = true
-
-        const params = {
-          page: pagination.current,
-          pageSize: pagination.pageSize,
-          search: filters.search || undefined,
-          status: filters.status || undefined,
-          itemType: filters.type || undefined,
-          publisherId: authStore.user?.id, // 只获取当前管理员发布的失物
+        
+        const adminId = userStore.userInfo?.id
+        if (!adminId) {
+          ElMessage.error('用户信息获取失败，请重新登录')
+          return
         }
 
-        // 移除空值参数
-        Object.keys(params).forEach(key => {
-          if (params[key] === undefined || params[key] === '') {
-            delete params[key]
-          }
+        await lostItemStore.getAdminItems(adminId, {
+          pageNum: lostItemStore.pagination.currentPage,
+          pageSize: lostItemStore.pagination.pageSize
         })
-
-        const response = await LostItemAPI.getAdminLostItems(authStore.user?.id, {
-          page: pagination.current,
-          size: pagination.pageSize,
-        })
-
-        // getAdminLostItems 直接返回数据，不需要检查 success
-        items.value = response.items || []
-        pagination.total = response.total || 0
-        pagination.current = response.currentPage || 1
-        pagination.pageSize = response.pageSize || 10
 
         // 更新统计信息
         updateStatistics()
       } catch (error) {
         console.error('获取失物列表失败:', error)
-        alert(error.message || '获取失物列表失败')
+        ElMessage.error('获取失物列表失败')
       } finally {
         loading.value = false
       }
@@ -365,65 +350,79 @@ export default {
 
     // 更新统计信息
     const updateStatistics = () => {
-      statistics.total = items.value.length
-      statistics.unclaimed = items.value.filter(item => item.status === 'UNCLAIMED').length
-      statistics.claimed = items.value.filter(item => item.status === 'CLAIMED').length
-      statistics.deleted = items.value.filter(item => item.status === 'DELETED').length
+      const items = lostItemStore.items
+      statistics.total = items.length
+      statistics.unclaimed = items.filter(item => item.isClaimed === 0).length
+      statistics.claimed = items.filter(item => item.isClaimed === 1).length
     }
 
     // 防抖搜索
-    let searchTimeout = null
-    const debouncedSearch = () => {
-      clearTimeout(searchTimeout)
-      searchTimeout = setTimeout(() => {
-        pagination.current = 1
-        loadItems()
-      }, 500)
+    const debouncedSearch = debounce(() => {
+      lostItemStore.pagination.currentPage = 1
+      loadItems()
+    }, 500)
+
+    // 分页处理
+    const handleCurrentChange = (page) => {
+      loadItems()
     }
 
-    // 切换页码
-    const changePage = page => {
-      if (page < 1 || page > Math.ceil(pagination.total / pagination.pageSize)) return
-      pagination.current = page
+    const handleSizeChange = (size) => {
+      lostItemStore.pagination.currentPage = 1
       loadItems()
     }
 
     // 查看失物详情
     const viewItem = item => {
-      // 可以跳转到详情页面或打开模态框
-      router.push(`/lost-items/${item.id}`)
+      // 跳转到详情页面
+      router.push(`/admin/items/${item.id}`)
     }
 
     // 编辑失物
     const editItem = item => {
-      // 可以跳转到编辑页面或打开编辑模态框
-      router.push(`/admin/edit/${item.id}`)
+      // 跳转到编辑页面
+      router.push(`/admin/items/edit/${item.id}`)
     }
 
     // 删除失物
     const deleteItem = async item => {
-      if (!confirm(`确定要删除失物「${item.itemName}」吗？此操作不可恢复。`)) {
-        return
-      }
-
       try {
-        const response = await LostItemAPI.deleteLostItem(item.id)
+        await ElMessageBox.confirm(
+          `确定要删除失物「${item.name}」吗？此操作不可恢复。`,
+          '确认删除',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        )
 
-        if (response.success) {
-          alert('删除成功')
-          loadItems() // 重新加载列表
-        } else {
-          throw new Error(response.message || '删除失败')
-        }
+        await lostItemStore.deleteItem(item.id)
+        ElMessage.success('删除成功')
+        await loadItems() // 重新加载列表
       } catch (error) {
-        console.error('删除失物失败:', error)
-        alert(error.message || '删除失败，请重试')
+        if (error !== 'cancel') {
+          console.error('删除失物失败:', error)
+          ElMessage.error('删除失败，请重试')
+        }
       }
     }
 
+    // 监听认证状态变化
+    watch(
+      () => authStore.isLoggedIn,
+      (newValue) => {
+        if (newValue && checkAdminPermission()) {
+          loadItems()
+        }
+      },
+      { immediate: true }
+    )
+
     // 组件挂载时加载数据
     onMounted(() => {
-      if (checkAdminPermission()) {
+      // 如果已经登录，立即加载数据
+      if (authStore.isLoggedIn && checkAdminPermission()) {
         loadItems()
       }
     })
@@ -432,20 +431,24 @@ export default {
       loading,
       items,
       filters,
-      pagination,
       statistics,
       statusOptions,
       itemTypeOptions,
+      lostItemStore,
       getStatusTagType,
       getStatusName,
       getItemTypeName,
+      getBuildingName,
       formatDate,
       loadItems,
       debouncedSearch,
-      changePage,
+      handleCurrentChange,
+      handleSizeChange,
       viewItem,
       editItem,
       deleteItem,
+      getImageUrl,
+      handleImageError,
     }
   },
 }

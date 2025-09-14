@@ -37,11 +37,11 @@
       <!-- 失物图片 -->
       <div class="item-images" v-if="item.imageUrl">
         <img
-          :src="item.imageUrl"
+          :src="getImageUrl(item.imageUrl)"
           :alt="item.name"
           class="item-image"
           @click="openImagePreview"
-          @error="handleImageError"
+          @error="(e) => handleImageError(e, item.type)"
         />
       </div>
       <div v-else class="no-image">
@@ -117,7 +117,7 @@
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        <img :src="item?.imageUrl" :alt="item?.name" class="preview-image" />
+        <img :src="getImageUrl(item?.imageUrl)" :alt="item?.name" class="preview-image" />
       </div>
     </div>
   </div>
@@ -128,6 +128,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import LostItemAPI from '@/api/lostItem.js'
 import { getItemTypeName, getColorName, getBuildingName, CLAIM_STATUS } from '@/constants/enums'
+import { getImageUrl, handleImageError } from '@/utils/imageUtils.js'
 
 export default {
   name: 'LostItemDetailView',
@@ -185,10 +186,7 @@ export default {
       return status === CLAIM_STATUS.CLAIMED ? '已认领' : '待认领'
     }
 
-    // 处理图片错误
-    const handleImageError = event => {
-      event.target.style.display = 'none'
-    }
+    // handleImageError已移除，现在使用imageUtils中的handleImageError
 
     // 打开图片预览
     const openImagePreview = () => {
@@ -224,7 +222,6 @@ export default {
       formatDate,
       getStatusClass,
       getStatusText,
-      handleImageError,
       openImagePreview,
       closeImagePreview,
       goBack,
@@ -232,6 +229,8 @@ export default {
       getItemTypeName,
       getColorName,
       getBuildingName,
+      getImageUrl,
+      handleImageError,
     }
   },
 }

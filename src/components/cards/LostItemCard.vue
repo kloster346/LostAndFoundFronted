@@ -4,10 +4,10 @@
     <div class="lost-item-card__image">
       <img
         v-if="item.imageUrl"
-        :src="item.imageUrl"
+        :src="getImageUrl(item.imageUrl)"
         :alt="item.name"
         class="lost-item-card__img"
-        @error="handleImageError"
+        @error="(e) => handleImageError(e, item.type)"
       />
       <div v-else class="lost-item-card__placeholder">
         <span class="lost-item-card__placeholder-text">{{ getItemTypeIcon(item.type) }}</span>
@@ -88,6 +88,7 @@ import {
   COLORS,
   COLOR_NAMES,
 } from '../../constants/enums.js'
+import { getImageUrl, handleImageError } from '../../utils/imageUtils.js'
 
 // Props定义
 const props = defineProps({
@@ -125,7 +126,7 @@ const props = defineProps({
 const emit = defineEmits(['view-detail', 'claim', 'edit'])
 
 // 响应式数据
-const imageError = ref(false)
+// imageError已移除，现在使用imageUtils中的handleImageError
 
 // 计算属性
 const cardClasses = computed(() => {
@@ -233,9 +234,7 @@ const truncateText = (text, maxLength) => {
   return text.substring(0, maxLength) + '...'
 }
 
-const handleImageError = () => {
-  imageError.value = true
-}
+// handleImageError已移除，现在使用imageUtils中的handleImageError
 
 const handleViewDetail = () => {
   emit('view-detail', props.item)

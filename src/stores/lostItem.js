@@ -244,7 +244,22 @@ export const useLostItemStore = defineStore('lostItem', () => {
       operationLoading.value = true
       error.value = null
 
-      await LostItemAPI.deleteLostItem(id)
+      // 获取认证信息
+      const { useAuthStore } = await import('./auth.js')
+      const authStore = useAuthStore()
+      
+      if (!authStore.isLoggedIn || !authStore.isAdmin) {
+        throw new Error('需要管理员权限才能删除失物')
+      }
+
+      const adminId = authStore.currentUser?.id
+      const isSuperAdmin = authStore.isSuperAdmin
+
+      if (!adminId) {
+        throw new Error('无法获取管理员信息')
+      }
+
+      await LostItemAPI.deleteLostItem(id, adminId, isSuperAdmin)
 
       // 从列表中移除
       const itemIndex = items.value.findIndex(item => item.id === id)
