@@ -52,6 +52,24 @@ const router = createRouter({
       }
     },
     {
+      path: '/lost-items/:id',
+      name: 'LostItemDetail',
+      component: () => import('../views/LostItemDetailView.vue'),
+      meta: {
+        title: '失物详情',
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/lost-items/:id/claim',
+      name: 'ClaimItem',
+      component: () => import('../views/ClaimItemView.vue'),
+      meta: {
+        title: '认领失物',
+        requiresAuth: false
+      }
+    },
+    {
       path: '/error-test',
       name: 'ErrorTest',
       component: () => import('../views/ErrorTestPage.vue'),
