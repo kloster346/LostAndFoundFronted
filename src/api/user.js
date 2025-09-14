@@ -23,7 +23,7 @@ export class UserAPI {
   }
 
   /**
-   * 获取用户信息
+   * 获取用户个人信息
    * @param {number} userId - 用户ID
    * @returns {Promise<Object>} 用户信息
    */

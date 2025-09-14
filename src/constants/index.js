@@ -103,8 +103,8 @@ export const VALIDATION_RULES = {
     MESSAGE: '请输入正确的手机号码'
   },
   STUDENT_ID: {
-    PATTERN: /^\d{8,12}$/,
-    MESSAGE: '学号应为8-12位数字'
+    PATTERN: /^\d{15}$/,
+    MESSAGE: '学号应为15位数字'
   },
   EMAIL: {
     PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,

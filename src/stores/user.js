@@ -230,10 +230,15 @@ export const useUserStore = defineStore('user', () => {
         throw new Error('新密码长度不能少于6位')
       }
       
-      // 这里需要实现修改密码API
-      // const response = await UserAPI.changePassword(passwordData)
+      // 使用updateUserProfile接口修改密码
+      // 构造包含新密码的用户数据
+      const userData = {
+        ...userProfile.value,
+        password: passwordData.newPassword
+      }
       
-      // 临时模拟修改成功
+      const response = await UserAPI.updateUserProfile(userData)
+      
       ElMessage.success('密码修改成功，请重新登录')
       
       // 修改密码后需要重新登录

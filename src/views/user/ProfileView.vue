@@ -129,17 +129,7 @@
             </el-col>
           </el-row>
 
-          <el-row :gutter="20">
-            <el-col :span="24">
-              <el-form-item label="邮箱" prop="email">
-                <el-input 
-                  v-model="profileData.email" 
-                  :disabled="!isEditing"
-                  placeholder="请输入邮箱地址"
-                />
-              </el-form-item>
-            </el-col>
-          </el-row>
+
         </el-form>
       </el-card>
 
@@ -256,7 +246,7 @@ import {
 import { 
   User, 
   Camera, 
-  Edit, 
+  Edit,
   Lock 
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user.js'
@@ -283,11 +273,9 @@ const profileData = reactive({
   username: '',
   studentId: '',
   college: '',
-  phone: '',
-  email: ''
+  phone: ''
 })
 
-// 密码修改表单数据
 const passwordData = reactive({
   oldPassword: '',
   newPassword: '',
@@ -305,7 +293,6 @@ const collegeOptions = ref([
   { label: '其他', value: 'other' }
 ])
 
-// 最后密码修改时间（模拟数据）
 const lastPasswordChange = ref('2024-01-15 14:30:00')
 
 // ==================== 表单验证规则 ====================
@@ -318,7 +305,7 @@ const profileRules = {
   ],
   studentId: [
     { required: true, message: '请输入学号', trigger: 'blur' },
-    { pattern: /^\d{8,12}$/, message: '学号应为8-12位数字', trigger: 'blur' }
+    { pattern: /^\d{15}$/, message: '学号应为15位数字', trigger: 'blur' }
   ],
   college: [
     { required: true, message: '请选择学院', trigger: 'change' }
@@ -327,13 +314,9 @@ const profileRules = {
     { required: true, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
   ],
-  email: [
-    { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
-  ]
+
 }
 
-// 密码验证规则
 const passwordRules = {
   oldPassword: [
     { required: true, message: '请输入当前密码', trigger: 'blur' }
@@ -371,8 +354,7 @@ const originalProfileData = computed(() => {
     username: userStore.basicInfo.username || '',
     studentId: userStore.basicInfo.studentId || '',
     college: userStore.basicInfo.college || '',
-    phone: userStore.basicInfo.phone || '',
-    email: userStore.basicInfo.email || ''
+    phone: userStore.basicInfo.phone || ''
   }
 })
 
@@ -413,14 +395,31 @@ const saveProfile = async () => {
     const valid = await profileForm.value?.validate()
     if (!valid) return
     
+    // 确认操作
+    await ElMessageBox.confirm(
+      '确定要保存修改的信息吗？',
+      '确认保存',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }
+    )
+    
     // 更新用户信息
     await userStore.updateUserProfile(profileData)
     
     // 退出编辑模式
     isEditing.value = false
     
+    // 显示成功提示
+    ElMessage.success('个人信息保存成功')
+    
   } catch (error) {
-    console.error('保存失败:', error)
+    if (error !== 'cancel') {
+      console.error('保存失败:', error)
+      ElMessage.error(error.message || '保存失败，请重试')
+    }
   }
 }
 

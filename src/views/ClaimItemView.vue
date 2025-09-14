@@ -314,8 +314,8 @@ export default {
       if (!claimForm.value.studentId.trim()) {
         errors.value.studentId = '请输入学号'
         isValid = false
-      } else if (claimForm.value.studentId.trim().length < 6) {
-        errors.value.studentId = '请输入有效的学号'
+      } else if (!/^\d{15}$/.test(claimForm.value.studentId.trim())) {
+        errors.value.studentId = '学号应为15位数字'
         isValid = false
       }
 
