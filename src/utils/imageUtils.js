@@ -22,10 +22,10 @@ export function getImageUrl(imagePath) {
 
   // 如果是相对路径，拼接后端服务器地址
   const baseUrl = API_CONFIG.BASE_URL.replace('/api', '') // 移除/api后缀
-  
+
   // 确保路径以/开头
   const normalizedPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`
-  
+
   return `${baseUrl}${normalizedPath}`
 }
 
@@ -40,7 +40,7 @@ export function getImageUrl(imagePath) {
  */
 export function getImagePreviewUrl(imagePath, options = {}) {
   const fullUrl = getImageUrl(imagePath)
-  
+
   if (!fullUrl) {
     return ''
   }
@@ -68,10 +68,10 @@ export function checkImageExists(imagePath) {
   return new Promise((resolve) => {
     const img = new Image()
     const fullUrl = getImageUrl(imagePath)
-    
+
     img.onload = () => resolve(true)
     img.onerror = () => resolve(false)
-    
+
     img.src = fullUrl
   })
 }
@@ -107,7 +107,7 @@ export function getDefaultImageUrl(type) {
 export function handleImageError(event, fallbackType) {
   const img = event.target
   const defaultUrl = getDefaultImageUrl(fallbackType)
-  
+
   // 避免无限循环
   if (img.src !== defaultUrl) {
     img.src = defaultUrl

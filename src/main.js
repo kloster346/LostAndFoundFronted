@@ -23,13 +23,22 @@ app.use(ElementPlus)
 
 // 初始化认证状态
 const authStore = useAuthStore()
-authStore.initAuth()
-app.use(errorHandler, {
-  enabled: true,
-  capturePromiseRejection: true,
-  captureResourceError: true,
-  showConsoleError: process.env.NODE_ENV === 'development',
-  autoReport: process.env.NODE_ENV === 'production',
-})
 
-app.mount('#app')
+// 异步初始化认证状态
+;(async () => {
+  try {
+    await authStore.initAuth()
+  } catch (error) {
+    console.error('认证状态初始化失败:', error)
+  }
+  
+  app.use(errorHandler, {
+    enabled: true,
+    capturePromiseRejection: true,
+    captureResourceError: true,
+    showConsoleError: process.env.NODE_ENV === 'development',
+    autoReport: process.env.NODE_ENV === 'production',
+  })
+  
+  app.mount('#app')
+})()

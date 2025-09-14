@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { defineStore } from 'pinia'
 import { UserAPI } from '../api/user.js'
 import { AdminAPI } from '../api/admin.js'
@@ -60,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
    * 初始化认证状态
    * 从本地存储恢复登录状态
    */
-  const initAuth = () => {
+  const initAuth = async () => {
     try {
       // 恢复token
       const savedToken = localStorage.getItem(STORAGE_KEYS.TOKEN)
@@ -101,11 +101,25 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('admin_role')
       }
 
-      // 更新登录状态
-      isLoggedIn.value = !!(token.value && currentUser.value && userRole.value)
+      // 如果有token和用户信息，验证token有效性
+      if (token.value && currentUser.value && userRole.value) {
+        try {
+          // 通过API调用验证token有效性
+          await refreshUserInfo()
+          // 验证成功，更新登录状态
+          isLoggedIn.value = true
+        } catch (error) {
+          console.warn('Token验证失败，清除认证状态:', error)
+          // Token无效，清除所有认证状态
+          await clearAuth()
+        }
+      } else {
+        // 没有完整的认证信息，确保登录状态为false
+        isLoggedIn.value = false
+      }
     } catch (error) {
       console.error('初始化认证状态失败:', error)
-      clearAuth()
+      await clearAuth()
     }
   }
 
@@ -136,7 +150,7 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * 清除认证信息
    */
-  const clearAuth = () => {
+  const clearAuth = async () => {
     // 清除状态
     token.value = null
     currentUser.value = null
@@ -153,6 +167,10 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('admin_token')
     localStorage.removeItem('admin_info')
     localStorage.removeItem('admin_role')
+
+    // 确保DOM更新完成
+    await nextTick()
+    console.log('认证状态已清除，登录状态:', isLoggedIn.value)
   }
 
   /**
@@ -281,7 +299,13 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('登出API调用失败:', error)
       // 即使API调用失败，也要清除本地认证信息
     } finally {
-      clearAuth()
+      // 清除用户信息缓存
+      const { useUserStore } = await import('./user.js')
+      const userStore = useUserStore()
+      userStore.clearUserProfile()
+      
+      // 清除认证信息
+      await clearAuth()
     }
   }
 

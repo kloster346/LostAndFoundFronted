@@ -247,7 +247,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
       // 获取认证信息
       const { useAuthStore } = await import('./auth.js')
       const authStore = useAuthStore()
-      
+
       if (!authStore.isLoggedIn || !authStore.isAdmin) {
         throw new Error('需要管理员权限才能删除失物')
       }
