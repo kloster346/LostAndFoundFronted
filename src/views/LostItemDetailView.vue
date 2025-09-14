@@ -4,7 +4,7 @@
     <div class="back-button-container">
       <button @click="goBack" class="back-button">
         <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
+          <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
         返回
       </button>
@@ -47,9 +47,9 @@
       <div v-else class="no-image">
         <div class="no-image-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <polyline points="21,15 16,10 5,21"/>
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21,15 16,10 5,21" />
           </svg>
           <p>暂无图片</p>
         </div>
@@ -101,20 +101,10 @@
 
       <!-- 操作按钮 -->
       <div class="action-buttons">
-        <button
-          v-if="item.claimStatus === 0"
-          @click="goToClaim"
-          class="claim-button primary"
-        >
+        <button v-if="item.claimStatus === 0" @click="goToClaim" class="claim-button primary">
           我要认领
         </button>
-        <button
-          v-else
-          class="claim-button disabled"
-          disabled
-        >
-          已被认领
-        </button>
+        <button v-else class="claim-button disabled" disabled>已被认领</button>
       </div>
     </div>
 
@@ -137,12 +127,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import LostItemAPI from '@/api/lostItem.js'
-import {
-  getItemTypeName,
-  getColorName,
-  getBuildingName,
-  CLAIM_STATUS
-} from '@/constants/enums'
+import { getItemTypeName, getColorName, getBuildingName, CLAIM_STATUS } from '@/constants/enums'
 
 export default {
   name: 'LostItemDetailView',
@@ -178,7 +163,7 @@ export default {
     }
 
     // 格式化日期
-    const formatDate = (dateString) => {
+    const formatDate = dateString => {
       if (!dateString) return '未知'
       const date = new Date(dateString)
       return date.toLocaleString('zh-CN', {
@@ -186,22 +171,22 @@ export default {
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     }
 
     // 获取状态样式类
-    const getStatusClass = (status) => {
+    const getStatusClass = status => {
       return status === CLAIM_STATUS.CLAIMED ? 'claimed' : 'unclaimed'
     }
 
     // 获取状态文本
-    const getStatusText = (status) => {
+    const getStatusText = status => {
       return status === CLAIM_STATUS.CLAIMED ? '已认领' : '待认领'
     }
 
     // 处理图片错误
-    const handleImageError = (event) => {
+    const handleImageError = event => {
       event.target.style.display = 'none'
     }
 
@@ -246,9 +231,9 @@ export default {
       goToClaim,
       getItemTypeName,
       getColorName,
-      getBuildingName
+      getBuildingName,
     }
-  }
+  },
 }
 </script>
 
@@ -310,8 +295,12 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 错误状态 */

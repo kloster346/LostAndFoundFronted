@@ -17,10 +17,7 @@
       <el-card class="user-info-card" shadow="hover">
         <div class="user-info-section">
           <div class="user-avatar-container">
-            <el-avatar
-              :size="120"
-              class="user-avatar"
-            >
+            <el-avatar :size="120" class="user-avatar">
               <el-icon><User /></el-icon>
             </el-avatar>
           </div>
@@ -37,21 +34,12 @@
         <template #header>
           <div class="card-header">
             <span>基本信息</span>
-            <el-button
-              v-if="!isEditing"
-              type="primary"
-              :icon="Edit"
-              @click="startEdit"
-            >
+            <el-button v-if="!isEditing" type="primary" :icon="Edit" @click="startEdit">
               编辑信息
             </el-button>
             <div v-else class="edit-actions">
               <el-button @click="cancelEdit">取消</el-button>
-              <el-button
-                type="primary"
-                :loading="userStore.updating"
-                @click="saveProfile"
-              >
+              <el-button type="primary" :loading="userStore.updating" @click="saveProfile">
                 保存
               </el-button>
             </div>
@@ -114,8 +102,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-
-
         </el-form>
       </el-card>
 
@@ -134,11 +120,7 @@
             </el-button>
             <div v-else class="edit-actions">
               <el-button @click="cancelPasswordChange">取消</el-button>
-              <el-button
-                type="primary"
-                :loading="userStore.updating"
-                @click="changePassword"
-              >
+              <el-button type="primary" :loading="userStore.updating" @click="changePassword">
                 确认修改
               </el-button>
             </div>
@@ -149,9 +131,7 @@
           <el-descriptions :column="1" border>
             <el-descriptions-item label="当前密码">
               <span>••••••••</span>
-              <el-tag type="success" size="small" style="margin-left: 10px">
-                已设置
-              </el-tag>
+              <el-tag type="success" size="small" style="margin-left: 10px"> 已设置 </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="最后修改">
               <span>{{ lastPasswordChange || '未知' }}</span>
@@ -198,9 +178,7 @@
     <!-- 错误状态 -->
     <div v-else class="error-container">
       <el-empty description="无法加载用户信息">
-        <el-button type="primary" @click="refreshProfile">
-          重新加载
-        </el-button>
+        <el-button type="primary" @click="refreshProfile"> 重新加载 </el-button>
       </el-empty>
     </div>
   </div>
@@ -227,13 +205,9 @@ import {
   ElDescriptions,
   ElDescriptionsItem,
   ElSkeleton,
-  ElEmpty
+  ElEmpty,
 } from 'element-plus'
-import {
-  User,
-  Edit,
-  Lock
-} from '@element-plus/icons-vue'
+import { User, Edit, Lock } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user.js'
 import { useAuthStore } from '@/stores/auth.js'
 
@@ -257,13 +231,13 @@ const profileData = reactive({
   username: '',
   studentId: '',
   college: '',
-  phone: ''
+  phone: '',
 })
 
 const passwordData = reactive({
   oldPassword: '',
   newPassword: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
 
 // 学院选项
@@ -274,7 +248,7 @@ const collegeOptions = ref([
   { label: '经济管理学院', value: 'economics' },
   { label: '外国语学院', value: 'foreign' },
   { label: '艺术设计学院', value: 'art' },
-  { label: '其他', value: 'other' }
+  { label: '其他', value: 'other' },
 ])
 
 const lastPasswordChange = ref('2024-01-15 14:30:00')
@@ -285,34 +259,29 @@ const lastPasswordChange = ref('2024-01-15 14:30:00')
 const profileRules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 2, max: 20, message: '用户名长度在 2 到 20 个字符', trigger: 'blur' }
+    { min: 2, max: 20, message: '用户名长度在 2 到 20 个字符', trigger: 'blur' },
   ],
   studentId: [
     { required: true, message: '请输入学号', trigger: 'blur' },
-    { pattern: /^\d{15}$/, message: '学号应为15位数字', trigger: 'blur' }
+    { pattern: /^\d{15}$/, message: '学号应为15位数字', trigger: 'blur' },
   ],
-  college: [
-    { required: true, message: '请选择学院', trigger: 'change' }
-  ],
+  college: [{ required: true, message: '请选择学院', trigger: 'change' }],
   phone: [
     { required: true, message: '请输入手机号', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' },
   ],
-
 }
 
 const passwordRules = {
-  oldPassword: [
-    { required: true, message: '请输入当前密码', trigger: 'blur' }
-  ],
+  oldPassword: [{ required: true, message: '请输入当前密码', trigger: 'blur' }],
   newPassword: [
     { required: true, message: '请输入新密码', trigger: 'blur' },
     { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' },
     {
       pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/,
       message: '密码必须包含字母和数字',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   confirmPassword: [
     { required: true, message: '请确认新密码', trigger: 'blur' },
@@ -324,9 +293,9 @@ const passwordRules = {
           callback()
         }
       },
-      trigger: 'blur'
-    }
-  ]
+      trigger: 'blur',
+    },
+  ],
 }
 
 // ==================== 计算属性 ====================
@@ -338,7 +307,7 @@ const originalProfileData = computed(() => {
     username: userStore.basicInfo.username || '',
     studentId: userStore.basicInfo.studentId || '',
     college: userStore.basicInfo.college || '',
-    phone: userStore.basicInfo.phone || ''
+    phone: userStore.basicInfo.phone || '',
   }
 })
 
@@ -380,15 +349,11 @@ const saveProfile = async () => {
     if (!valid) return
 
     // 确认操作
-    await ElMessageBox.confirm(
-      '确定要保存修改的信息吗？',
-      '确认保存',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      }
-    )
+    await ElMessageBox.confirm('确定要保存修改的信息吗？', '确认保存', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'info',
+    })
 
     // 更新用户信息
     await userStore.updateUserProfile(profileData)
@@ -398,7 +363,6 @@ const saveProfile = async () => {
 
     // 显示成功提示
     ElMessage.success('个人信息保存成功')
-
   } catch (error) {
     if (error !== 'cancel') {
       console.error('保存失败:', error)
@@ -416,7 +380,7 @@ const startPasswordChange = () => {
   Object.assign(passwordData, {
     oldPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   })
 }
 
@@ -428,7 +392,7 @@ const cancelPasswordChange = () => {
   Object.assign(passwordData, {
     oldPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   })
   passwordForm.value?.clearValidate()
 }
@@ -443,15 +407,11 @@ const changePassword = async () => {
     if (!valid) return
 
     // 确认操作
-    await ElMessageBox.confirm(
-      '修改密码后需要重新登录，确定要继续吗？',
-      '确认修改',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-    )
+    await ElMessageBox.confirm('修改密码后需要重新登录，确定要继续吗？', '确认修改', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
 
     // 修改密码
     await userStore.changePassword(passwordData)
@@ -461,15 +421,12 @@ const changePassword = async () => {
 
     // 跳转到登录页
     router.push('/login')
-
   } catch (error) {
     if (error !== 'cancel') {
       console.error('修改密码失败:', error)
     }
   }
 }
-
-
 
 /**
  * 刷新用户信息
@@ -504,7 +461,6 @@ onMounted(async () => {
 
     // 初始化表单数据
     initProfile()
-
   } catch (error) {
     console.error('初始化失败:', error)
     ElMessage.error('页面初始化失败，请刷新重试')

@@ -2,30 +2,27 @@
   <div class="not-found-container">
     <div class="not-found-content">
       <div class="error-icon">
-        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#e5e7eb"/>
+        <svg
+          width="120"
+          height="120"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            fill="#e5e7eb"
+          />
         </svg>
       </div>
-      
+
       <h1 class="error-title">404</h1>
       <h2 class="error-subtitle">页面未找到</h2>
-      <p class="error-description">
-        抱歉，您访问的页面不存在或已被移除。
-      </p>
-      
+      <p class="error-description">抱歉，您访问的页面不存在或已被移除。</p>
+
       <div class="action-buttons">
-        <button 
-          @click="goHome" 
-          class="btn btn-primary"
-        >
-          返回首页
-        </button>
-        <button 
-          @click="goBack" 
-          class="btn btn-secondary"
-        >
-          返回上页
-        </button>
+        <button @click="goHome" class="btn btn-primary">返回首页</button>
+        <button @click="goBack" class="btn btn-secondary">返回上页</button>
       </div>
     </div>
   </div>
@@ -38,11 +35,11 @@ export default {
   name: 'NotFoundView',
   setup() {
     const router = useRouter()
-    
+
     const goHome = () => {
       router.push('/lost-items')
     }
-    
+
     const goBack = () => {
       if (window.history.length > 1) {
         router.go(-1)
@@ -50,12 +47,12 @@ export default {
         router.push('/lost-items')
       }
     }
-    
+
     return {
       goHome,
-      goBack
+      goBack,
     }
-  }
+  },
 }
 </script>
 
@@ -74,7 +71,9 @@ export default {
   background: white;
   padding: 3rem 2rem;
   border-radius: 1rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   max-width: 500px;
   width: 100%;
 }
@@ -132,7 +131,9 @@ export default {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary {
@@ -150,19 +151,19 @@ export default {
   .not-found-content {
     padding: 2rem 1rem;
   }
-  
+
   .error-title {
     font-size: 4rem;
   }
-  
+
   .error-subtitle {
     font-size: 1.5rem;
   }
-  
+
   .action-buttons {
     flex-direction: column;
   }
-  
+
   .btn {
     width: 100%;
   }

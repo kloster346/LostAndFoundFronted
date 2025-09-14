@@ -91,8 +91,8 @@ export class AuthUtil {
    * @returns {Object|null} 用户信息
    */
   static getCurrentUser() {
-    const userInfo = localStorage.getItem(STORAGE_KEYS.USER_INFO) ||
-                    sessionStorage.getItem(STORAGE_KEYS.USER_INFO)
+    const userInfo =
+      localStorage.getItem(STORAGE_KEYS.USER_INFO) || sessionStorage.getItem(STORAGE_KEYS.USER_INFO)
 
     if (!userInfo) return null
 
@@ -344,7 +344,7 @@ export const auth = {
   isAdmin: AuthUtil.isAdmin.bind(AuthUtil),
   clearAuth: AuthUtil.clearAuth.bind(AuthUtil),
   canAccessRoute: AuthUtil.canAccessRoute.bind(AuthUtil),
-  getLoginRedirectPath: AuthUtil.getLoginRedirectPath.bind(AuthUtil)
+  getLoginRedirectPath: AuthUtil.getLoginRedirectPath.bind(AuthUtil),
 }
 
 export default AuthUtil

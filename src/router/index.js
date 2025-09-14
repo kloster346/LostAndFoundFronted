@@ -10,8 +10,8 @@ const router = createRouter({
       component: () => import('../views/auth/LoginView.vue'),
       meta: {
         title: '登录',
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
     {
       path: '/lost-items',
@@ -19,8 +19,8 @@ const router = createRouter({
       component: () => import('../views/common/LostItemListView.vue'),
       meta: {
         title: '失物浏览',
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
     {
       path: '/profile',
@@ -28,8 +28,8 @@ const router = createRouter({
       component: () => import('../views/user/ProfileView.vue'),
       meta: {
         title: '个人信息',
-        requiresAuth: true
-      }
+        requiresAuth: true,
+      },
     },
     {
       path: '/admin/publish',
@@ -38,8 +38,8 @@ const router = createRouter({
       meta: {
         title: '发布失物',
         requiresAuth: true,
-        requiresAdmin: true
-      }
+        requiresAdmin: true,
+      },
     },
     {
       path: '/admin/my-items',
@@ -48,8 +48,8 @@ const router = createRouter({
       meta: {
         title: '我的失物',
         requiresAuth: true,
-        requiresAdmin: true
-      }
+        requiresAdmin: true,
+      },
     },
     {
       path: '/admin/super',
@@ -58,8 +58,8 @@ const router = createRouter({
       meta: {
         title: '总管理员',
         requiresAuth: true,
-        requiresSuperAdmin: true
-      }
+        requiresSuperAdmin: true,
+      },
     },
     {
       path: '/lost-items/:id',
@@ -67,8 +67,8 @@ const router = createRouter({
       component: () => import('../views/LostItemDetailView.vue'),
       meta: {
         title: '失物详情',
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
     {
       path: '/lost-items/:id/claim',
@@ -76,13 +76,13 @@ const router = createRouter({
       component: () => import('../views/ClaimItemView.vue'),
       meta: {
         title: '认领失物',
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
 
     {
       path: '/',
-      redirect: '/lost-items'
+      redirect: '/lost-items',
     },
     {
       path: '/404',
@@ -90,13 +90,13 @@ const router = createRouter({
       component: () => import('../views/common/NotFoundView.vue'),
       meta: {
         title: '页面未找到',
-        requiresAuth: false
-      }
+        requiresAuth: false,
+      },
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/404'
-    }
+      redirect: '/404',
+    },
   ],
 })
 
@@ -127,7 +127,7 @@ router.beforeEach((to, from, next) => {
     const redirectPath = to.fullPath !== '/login' ? to.fullPath : '/lost-items'
     next({
       path: '/login',
-      query: { redirect: redirectPath }
+      query: { redirect: redirectPath },
     })
     return
   }
@@ -146,7 +146,7 @@ router.beforeEach((to, from, next) => {
       // 如果未登录，跳转到登录页面
       next({
         path: '/login',
-        query: { redirect: to.fullPath }
+        query: { redirect: to.fullPath },
       })
     }
     return
@@ -166,7 +166,7 @@ router.beforeEach((to, from, next) => {
       // 如果未登录，跳转到登录页面
       next({
         path: '/login',
-        query: { redirect: to.fullPath }
+        query: { redirect: to.fullPath },
       })
     }
     return

@@ -17,7 +17,7 @@ export class RequestUtil {
     try {
       const response = await apiClient.get(url, {
         params,
-        ...options
+        ...options,
       })
       return this.handleResponse(response)
     } catch (error) {
@@ -83,15 +83,13 @@ export class RequestUtil {
     try {
       const options = {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       }
 
       if (onProgress) {
-        options.onUploadProgress = (progressEvent) => {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          )
+        options.onUploadProgress = progressEvent => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           onProgress(percentCompleted)
         }
       }
@@ -116,7 +114,7 @@ export class RequestUtil {
       data: data.data || data,
       message: data.message || '请求成功',
       status,
-      code: data.code || status
+      code: data.code || status,
     }
   }
 
@@ -133,7 +131,7 @@ export class RequestUtil {
       data: null,
       message: '请求失败',
       status: 0,
-      code: 0
+      code: 0,
     }
 
     if (error.response) {
@@ -169,7 +167,7 @@ export class RequestUtil {
       [HTTP_STATUS.METHOD_NOT_ALLOWED]: '请求方法不允许',
       [HTTP_STATUS.INTERNAL_SERVER_ERROR]: '服务器内部错误',
       [HTTP_STATUS.BAD_GATEWAY]: '网关错误',
-      [HTTP_STATUS.SERVICE_UNAVAILABLE]: '服务不可用'
+      [HTTP_STATUS.SERVICE_UNAVAILABLE]: '服务不可用',
     }
 
     return statusMessages[status] || `请求失败 (${status})`
@@ -205,7 +203,7 @@ export class RequestUtil {
         index,
         success: result.status === 'fulfilled',
         data: result.status === 'fulfilled' ? result.value : null,
-        error: result.status === 'rejected' ? result.reason : null
+        error: result.status === 'rejected' ? result.reason : null,
       }))
     } catch (error) {
       console.error('Batch Request Error:', error)
@@ -250,7 +248,7 @@ export const request = {
   delete: RequestUtil.delete.bind(RequestUtil),
   upload: RequestUtil.upload.bind(RequestUtil),
   batch: RequestUtil.batch.bind(RequestUtil),
-  retry: RequestUtil.retry.bind(RequestUtil)
+  retry: RequestUtil.retry.bind(RequestUtil),
 }
 
 export default RequestUtil

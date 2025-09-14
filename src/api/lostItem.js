@@ -39,7 +39,7 @@ class LostItemAPI {
       color: lostItemData.color,
       description: lostItemData.description,
       building: lostItemData.building,
-      specificLocation: lostItemData.specificLocation
+      specificLocation: lostItemData.specificLocation,
     }
 
     // 添加 request 数据作为 JSON 字符串
@@ -147,8 +147,8 @@ class LostItemAPI {
           name: searchParams.name,
           type: searchParams.type,
           color: searchParams.color,
-          building: searchParams.building
-        }
+          building: searchParams.building,
+        },
       })
 
       // 转换后端分页格式为前端期望格式
@@ -158,7 +158,7 @@ class LostItemAPI {
         currentPage: backendData.current || 1,
         pageSize: backendData.size || 10,
         total: backendData.total || 0,
-        totalPages: backendData.pages || 0
+        totalPages: backendData.pages || 0,
       }
     } catch (error) {
       console.error('搜索失物失败:', error)
@@ -178,8 +178,8 @@ class LostItemAPI {
       const response = await request.get(API_ENDPOINTS.LOST_ITEMS.ALL, {
         params: {
           pageNum: pageParams.page || 1,
-          pageSize: pageParams.size || 10
-        }
+          pageSize: pageParams.size || 10,
+        },
       })
 
       // 转换后端分页格式为前端期望格式
@@ -189,7 +189,7 @@ class LostItemAPI {
         currentPage: backendData.current || 1,
         pageSize: backendData.size || 10,
         total: backendData.total || 0,
-        totalPages: backendData.pages || 0
+        totalPages: backendData.pages || 0,
       }
     } catch (error) {
       console.error('获取未领取失物列表失败:', error)
@@ -216,10 +216,10 @@ class LostItemAPI {
         const response = await request.get(API_ENDPOINTS.LOST_ITEMS.ALL, {
           params: {
             pageNum: params.page || 1,
-            pageSize: params.size || 10
-          }
+            pageSize: params.size || 10,
+          },
         })
-        
+
         // 转换后端分页格式为前端期望格式
         const backendData = response.data
         return {
@@ -227,7 +227,7 @@ class LostItemAPI {
           currentPage: backendData.current || 1,
           pageSize: backendData.size || 10,
           total: backendData.total || 0,
-          totalPages: backendData.pages || 0
+          totalPages: backendData.pages || 0,
         }
       }
     } catch (error) {
@@ -253,8 +253,8 @@ class LostItemAPI {
       const response = await request.get(`${API_ENDPOINTS.LOST_ITEMS.BY_ADMIN}/${adminId}`, {
         params: {
           pageNum: pageParams.page || 1,
-          pageSize: pageParams.size || 10
-        }
+          pageSize: pageParams.size || 10,
+        },
       })
 
       // 转换后端分页格式为前端期望格式
@@ -264,7 +264,7 @@ class LostItemAPI {
         currentPage: backendData.current || 1,
         pageSize: backendData.size || 10,
         total: backendData.total || 0,
-        totalPages: backendData.pages || 0
+        totalPages: backendData.pages || 0,
       }
     } catch (error) {
       console.error('获取管理员失物列表失败:', error)
@@ -284,5 +284,8 @@ export const {
   searchLostItems,
   getAllLostItems,
   getAllUnclaimedItems,
-  getAdminLostItems
+  getAdminLostItems,
 } = LostItemAPI
+
+// 为了向后兼容，添加 getLostItems 别名
+export const getLostItems = LostItemAPI.getAllLostItems

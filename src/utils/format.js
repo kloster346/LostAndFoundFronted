@@ -14,17 +14,17 @@ export class FormatUtil {
    */
   static formatDate(date, format = DATE_FORMATS.DATETIME) {
     if (!date) return ''
-    
+
     const dateObj = new Date(date)
     if (isNaN(dateObj.getTime())) return ''
-    
+
     const year = dateObj.getFullYear()
     const month = String(dateObj.getMonth() + 1).padStart(2, '0')
     const day = String(dateObj.getDate()).padStart(2, '0')
     const hours = String(dateObj.getHours()).padStart(2, '0')
     const minutes = String(dateObj.getMinutes()).padStart(2, '0')
     const seconds = String(dateObj.getSeconds()).padStart(2, '0')
-    
+
     return format
       .replace('YYYY', year)
       .replace('MM', month)
@@ -41,10 +41,10 @@ export class FormatUtil {
    */
   static formatRelativeTime(date) {
     if (!date) return ''
-    
+
     const dateObj = new Date(date)
     if (isNaN(dateObj.getTime())) return ''
-    
+
     const now = new Date()
     const diffMs = now.getTime() - dateObj.getTime()
     const diffSeconds = Math.floor(diffMs / 1000)
@@ -53,7 +53,7 @@ export class FormatUtil {
     const diffDays = Math.floor(diffHours / 24)
     const diffMonths = Math.floor(diffDays / 30)
     const diffYears = Math.floor(diffDays / 365)
-    
+
     if (diffSeconds < 60) {
       return '刚刚'
     } else if (diffMinutes < 60) {
@@ -77,13 +77,13 @@ export class FormatUtil {
    */
   static formatFileSize(bytes, decimals = 2) {
     if (!bytes || bytes === 0) return '0 B'
-    
+
     const k = 1024
     const dm = decimals < 0 ? 0 : decimals
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-    
+
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
   }
 
@@ -96,15 +96,15 @@ export class FormatUtil {
    */
   static formatNumber(num, decimals = 0, useThousandSeparator = true) {
     if (num === null || num === undefined || isNaN(num)) return '0'
-    
+
     const fixed = Number(num).toFixed(decimals)
-    
+
     if (useThousandSeparator) {
       const parts = fixed.split('.')
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       return parts.join('.')
     }
-    
+
     return fixed
   }
 
@@ -116,7 +116,7 @@ export class FormatUtil {
    */
   static formatPercentage(value, decimals = 1) {
     if (value === null || value === undefined || isNaN(value)) return '0%'
-    
+
     return (value * 100).toFixed(decimals) + '%'
   }
 
@@ -156,9 +156,9 @@ export class FormatUtil {
     const roleNames = {
       [USER_ROLES.NORMAL_USER]: '普通用户',
       [USER_ROLES.LOST_ITEM_ADMIN]: '失物管理员',
-      [USER_ROLES.SUPER_ADMIN]: '总管理员'
+      [USER_ROLES.SUPER_ADMIN]: '总管理员',
     }
-    
+
     return roleNames[role] || role || '未知角色'
   }
 
@@ -170,9 +170,9 @@ export class FormatUtil {
    */
   static formatPhone(phone, mask = false) {
     if (!phone) return ''
-    
+
     const cleaned = phone.replace(/\D/g, '')
-    
+
     if (cleaned.length === 11) {
       if (mask) {
         return cleaned.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
@@ -180,7 +180,7 @@ export class FormatUtil {
         return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')
       }
     }
-    
+
     return phone
   }
 
@@ -192,14 +192,14 @@ export class FormatUtil {
    */
   static formatIdCard(idCard, mask = true) {
     if (!idCard) return ''
-    
+
     if (mask && idCard.length >= 8) {
       const start = idCard.substring(0, 4)
       const end = idCard.substring(idCard.length - 4)
       const middle = '*'.repeat(idCard.length - 8)
       return start + middle + end
     }
-    
+
     return idCard
   }
 
@@ -210,17 +210,17 @@ export class FormatUtil {
    */
   static formatAddress(address) {
     if (!address) return ''
-    
+
     if (typeof address === 'string') return address
-    
+
     const parts = [
       address.province,
       address.city,
       address.district,
       address.street,
-      address.detail
+      address.detail,
     ].filter(Boolean)
-    
+
     return parts.join('')
   }
 
@@ -235,7 +235,7 @@ export class FormatUtil {
     if (amount === null || amount === undefined || isNaN(amount)) {
       return currency + '0.00'
     }
-    
+
     const formatted = this.formatNumber(amount, decimals, true)
     return currency + formatted
   }
@@ -249,9 +249,9 @@ export class FormatUtil {
    */
   static truncateText(text, maxLength = 50, suffix = '...') {
     if (!text) return ''
-    
+
     if (text.length <= maxLength) return text
-    
+
     return text.substring(0, maxLength - suffix.length) + suffix
   }
 
@@ -264,7 +264,7 @@ export class FormatUtil {
    */
   static highlightKeyword(text, keyword, className = 'highlight') {
     if (!text || !keyword) return text
-    
+
     const regex = new RegExp(`(${keyword})`, 'gi')
     return text.replace(regex, `<span class="${className}">$1</span>`)
   }
@@ -276,16 +276,16 @@ export class FormatUtil {
    */
   static formatUrlParams(params) {
     if (!params || typeof params !== 'object') return ''
-    
+
     const searchParams = new URLSearchParams()
-    
+
     Object.keys(params).forEach(key => {
       const value = params[key]
       if (value !== null && value !== undefined && value !== '') {
         searchParams.append(key, String(value))
       }
     })
-    
+
     return searchParams.toString()
   }
 
@@ -296,14 +296,14 @@ export class FormatUtil {
    */
   static parseUrlParams(search) {
     if (!search) return {}
-    
+
     const params = {}
     const searchParams = new URLSearchParams(search)
-    
+
     for (const [key, value] of searchParams) {
       params[key] = value
     }
-    
+
     return params
   }
 
@@ -314,11 +314,11 @@ export class FormatUtil {
    */
   static formatEnumOptions(enumObj) {
     if (!enumObj || typeof enumObj !== 'object') return []
-    
+
     return Object.keys(enumObj).map(key => ({
       value: key,
       label: enumObj[key],
-      key
+      key,
     }))
   }
 
@@ -367,7 +367,7 @@ export const format = {
   phone: FormatUtil.formatPhone.bind(FormatUtil),
   currency: FormatUtil.formatCurrency.bind(FormatUtil),
   truncate: FormatUtil.truncateText.bind(FormatUtil),
-  highlight: FormatUtil.highlightKeyword.bind(FormatUtil)
+  highlight: FormatUtil.highlightKeyword.bind(FormatUtil),
 }
 
 export default FormatUtil

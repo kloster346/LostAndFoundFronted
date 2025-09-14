@@ -23,7 +23,7 @@ app.use(errorHandler, {
   capturePromiseRejection: true,
   captureResourceError: true,
   showConsoleError: process.env.NODE_ENV === 'development',
-  autoReport: process.env.NODE_ENV === 'production'
+  autoReport: process.env.NODE_ENV === 'production',
 })
 
 app.mount('#app')

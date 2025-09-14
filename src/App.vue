@@ -27,18 +27,18 @@ const showSideBar = computed(() => {
 
 const mainContentClass = computed(() => {
   const classes = ['main-content']
-  
+
   if (showSideBar.value) {
     classes.push('with-sidebar')
     if (sidebarCollapsed.value) {
       classes.push('sidebar-collapsed')
     }
   }
-  
+
   if (showNavBar.value) {
     classes.push('with-navbar')
   }
-  
+
   return classes.join(' ')
 })
 
@@ -76,21 +76,21 @@ onUnmounted(() => {
 <template>
   <div class="app-container">
     <!-- 顶部导航栏 -->
-    <NavBar 
+    <NavBar
       v-if="showNavBar"
       :show-sidebar-toggle="showSideBar"
       @toggle-sidebar="openMobileSidebar"
     />
-    
+
     <!-- 侧边栏 -->
-    <SideBar 
+    <SideBar
       v-if="showSideBar"
       :collapsed="sidebarCollapsed"
       :mobile-open="mobileSidebarOpen"
       @toggle-collapse="toggleSidebar"
       @close-mobile="closeMobileSidebar"
     />
-    
+
     <!-- 主内容区域 -->
     <main :class="mainContentClass">
       <router-view />
@@ -128,7 +128,7 @@ onUnmounted(() => {
   .main-content.with-sidebar {
     margin-left: 0;
   }
-  
+
   .main-content.with-sidebar.sidebar-collapsed {
     margin-left: 0;
   }
@@ -142,9 +142,9 @@ onUnmounted(() => {
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

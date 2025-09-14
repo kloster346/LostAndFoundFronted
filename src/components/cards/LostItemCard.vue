@@ -32,7 +32,10 @@
         <div v-if="item.color" class="lost-item-card__meta-item">
           <span class="lost-item-card__meta-label">颜色:</span>
           <span class="lost-item-card__meta-value">
-            <span class="lost-item-card__color-dot" :style="{ backgroundColor: getColorValue(item.color) }"></span>
+            <span
+              class="lost-item-card__color-dot"
+              :style="{ backgroundColor: getColorValue(item.color) }"
+            ></span>
             {{ getColorName(item.color) }}
           </span>
         </div>
@@ -55,13 +58,7 @@
 
     <!-- 操作按钮 -->
     <div class="lost-item-card__actions">
-      <BaseButton
-        size="small"
-        type="secondary"
-        @click="handleViewDetail"
-      >
-        查看详情
-      </BaseButton>
+      <BaseButton size="small" type="secondary" @click="handleViewDetail"> 查看详情 </BaseButton>
 
       <BaseButton
         v-if="showClaimButton"
@@ -73,12 +70,7 @@
         申请认领
       </BaseButton>
 
-      <BaseButton
-        v-if="showEditButton"
-        size="small"
-        type="secondary"
-        @click="handleEdit"
-      >
+      <BaseButton v-if="showEditButton" size="small" type="secondary" @click="handleEdit">
         编辑
       </BaseButton>
     </div>
@@ -88,38 +80,45 @@
 <script setup>
 import { computed, ref } from 'vue'
 import BaseButton from '../common/BaseButton.vue'
-import { CLAIM_STATUS, CLAIM_STATUS_NAMES, ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '../../constants/enums.js'
+import {
+  CLAIM_STATUS,
+  CLAIM_STATUS_NAMES,
+  ITEM_TYPES,
+  ITEM_TYPE_NAMES,
+  COLORS,
+  COLOR_NAMES,
+} from '../../constants/enums.js'
 
 // Props定义
 const props = defineProps({
   item: {
     type: Object,
     required: true,
-    validator: (value) => {
+    validator: value => {
       return value && typeof value === 'object' && value.id
-    }
+    },
   },
   size: {
     type: String,
     default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value)
+    validator: value => ['small', 'medium', 'large'].includes(value),
   },
   showClaimButton: {
     type: Boolean,
-    default: true
+    default: true,
   },
   showEditButton: {
     type: Boolean,
-    default: false
+    default: false,
   },
   maxDescriptionLength: {
     type: Number,
-    default: 100
+    default: 100,
   },
   claimLoading: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 // 事件定义
@@ -161,19 +160,19 @@ const statusClasses = computed(() => {
 })
 
 // 方法
-const getStatusText = (status) => {
+const getStatusText = status => {
   return CLAIM_STATUS_NAMES[status] || '未知状态'
 }
 
-const getItemTypeName = (type) => {
+const getItemTypeName = type => {
   return ITEM_TYPE_NAMES[type] || '其他'
 }
 
-const getColorName = (color) => {
+const getColorName = color => {
   return COLOR_NAMES[color] || color
 }
 
-const getColorValue = (color) => {
+const getColorValue = color => {
   const colorMap = {
     [COLORS.RED]: '#ef4444',
     [COLORS.LIGHT_RED]: '#fca5a5',
@@ -192,12 +191,12 @@ const getColorValue = (color) => {
     [COLORS.GRAY]: '#6b7280',
     [COLORS.BLACK]: '#1f2937',
     [COLORS.WHITE]: '#f9fafb',
-    [COLORS.OTHER]: '#9ca3af'
+    [COLORS.OTHER]: '#9ca3af',
   }
   return colorMap[color] || '#6b7280'
 }
 
-const getItemTypeIcon = (type) => {
+const getItemTypeIcon = type => {
   const iconMap = {
     [ITEM_TYPES.ELECTRONICS]: '📱',
     [ITEM_TYPES.CLOTHING]: '👕',
@@ -207,12 +206,12 @@ const getItemTypeIcon = (type) => {
     [ITEM_TYPES.KEYS]: '🔑',
     [ITEM_TYPES.SPORTS]: '⚽',
     [ITEM_TYPES.STATIONERY]: '✏️',
-    [ITEM_TYPES.OTHERS]: '📦'
+    [ITEM_TYPES.OTHERS]: '📦',
   }
   return iconMap[type] || '📦'
 }
 
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   if (!dateString) return ''
 
   try {
@@ -222,7 +221,7 @@ const formatDate = (dateString) => {
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     })
   } catch {
     return dateString

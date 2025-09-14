@@ -1,9 +1,5 @@
 <template>
-  <button
-    :class="buttonClasses"
-    :disabled="disabled || loading"
-    @click="handleClick"
-  >
+  <button :class="buttonClasses" :disabled="disabled || loading" @click="handleClick">
     <span v-if="loading" class="loading-spinner"></span>
     <slot v-if="!loading"></slot>
     <span v-if="loading">{{ loadingText }}</span>
@@ -18,29 +14,29 @@ const props = defineProps({
   type: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'danger'].includes(value)
+    validator: value => ['primary', 'secondary', 'danger'].includes(value),
   },
   size: {
     type: String,
     default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value)
+    validator: value => ['small', 'medium', 'large'].includes(value),
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   loadingText: {
     type: String,
-    default: '加载中...'
+    default: '加载中...',
   },
   block: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 // 事件定义
@@ -49,31 +45,31 @@ const emit = defineEmits(['click'])
 // 计算属性 - 按钮样式类
 const buttonClasses = computed(() => {
   const classes = ['base-button']
-  
+
   // 类型样式
   classes.push(`base-button--${props.type}`)
-  
+
   // 尺寸样式
   classes.push(`base-button--${props.size}`)
-  
+
   // 状态样式
   if (props.disabled) {
     classes.push('base-button--disabled')
   }
-  
+
   if (props.loading) {
     classes.push('base-button--loading')
   }
-  
+
   if (props.block) {
     classes.push('base-button--block')
   }
-  
+
   return classes
 })
 
 // 点击处理
-const handleClick = (event) => {
+const handleClick = event => {
   if (!props.disabled && !props.loading) {
     emit('click', event)
   }
@@ -190,13 +186,13 @@ const handleClick = (event) => {
   .base-button {
     min-height: 44px; /* 移动设备触摸友好 */
   }
-  
+
   .base-button--small {
     min-height: 36px;
     padding: 6px 12px;
     font-size: 13px;
   }
-  
+
   .base-button--large {
     min-height: 52px;
     padding: 14px 24px;

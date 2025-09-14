@@ -8,11 +8,7 @@
 
     <!-- 搜索区域 -->
     <div class="search-section">
-      <SearchForm
-        :loading="loading"
-        @search="handleSearch"
-        @reset="handleReset"
-      />
+      <SearchForm :loading="loading" @search="handleSearch" @reset="handleReset" />
     </div>
 
     <!-- 搜索结果统计 -->
@@ -20,13 +16,7 @@
       <span class="stats-text">
         找到 <strong>{{ pagination.total }}</strong> 条相关失物
       </span>
-      <BaseButton
-        type="secondary"
-        size="small"
-        @click="handleReset"
-      >
-        清除搜索
-      </BaseButton>
+      <BaseButton type="secondary" size="small" @click="handleReset"> 清除搜索 </BaseButton>
     </div>
 
     <!-- 失物列表区域 -->
@@ -34,11 +24,7 @@
       <!-- 加载状态 -->
       <div v-if="loading && !hasItems" class="loading-state">
         <div class="skeleton-grid">
-          <div
-            v-for="i in 6"
-            :key="i"
-            class="skeleton-card"
-          >
+          <div v-for="i in 6" :key="i" class="skeleton-card">
             <div class="skeleton-image"></div>
             <div class="skeleton-content">
               <div class="skeleton-title"></div>
@@ -69,13 +55,7 @@
         <p class="empty-description">
           {{ isSearching ? '请尝试调整搜索条件' : '目前还没有失物信息，请稍后再来查看' }}
         </p>
-        <BaseButton
-          v-if="isSearching"
-          type="primary"
-          @click="handleReset"
-        >
-          重置搜索
-        </BaseButton>
+        <BaseButton v-if="isSearching" type="primary" @click="handleReset"> 重置搜索 </BaseButton>
       </div>
 
       <!-- 错误状态 -->
@@ -83,12 +63,7 @@
         <div class="error-icon">⚠️</div>
         <h3 class="error-title">加载失败</h3>
         <p class="error-description">{{ error }}</p>
-        <BaseButton
-          type="primary"
-          @click="handleRetry"
-        >
-          重试
-        </BaseButton>
+        <BaseButton type="primary" @click="handleRetry"> 重试 </BaseButton>
       </div>
     </div>
 
@@ -98,9 +73,7 @@
         <span class="page-info">
           第 {{ pagination.currentPage }} 页，共 {{ pagination.totalPages }} 页
         </span>
-        <span class="total-info">
-          共 {{ pagination.total }} 条记录
-        </span>
+        <span class="total-info"> 共 {{ pagination.total }} 条记录 </span>
       </div>
 
       <div class="pagination-controls">
@@ -138,12 +111,7 @@
 
       <!-- 加载更多按钮（移动端友好） -->
       <div v-if="hasMore" class="load-more-section">
-        <BaseButton
-          type="primary"
-          size="large"
-          :loading="loading"
-          @click="handleLoadMore"
-        >
+        <BaseButton type="primary" size="large" :loading="loading" @click="handleLoadMore">
           加载更多
         </BaseButton>
       </div>
@@ -178,7 +146,7 @@ const {
   getAllItems,
   searchItems,
   updateSearchParams,
-  resetSearchParams
+  resetSearchParams,
 } = lostItemStore
 
 // 本地状态
@@ -202,7 +170,7 @@ const visiblePages = computed(() => {
 })
 
 // 事件处理
-const handleSearch = (searchData) => {
+const handleSearch = searchData => {
   // 清除之前的防抖定时器
   if (searchDebounceTimer.value) {
     clearTimeout(searchDebounceTimer.value)
@@ -228,17 +196,17 @@ const handleRetry = () => {
   }
 }
 
-const handleItemClick = (item) => {
+const handleItemClick = item => {
   // 跳转到失物详情页
   router.push(`/lost-items/${item.id}`)
 }
 
-const handleClaim = (item) => {
+const handleClaim = item => {
   // 跳转到失物领取页面
   router.push(`/lost-items/${item.id}/claim`)
 }
 
-const handlePageChange = (page) => {
+const handlePageChange = page => {
   if (isSearching.value) {
     searchItems({ page })
   } else {
@@ -280,7 +248,7 @@ onMounted(async () => {
 // 监听路由变化，重新加载数据
 watch(
   () => router.currentRoute.value.query,
-  (newQuery) => {
+  newQuery => {
     // 如果URL中有搜索参数，应用搜索
     if (Object.keys(newQuery).length > 0) {
       updateSearchParams(newQuery)
@@ -409,7 +377,8 @@ onUnmounted(() => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

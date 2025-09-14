@@ -29,7 +29,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
     name: '', // 物品名称
     type: null, // 物品类型
     color: null, // 物品颜色
-    building: '' // 建筑
+    building: '', // 建筑
   })
 
   // 分页信息
@@ -37,7 +37,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
     currentPage: 1,
     pageSize: 10,
     total: 0,
-    totalPages: 0
+    totalPages: 0,
   })
 
   // 筛选器状态（已简化）
@@ -67,8 +67,8 @@ export const useLostItemStore = defineStore('lostItem', () => {
 
   // 搜索状态
   const isSearching = computed(() => {
-    return Object.values(searchParams.value).some(value =>
-      value !== null && value !== '' && value !== undefined
+    return Object.values(searchParams.value).some(
+      value => value !== null && value !== '' && value !== undefined
     )
   })
 
@@ -85,7 +85,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
 
       const params = {
         page: pageParams.page || pagination.value.currentPage,
-        size: pageParams.size || pagination.value.pageSize
+        size: pageParams.size || pagination.value.pageSize,
       }
 
       const response = await LostItemAPI.getAllUnclaimedItems(params)
@@ -103,9 +103,8 @@ export const useLostItemStore = defineStore('lostItem', () => {
         currentPage: response.currentPage || 1,
         pageSize: response.pageSize || 10,
         total: response.total || 0,
-        totalPages: response.totalPages || 0
+        totalPages: response.totalPages || 0,
       }
-
     } catch (err) {
       console.error('获取失物列表失败:', err)
       error.value = err.message || '获取失物列表失败'
@@ -129,7 +128,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
         ...searchParams.value,
         ...params,
         page: params.page || 1,
-        size: params.size || pagination.value.pageSize
+        size: params.size || pagination.value.pageSize,
       }
 
       const response = await LostItemAPI.searchLostItems(searchData)
@@ -141,9 +140,8 @@ export const useLostItemStore = defineStore('lostItem', () => {
         currentPage: response.currentPage || 1,
         pageSize: response.pageSize || 10,
         total: response.total || 0,
-        totalPages: response.totalPages || 0
+        totalPages: response.totalPages || 0,
       }
-
     } catch (err) {
       console.error('搜索失物失败:', err)
       error.value = err.message || '搜索失物失败'
@@ -157,7 +155,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 获取失物详情
    * @param {number} id - 失物ID
    */
-  const getItemDetail = async (id) => {
+  const getItemDetail = async id => {
     try {
       detailLoading.value = true
       error.value = null
@@ -180,7 +178,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 发布失物
    * @param {Object} itemData - 失物数据
    */
-  const publishItem = async (itemData) => {
+  const publishItem = async itemData => {
     try {
       operationLoading.value = true
       error.value = null
@@ -207,7 +205,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 领取失物
    * @param {Object} claimData - 领取数据
    */
-  const claimItem = async (claimData) => {
+  const claimItem = async claimData => {
     try {
       operationLoading.value = true
       error.value = null
@@ -241,7 +239,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 删除失物
    * @param {number} id - 失物ID
    */
-  const deleteItem = async (id) => {
+  const deleteItem = async id => {
     try {
       operationLoading.value = true
       error.value = null
@@ -259,7 +257,6 @@ export const useLostItemStore = defineStore('lostItem', () => {
       if (currentItem.value && currentItem.value.id === id) {
         currentItem.value = null
       }
-
     } catch (err) {
       console.error('删除失物失败:', err)
       error.value = err.message || '删除失物失败'
@@ -281,7 +278,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
 
       const params = {
         page: pageParams.page || pagination.value.currentPage,
-        size: pageParams.size || pagination.value.pageSize
+        size: pageParams.size || pagination.value.pageSize,
       }
 
       const response = await LostItemAPI.getAdminLostItems(adminId, params)
@@ -293,9 +290,8 @@ export const useLostItemStore = defineStore('lostItem', () => {
         currentPage: response.currentPage || 1,
         pageSize: response.pageSize || 10,
         total: response.total || 0,
-        totalPages: response.totalPages || 0
+        totalPages: response.totalPages || 0,
       }
-
     } catch (err) {
       console.error('获取管理员失物失败:', err)
       error.value = err.message || '获取管理员失物失败'
@@ -309,10 +305,10 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 更新搜索参数
    * @param {Object} params - 搜索参数
    */
-  const updateSearchParams = (params) => {
+  const updateSearchParams = params => {
     searchParams.value = {
       ...searchParams.value,
-      ...params
+      ...params,
     }
   }
 
@@ -326,7 +322,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
       color: null,
       building: '',
       foundLocation: '',
-      claimStatus: null
+      claimStatus: null,
     }
   }
 
@@ -334,10 +330,10 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 更新筛选器
    * @param {Object} filterData - 筛选器数据
    */
-  const updateFilters = (filterData) => {
+  const updateFilters = filterData => {
     filters.value = {
       ...filters.value,
-      ...filterData
+      ...filterData,
     }
   }
 
@@ -348,7 +344,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
     filters.value = {
       showOnlyUnclaimed: false,
       sortBy: 'publishTime',
-      sortOrder: 'desc'
+      sortOrder: 'desc',
     }
   }
 
@@ -356,7 +352,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 设置当前页码
    * @param {number} page - 页码
    */
-  const setPage = (page) => {
+  const setPage = page => {
     pagination.value.currentPage = page
   }
 
@@ -364,7 +360,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
    * 设置每页大小
    * @param {number} size - 每页大小
    */
-  const setPageSize = (size) => {
+  const setPageSize = size => {
     pagination.value.pageSize = size
     pagination.value.currentPage = 1 // 重置到第一页
   }
@@ -393,8 +389,6 @@ export const useLostItemStore = defineStore('lostItem', () => {
       await getAllItems({ page: 1 })
     }
   }
-
-
 
   // ==================== 返回状态和方法 ====================
 
@@ -433,7 +427,7 @@ export const useLostItemStore = defineStore('lostItem', () => {
     setPageSize,
     clearError,
     clearCurrentItem,
-    refreshItems
+    refreshItems,
   }
 })
 

@@ -23,11 +23,7 @@
     <div class="main-content">
       <!-- 侧边导航 -->
       <div class="sidebar">
-        <el-menu
-          :default-active="activeMenu"
-          class="admin-menu"
-          @select="handleMenuSelect"
-        >
+        <el-menu :default-active="activeMenu" class="admin-menu" @select="handleMenuSelect">
           <el-menu-item index="dashboard">
             <el-icon><DataAnalysis /></el-icon>
             <span>数据统计</span>
@@ -44,7 +40,6 @@
             <el-icon><User /></el-icon>
             <span>管理员管理</span>
           </el-menu-item>
-
         </el-menu>
       </div>
 
@@ -134,7 +129,7 @@
               <el-input
                 v-model="itemSearchKeyword"
                 placeholder="搜索失物名称、类型、位置..."
-                style="width: 300px; margin-right: 12px;"
+                style="width: 300px; margin-right: 12px"
                 clearable
                 @input="searchItems"
               >
@@ -152,7 +147,7 @@
           <el-card class="items-list-card" shadow="hover">
             <el-table
               :data="allItemsList"
-              style="width: 100%;"
+              style="width: 100%"
               v-loading="itemsLoading"
               @row-click="viewItemDetail"
             >
@@ -173,7 +168,9 @@
               <el-table-column label="操作" width="200" fixed="right">
                 <template #default="scope">
                   <el-button size="small" @click.stop="viewItemDetail(scope.row)">详情</el-button>
-                  <el-button size="small" type="danger" @click.stop="deleteItem(scope.row)">删除</el-button>
+                  <el-button size="small" type="danger" @click.stop="deleteItem(scope.row)"
+                    >删除</el-button
+                  >
                 </template>
               </el-table-column>
             </el-table>
@@ -201,7 +198,7 @@
               <el-input
                 v-model="userSearchKeyword"
                 placeholder="搜索用户名、邮箱..."
-                style="width: 300px; margin-right: 12px;"
+                style="width: 300px; margin-right: 12px"
                 clearable
                 @input="searchUsers"
               >
@@ -217,11 +214,7 @@
           </div>
 
           <el-card class="users-list-card" shadow="hover">
-            <el-table
-              :data="usersList"
-              style="width: 100%;"
-              v-loading="usersLoading"
-            >
+            <el-table :data="usersList" style="width: 100%" v-loading="usersLoading">
               <el-table-column prop="id" label="ID" width="80" />
               <el-table-column prop="username" label="用户名" min-width="120" />
               <el-table-column prop="email" label="邮箱" min-width="180" />
@@ -259,7 +252,7 @@
               <el-input
                 v-model="adminSearchKeyword"
                 placeholder="搜索管理员..."
-                style="width: 300px; margin-right: 12px;"
+                style="width: 300px; margin-right: 12px"
                 clearable
                 @keyup.enter="searchAdmins"
               >
@@ -281,8 +274,13 @@
           <!-- 管理员列表 -->
           <el-card class="admin-list-card" shadow="hover">
             <el-table
-              :data="adminsList.slice((adminsPagination.current - 1) * adminsPagination.size, adminsPagination.current * adminsPagination.size)"
-              style="width: 100%;"
+              :data="
+                adminsList.slice(
+                  (adminsPagination.current - 1) * adminsPagination.size,
+                  adminsPagination.current * adminsPagination.size
+                )
+              "
+              style="width: 100%"
               v-loading="adminsLoading"
               @row-click="viewAdminDetail"
             >
@@ -300,17 +298,13 @@
               <el-table-column prop="createdAt" label="创建时间" />
               <el-table-column label="操作" width="120">
                 <template #default="scope">
-                  <el-button
-                    type="primary"
-                    size="small"
-                    @click.stop="viewAdminDetail(scope.row)"
-                  >
+                  <el-button type="primary" size="small" @click.stop="viewAdminDetail(scope.row)">
                     详情
                   </el-button>
                 </template>
               </el-table-column>
             </el-table>
-            
+
             <!-- 分页 -->
             <div class="pagination-container">
               <el-pagination
@@ -325,8 +319,6 @@
             </div>
           </el-card>
         </div>
-
-
       </div>
     </div>
 
@@ -335,7 +327,12 @@
       v-model="itemDetailVisible"
       title="失物详情"
       width="600px"
-      :before-close="() => { itemDetailVisible = false; selectedItem = null }"
+      :before-close="
+        () => {
+          itemDetailVisible = false
+          selectedItem = null
+        }
+      "
     >
       <div v-if="selectedItem" class="item-detail">
         <el-descriptions :column="2" border>
@@ -343,60 +340,88 @@
           <el-descriptions-item label="类型">{{ selectedItem.type }}</el-descriptions-item>
           <el-descriptions-item label="颜色">{{ selectedItem.color }}</el-descriptions-item>
           <el-descriptions-item label="发现位置">{{ selectedItem.location }}</el-descriptions-item>
-          <el-descriptions-item label="发布管理员">{{ selectedItem.adminName }}</el-descriptions-item>
+          <el-descriptions-item label="发布管理员">{{
+            selectedItem.adminName
+          }}</el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag :type="selectedItem.isClaimed ? 'success' : 'warning'">
               {{ selectedItem.isClaimed ? '已领取' : '待领取' }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="发布时间" :span="2">{{ selectedItem.createdAt }}</el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{ selectedItem.description || '暂无描述' }}</el-descriptions-item>
+          <el-descriptions-item label="发布时间" :span="2">{{
+            selectedItem.createdAt
+          }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="2">{{
+            selectedItem.description || '暂无描述'
+          }}</el-descriptions-item>
         </el-descriptions>
-        
-        <div v-if="selectedItem.imageUrl" class="item-image" style="margin-top: 20px;">
+
+        <div v-if="selectedItem.imageUrl" class="item-image" style="margin-top: 20px">
           <el-image
             :src="selectedItem.imageUrl"
             :preview-src-list="[selectedItem.imageUrl]"
             fit="cover"
-            style="width: 200px; height: 200px;"
+            style="width: 200px; height: 200px"
           />
         </div>
       </div>
-      
+
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="itemDetailVisible = false">关闭</el-button>
-          <el-button v-if="selectedItem && !selectedItem.isClaimed" type="danger" @click="deleteItem(selectedItem); itemDetailVisible = false">
+          <el-button
+            v-if="selectedItem && !selectedItem.isClaimed"
+            type="danger"
+            @click="
+              deleteItem(selectedItem)
+              itemDetailVisible = false
+            "
+          >
             删除失物
           </el-button>
         </span>
       </template>
-     </el-dialog>
+    </el-dialog>
 
     <!-- 用户详情弹窗 -->
     <el-dialog
       v-model="userDetailVisible"
       title="用户详情"
       width="600px"
-      :before-close="() => { userDetailVisible = false; selectedUser = null }"
+      :before-close="
+        () => {
+          userDetailVisible = false
+          selectedUser = null
+        }
+      "
     >
       <div v-if="selectedUser" class="user-detail">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="用户名">{{ selectedUser.username }}</el-descriptions-item>
           <el-descriptions-item label="邮箱">{{ selectedUser.email }}</el-descriptions-item>
-          <el-descriptions-item label="真实姓名">{{ selectedUser.realName || '未设置' }}</el-descriptions-item>
-          <el-descriptions-item label="手机号">{{ selectedUser.phone || '未设置' }}</el-descriptions-item>
-          <el-descriptions-item label="学号/工号">{{ selectedUser.studentId || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="真实姓名">{{
+            selectedUser.realName || '未设置'
+          }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{
+            selectedUser.phone || '未设置'
+          }}</el-descriptions-item>
+          <el-descriptions-item label="学号/工号">{{
+            selectedUser.studentId || '未设置'
+          }}</el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag :type="selectedUser.status === '正常' ? 'success' : 'danger'">
               {{ selectedUser.status || '正常' }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="注册时间" :span="2">{{ selectedUser.createdAt }}</el-descriptions-item>
-          <el-descriptions-item label="最后登录" :span="2">{{ selectedUser.lastLoginAt || '从未登录' }}</el-descriptions-item>
+          <el-descriptions-item label="注册时间" :span="2">{{
+            selectedUser.createdAt
+          }}</el-descriptions-item>
+          <el-descriptions-item label="最后登录" :span="2">{{
+            selectedUser.lastLoginAt || '从未登录'
+          }}</el-descriptions-item>
         </el-descriptions>
       </div>
-      
+
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="userDetailVisible = false">关闭</el-button>
@@ -409,25 +434,38 @@
       v-model="adminDetailVisible"
       title="管理员详情"
       width="600px"
-      :before-close="() => { adminDetailVisible = false; selectedAdmin = null }"
+      :before-close="
+        () => {
+          adminDetailVisible = false
+          selectedAdmin = null
+        }
+      "
     >
       <div v-if="selectedAdmin" class="admin-detail">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="用户名">{{ selectedAdmin.username }}</el-descriptions-item>
           <el-descriptions-item label="邮箱">{{ selectedAdmin.email }}</el-descriptions-item>
-          <el-descriptions-item label="真实姓名">{{ selectedAdmin.realName || '未设置' }}</el-descriptions-item>
-          <el-descriptions-item label="手机号">{{ selectedAdmin.phone || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="真实姓名">{{
+            selectedAdmin.realName || '未设置'
+          }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{
+            selectedAdmin.phone || '未设置'
+          }}</el-descriptions-item>
           <el-descriptions-item label="角色">{{ selectedAdmin.role }}</el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag :type="selectedAdmin.status === 'active' ? 'success' : 'danger'">
               {{ selectedAdmin.status === 'active' ? '活跃' : '禁用' }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="创建时间" :span="2">{{ selectedAdmin.createdAt }}</el-descriptions-item>
-          <el-descriptions-item label="最后登录" :span="2">{{ selectedAdmin.lastLoginAt || '从未登录' }}</el-descriptions-item>
+          <el-descriptions-item label="创建时间" :span="2">{{
+            selectedAdmin.createdAt
+          }}</el-descriptions-item>
+          <el-descriptions-item label="最后登录" :span="2">{{
+            selectedAdmin.lastLoginAt || '从未登录'
+          }}</el-descriptions-item>
         </el-descriptions>
       </div>
-      
+
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="adminDetailVisible = false">关闭</el-button>
@@ -449,7 +487,7 @@ import {
   Check,
   Clock,
   UserFilled,
-  Search
+  Search,
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
@@ -460,7 +498,7 @@ import { getAllAdmins } from '@/api/admin'
 
 // 组件名称
 defineOptions({
-  name: 'SuperAdminView'
+  name: 'SuperAdminView',
 })
 
 // 路由和状态管理
@@ -478,7 +516,7 @@ const allItemsList = ref([])
 const itemsPagination = reactive({
   current: 1,
   size: 10,
-  total: 0
+  total: 0,
 })
 const itemDetailVisible = ref(false)
 const selectedItem = ref(null)
@@ -490,7 +528,7 @@ const usersList = ref([])
 const usersPagination = reactive({
   current: 1,
   size: 10,
-  total: 0
+  total: 0,
 })
 const userDetailVisible = ref(false)
 const selectedUser = ref(null)
@@ -500,7 +538,7 @@ const statistics = reactive({
   totalItems: 0,
   claimedItems: 0,
   unclaimedItems: 0,
-  activeAdmins: 0
+  activeAdmins: 0,
 })
 
 // 管理员管理相关数据
@@ -510,7 +548,7 @@ const adminsList = ref([])
 const adminsPagination = reactive({
   current: 1,
   size: 10,
-  total: 0
+  total: 0,
 })
 const adminDetailVisible = ref(false)
 const selectedAdmin = ref(null)
@@ -527,7 +565,7 @@ const checkSuperAdminPermission = () => {
 }
 
 // 菜单选择处理
-const handleMenuSelect = (index) => {
+const handleMenuSelect = index => {
   activeMenu.value = index
   if (index === 'dashboard') {
     nextTick(() => {
@@ -564,7 +602,7 @@ const loadStatistics = async () => {
     statistics.totalItems = lostItemStats.totalItems || 0
     statistics.claimedItems = lostItemStats.claimedItems || 0
     statistics.unclaimedItems = lostItemStats.unclaimedItems || 0
-    
+
     // 获取用户统计数据
     const userStats = await getUserStats()
     statistics.activeAdmins = userStats.activeUsers || 0
@@ -587,9 +625,9 @@ const loadAllItems = async () => {
     const params = {
       page: itemsPagination.current,
       size: itemsPagination.size,
-      keyword: itemSearchKeyword.value || undefined
+      keyword: itemSearchKeyword.value || undefined,
     }
-    
+
     const response = await getAllLostItems(params)
     allItemsList.value = response.data || []
     itemsPagination.total = response.total || 0
@@ -611,40 +649,38 @@ const refreshItems = () => {
   loadAllItems()
 }
 
-const viewItemDetail = (item) => {
+const viewItemDetail = item => {
   selectedItem.value = item
   itemDetailVisible.value = true
 }
 
-const deleteItem = (item) => {
-  ElMessageBox.confirm(
-    `确定要删除失物 "${item.name}" 吗？`,
-    '确认删除',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).then(async () => {
-    try {
-      await deleteLostItem(item.id)
-      ElMessage.success('删除成功')
-      loadAllItems()
-    } catch (error) {
-      console.error('删除失物失败:', error)
-      ElMessage.error('删除失败')
-    }
-  }).catch(() => {
-    ElMessage.info('已取消删除')
+const deleteItem = item => {
+  ElMessageBox.confirm(`确定要删除失物 "${item.name}" 吗？`, '确认删除', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   })
+    .then(async () => {
+      try {
+        await deleteLostItem(item.id)
+        ElMessage.success('删除成功')
+        loadAllItems()
+      } catch (error) {
+        console.error('删除失物失败:', error)
+        ElMessage.error('删除失败')
+      }
+    })
+    .catch(() => {
+      ElMessage.info('已取消删除')
+    })
 }
 
-const handleItemsPageSizeChange = (size) => {
+const handleItemsPageSizeChange = size => {
   itemsPagination.size = size
   loadAllItems()
 }
 
-const handleItemsPageChange = (page) => {
+const handleItemsPageChange = page => {
   itemsPagination.current = page
   loadAllItems()
 }
@@ -653,15 +689,38 @@ const handleItemsPageChange = (page) => {
 const loadUsers = async () => {
   usersLoading.value = true
   try {
-    const params = {
-      page: usersPagination.current,
-      size: usersPagination.size,
-      keyword: userSearchKeyword.value || undefined
-    }
-    
-    const response = await getAllUsers(params)
-    usersList.value = response.data || []
-    usersPagination.total = response.total || 0
+    // TODO: 后端暂未实现用户列表接口，使用模拟数据
+    // const params = {
+    //   page: usersPagination.current,
+    //   size: usersPagination.size,
+    //   keyword: userSearchKeyword.value || undefined
+    // }
+    // const response = await getAllUsers(params)
+
+    // 模拟数据
+    const mockUsers = [
+      {
+        id: 1,
+        username: 'user1',
+        email: 'user1@example.com',
+        phone: '13800138001',
+        role: 'USER',
+        createdAt: '2024-01-15 10:30:00',
+      },
+      {
+        id: 2,
+        username: 'user2',
+        email: 'user2@example.com',
+        phone: '13800138002',
+        role: 'USER',
+        createdAt: '2024-01-16 11:30:00',
+      },
+    ]
+
+    usersList.value = mockUsers
+    usersPagination.total = mockUsers.length
+
+    console.log('用户数据加载完成（使用模拟数据）')
   } catch (error) {
     console.error('加载用户数据失败:', error)
     ElMessage.error('加载用户数据失败')
@@ -680,19 +739,17 @@ const refreshUsers = () => {
   loadUsers()
 }
 
-const viewUserDetail = (user) => {
+const viewUserDetail = user => {
   selectedUser.value = user
   userDetailVisible.value = true
 }
 
-
-
-const handleUsersPageSizeChange = (size) => {
+const handleUsersPageSizeChange = size => {
   usersPagination.size = size
   loadUsers()
 }
 
-const handleUsersPageChange = (page) => {
+const handleUsersPageChange = page => {
   usersPagination.current = page
   loadUsers()
 }
@@ -701,11 +758,33 @@ const handleUsersPageChange = (page) => {
 const loadAdmins = async () => {
   adminsLoading.value = true
   try {
-    const response = await getAllAdmins()
-    if (response && response.data) {
-      adminsList.value = response.data
-      adminsPagination.total = response.data.length
-    }
+    // TODO: 后端暂未实现管理员列表接口，使用模拟数据
+    // const response = await getAllAdmins()
+
+    // 模拟数据
+    const mockAdmins = [
+      {
+        id: 1,
+        username: 'admin1',
+        email: 'admin1@example.com',
+        phone: '13800138001',
+        role: 'LOST_ITEM_ADMIN',
+        createdAt: '2024-01-15 10:30:00',
+      },
+      {
+        id: 2,
+        username: 'admin2',
+        email: 'admin2@example.com',
+        phone: '13800138002',
+        role: 'LOST_ITEM_ADMIN',
+        createdAt: '2024-01-16 11:30:00',
+      },
+    ]
+
+    adminsList.value = mockAdmins
+    adminsPagination.total = mockAdmins.length
+
+    console.log('管理员数据加载完成（使用模拟数据）')
   } catch (error) {
     console.error('加载管理员数据失败:', error)
     ElMessage.error('加载管理员数据失败')
@@ -724,17 +803,17 @@ const refreshAdmins = () => {
   loadAdmins()
 }
 
-const viewAdminDetail = (admin) => {
+const viewAdminDetail = admin => {
   selectedAdmin.value = admin
   adminDetailVisible.value = true
 }
 
-const handleAdminsPageSizeChange = (size) => {
+const handleAdminsPageSizeChange = size => {
   adminsPagination.size = size
   loadAdmins()
 }
 
-const handleAdminsPageChange = (page) => {
+const handleAdminsPageChange = page => {
   adminsPagination.current = page
   loadAdmins()
 }
@@ -788,7 +867,7 @@ defineExpose({
   refreshUsers,
   viewUserDetail,
   handleUsersPageSizeChange,
-  handleUsersPageChange
+  handleUsersPageChange,
 })
 </script>
 
@@ -984,8 +1063,6 @@ defineExpose({
 .el-table .el-table__row:hover {
   background-color: #f5f7fa;
 }
-
-
 
 /* 响应式设计 */
 @media (max-width: 768px) {

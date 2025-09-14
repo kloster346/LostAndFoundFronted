@@ -649,54 +649,54 @@
   .navbar-nav {
     gap: var(--spacing-sm);
   }
-  
+
   .sidebar {
     width: 100%;
   }
-  
+
   .table-container {
     font-size: var(--font-size-small);
   }
-  
+
   .table-cell {
     padding: var(--spacing-sm);
   }
-  
+
   .form-container {
     padding: var(--spacing-md);
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .btn-group {
     flex-direction: column;
   }
-  
+
   .btn-group .btn {
     border-radius: var(--border-radius-base);
     border-right-width: 1px;
     border-bottom-width: 0;
   }
-  
+
   .btn-group .btn:not(:last-child) {
     border-bottom-width: 0;
   }
-  
+
   .btn-group .btn:last-child {
     border-bottom-width: 1px;
   }
-  
+
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .filter-item {
     justify-content: space-between;
   }
-  
+
   .modal {
     margin: var(--spacing-sm);
     max-width: calc(100vw - 2 * var(--spacing-sm));

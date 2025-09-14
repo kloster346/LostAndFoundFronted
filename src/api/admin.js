@@ -171,7 +171,7 @@ export const {
   isSuperAdmin,
   isLostItemAdmin,
   logout: adminLogout,
-  loginByRole: adminLoginByRole
+  loginByRole: adminLoginByRole,
 } = AdminAPI
 
 // 默认导出

@@ -7,24 +7,24 @@ export const ERROR_TYPES = {
   // 网络错误
   NETWORK_ERROR: 'NETWORK_ERROR',
   TIMEOUT_ERROR: 'TIMEOUT_ERROR',
-  
+
   // API错误
   API_ERROR: 'API_ERROR',
   VALIDATION_ERROR: 'VALIDATION_ERROR',
   PERMISSION_ERROR: 'PERMISSION_ERROR',
-  
+
   // 业务错误
   BUSINESS_ERROR: 'BUSINESS_ERROR',
-  
+
   // 系统错误
   SYSTEM_ERROR: 'SYSTEM_ERROR',
   COMPONENT_ERROR: 'COMPONENT_ERROR',
-  
+
   // 用户错误
   USER_INPUT_ERROR: 'USER_INPUT_ERROR',
-  
+
   // 未知错误
-  UNKNOWN_ERROR: 'UNKNOWN_ERROR'
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
 }
 
 /**
@@ -34,14 +34,20 @@ export const ERROR_LEVELS = {
   LOW: 'low',
   MEDIUM: 'medium',
   HIGH: 'high',
-  CRITICAL: 'critical'
+  CRITICAL: 'critical',
 }
 
 /**
  * 自定义错误类
  */
 export class AppError extends Error {
-  constructor(message, type = ERROR_TYPES.UNKNOWN_ERROR, level = ERROR_LEVELS.MEDIUM, code = null, data = null) {
+  constructor(
+    message,
+    type = ERROR_TYPES.UNKNOWN_ERROR,
+    level = ERROR_LEVELS.MEDIUM,
+    code = null,
+    data = null
+  ) {
     super(message)
     this.name = 'AppError'
     this.type = type
@@ -49,7 +55,7 @@ export class AppError extends Error {
     this.code = code
     this.data = data
     this.timestamp = new Date().toISOString()
-    
+
     // 保持错误堆栈
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, AppError)
@@ -66,11 +72,11 @@ export function classifyError(error) {
   if (error instanceof AppError) {
     return error
   }
-  
+
   let type = ERROR_TYPES.UNKNOWN_ERROR
   let level = ERROR_LEVELS.MEDIUM
   let message = error.message || '未知错误'
-  
+
   // 网络错误
   if (error.code === 'NETWORK_ERROR' || !error.response) {
     type = ERROR_TYPES.NETWORK_ERROR
@@ -86,7 +92,7 @@ export function classifyError(error) {
   // HTTP状态码错误
   else if (error.response) {
     const status = error.response.status
-    
+
     switch (status) {
       case 400:
         type = ERROR_TYPES.VALIDATION_ERROR
@@ -136,7 +142,7 @@ export function classifyError(error) {
     level = ERROR_LEVELS.MEDIUM
     message = '资源加载失败，请刷新页面重试'
   }
-  
+
   return new AppError(message, type, level, error.code, error.response?.data)
 }
 
@@ -146,7 +152,7 @@ export function classifyError(error) {
 export class ErrorLogger {
   static logs = []
   static maxLogs = 100
-  
+
   /**
    * 记录错误日志
    * @param {AppError} error - 错误对象
@@ -161,24 +167,24 @@ export class ErrorLogger {
         type: error.type,
         level: error.level,
         code: error.code,
-        stack: error.stack
+        stack: error.stack,
       },
       context: {
         url: window.location.href,
         userAgent: navigator.userAgent,
         userId: localStorage.getItem('userId'),
-        ...context
-      }
+        ...context,
+      },
     }
-    
+
     // 添加到内存日志
     this.logs.unshift(logEntry)
-    
+
     // 限制日志数量
     if (this.logs.length > this.maxLogs) {
       this.logs = this.logs.slice(0, this.maxLogs)
     }
-    
+
     // 控制台输出（开发环境）
     if (process.env.NODE_ENV === 'development') {
       console.group(`🚨 ${error.level.toUpperCase()} Error: ${error.type}`)
@@ -188,13 +194,13 @@ export class ErrorLogger {
       console.error('Stack:', error.stack)
       console.groupEnd()
     }
-    
+
     // 发送到服务器（生产环境）
     if (process.env.NODE_ENV === 'production' && error.level === ERROR_LEVELS.CRITICAL) {
       this.sendToServer(logEntry)
     }
   }
-  
+
   /**
    * 发送错误日志到服务器
    * @param {Object} logEntry - 日志条目
@@ -204,15 +210,15 @@ export class ErrorLogger {
       await fetch('/api/errors', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(logEntry)
+        body: JSON.stringify(logEntry),
       })
     } catch (err) {
       console.error('Failed to send error log to server:', err)
     }
   }
-  
+
   /**
    * 获取错误日志
    * @param {string} level - 错误级别过滤
@@ -224,7 +230,7 @@ export class ErrorLogger {
     }
     return [...this.logs]
   }
-  
+
   /**
    * 清空错误日志
    */
@@ -247,9 +253,9 @@ export class ErrorNotifier {
       showMessage = true,
       showNotification = false,
       duration = 3000,
-      showClose = true
+      showClose = true,
     } = options
-    
+
     // 根据错误级别选择提示方式
     if (error.level === ERROR_LEVELS.CRITICAL) {
       // 严重错误使用通知
@@ -258,7 +264,7 @@ export class ErrorNotifier {
         message: error.message,
         type: 'error',
         duration: 0, // 不自动关闭
-        showClose: true
+        showClose: true,
       })
     } else if (showNotification) {
       // 使用通知
@@ -267,7 +273,7 @@ export class ErrorNotifier {
         message: error.message,
         type: this.getNotificationType(error.level),
         duration,
-        showClose
+        showClose,
       })
     } else if (showMessage) {
       // 使用消息提示
@@ -275,11 +281,11 @@ export class ErrorNotifier {
         message: error.message,
         type: this.getMessageType(error.level),
         duration,
-        showClose
+        showClose,
       })
     }
   }
-  
+
   /**
    * 获取错误标题
    * @param {string} type - 错误类型
@@ -296,11 +302,11 @@ export class ErrorNotifier {
       [ERROR_TYPES.SYSTEM_ERROR]: '系统错误',
       [ERROR_TYPES.COMPONENT_ERROR]: '组件错误',
       [ERROR_TYPES.USER_INPUT_ERROR]: '输入错误',
-      [ERROR_TYPES.UNKNOWN_ERROR]: '未知错误'
+      [ERROR_TYPES.UNKNOWN_ERROR]: '未知错误',
     }
     return titles[type] || '错误'
   }
-  
+
   /**
    * 获取通知类型
    * @param {string} level - 错误级别
@@ -319,7 +325,7 @@ export class ErrorNotifier {
         return 'error'
     }
   }
-  
+
   /**
    * 获取消息类型
    * @param {string} level - 错误级别
@@ -350,15 +356,15 @@ export class ErrorNotifier {
 export function handleError(error, context = {}, options = {}) {
   // 分类错误
   const appError = classifyError(error)
-  
+
   // 记录日志
   ErrorLogger.log(appError, context)
-  
+
   // 显示用户提示
   if (options.notify !== false) {
     ErrorNotifier.notify(appError, options)
   }
-  
+
   return appError
 }
 
@@ -375,12 +381,12 @@ export function withErrorHandling(fn, context = {}, options = {}) {
       return await fn(...args)
     } catch (error) {
       const appError = handleError(error, context, options)
-      
+
       // 根据选项决定是否重新抛出错误
       if (options.rethrow !== false) {
         throw appError
       }
-      
+
       return null
     }
   }
@@ -397,33 +403,34 @@ export async function withRetry(fn, options = {}) {
     maxRetries = 3,
     delay = 1000,
     backoff = 2,
-    retryCondition = (error) => {
+    retryCondition = error => {
       const appError = classifyError(error)
-      return appError.type === ERROR_TYPES.NETWORK_ERROR || 
-             appError.type === ERROR_TYPES.TIMEOUT_ERROR
-    }
+      return (
+        appError.type === ERROR_TYPES.NETWORK_ERROR || appError.type === ERROR_TYPES.TIMEOUT_ERROR
+      )
+    },
   } = options
-  
+
   let lastError
   let currentDelay = delay
-  
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn()
     } catch (error) {
       lastError = error
-      
+
       // 最后一次尝试或不满足重试条件
       if (attempt === maxRetries || !retryCondition(error)) {
         throw error
       }
-      
+
       // 等待后重试
       await new Promise(resolve => setTimeout(resolve, currentDelay))
       currentDelay *= backoff
     }
   }
-  
+
   throw lastError
 }
 
@@ -437,5 +444,5 @@ export default {
   ErrorNotifier,
   AppError,
   ERROR_TYPES,
-  ERROR_LEVELS
+  ERROR_LEVELS,
 }

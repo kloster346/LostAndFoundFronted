@@ -3,7 +3,7 @@
 
 /* 主题切换动画 */
 .theme-transition {
-  transition: 
+  transition:
     background-color var(--transition-duration) ease,
     color var(--transition-duration) ease,
     border-color var(--transition-duration) ease,
@@ -17,14 +17,14 @@
   --bg-color: #1f1f1f;
   --bg-color-light: #2a2a2a;
   --bg-color-lighter: #363636;
-  
+
   /* 文本色 */
   --text-primary: #e8e8e8;
   --text-regular: #c9c9c9;
   --text-secondary: #a3a3a3;
   --text-placeholder: #6b6b6b;
   --text-disabled: #525252;
-  
+
   /* 边框色 */
   --border-darker: #525252;
   --border-dark: #404040;
@@ -32,14 +32,14 @@
   --border-light: #2a2a2a;
   --border-lighter: #262626;
   --border-extra-light: #1f1f1f;
-  
+
   /* 主色调深色版本 */
   --primary-color-light: rgba(64, 158, 255, 0.15);
   --success-color-light: rgba(103, 194, 58, 0.15);
   --warning-color-light: rgba(230, 162, 60, 0.15);
   --danger-color-light: rgba(245, 108, 108, 0.15);
   --info-color-light: rgba(144, 147, 153, 0.15);
-  
+
   /* 阴影调整 */
   --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-base: 0 4px 8px rgba(0, 0, 0, 0.4);
@@ -258,26 +258,26 @@
     --bg-color: #1f1f1f;
     --bg-color-light: #2a2a2a;
     --bg-color-lighter: #363636;
-    
+
     --text-primary: #e8e8e8;
     --text-regular: #c9c9c9;
     --text-secondary: #a3a3a3;
     --text-placeholder: #6b6b6b;
     --text-disabled: #525252;
-    
+
     --border-darker: #525252;
     --border-dark: #404040;
     --border-base: #363636;
     --border-light: #2a2a2a;
     --border-lighter: #262626;
     --border-extra-light: #1f1f1f;
-    
+
     --primary-color-light: rgba(64, 158, 255, 0.15);
     --success-color-light: rgba(103, 194, 58, 0.15);
     --warning-color-light: rgba(230, 162, 60, 0.15);
     --danger-color-light: rgba(245, 108, 108, 0.15);
     --info-color-light: rgba(144, 147, 153, 0.15);
-    
+
     --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.3);
     --shadow-base: 0 4px 8px rgba(0, 0, 0, 0.4);
     --shadow-dark: 0 8px 16px rgba(0, 0, 0, 0.5);
@@ -291,26 +291,26 @@
   --bg-color: #ffffff;
   --bg-color-light: #fafbfc;
   --bg-color-lighter: #f0f2f5;
-  
+
   --text-primary: #303133;
   --text-regular: #606266;
   --text-secondary: #909399;
   --text-placeholder: #c0c4cc;
   --text-disabled: #e4e7ed;
-  
+
   --border-darker: #b3b8c4;
   --border-dark: #c0c4cc;
   --border-base: #dcdfe6;
   --border-light: #e4e7ed;
   --border-lighter: #ebeef5;
   --border-extra-light: #f2f6fc;
-  
+
   --primary-color-light: rgba(64, 158, 255, 0.1);
   --success-color-light: rgba(103, 194, 58, 0.1);
   --warning-color-light: rgba(230, 162, 60, 0.1);
   --danger-color-light: rgba(245, 108, 108, 0.1);
   --info-color-light: rgba(144, 147, 153, 0.1);
-  
+
   --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   --shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.06);
   --shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.18), 0 0 24px rgba(0, 0, 0, 0.08);
@@ -331,7 +331,7 @@
 }
 
 .theme-switched * {
-  transition: 
+  transition:
     background-color var(--transition-duration) ease,
     color var(--transition-duration) ease,
     border-color var(--transition-duration) ease,
@@ -378,7 +378,7 @@
   .theme-toggle {
     border-width: 2px;
   }
-  
+
   .theme-toggle-slider {
     border: 2px solid var(--text-primary);
   }

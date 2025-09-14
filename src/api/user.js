@@ -101,7 +101,7 @@ export class UserAPI {
       // 通过获取所有失物来推导用户统计
       const lostItemsResponse = await request.get(API_ENDPOINTS.LOST_ITEMS.ALL)
       const lostItems = lostItemsResponse.data || []
-      
+
       // 统计活跃用户（有领取记录的用户）
       const activeUsers = new Set()
       lostItems.forEach(item => {
@@ -109,11 +109,11 @@ export class UserAPI {
           activeUsers.add(item.claimerName)
         }
       })
-      
+
       return {
         totalActiveUsers: activeUsers.size,
         totalClaims: lostItems.filter(item => item.claimerName).length,
-        recentActiveUsers: Array.from(activeUsers).slice(0, 10) // 最近活跃的10个用户
+        recentActiveUsers: Array.from(activeUsers).slice(0, 10), // 最近活跃的10个用户
       }
     } catch (error) {
       console.error('获取用户统计信息失败:', error)
@@ -129,17 +129,17 @@ const getAllUsers = async (params = {}) => {
     const queryParams = {
       page,
       size,
-      ...(keyword && { keyword })
+      ...(keyword && { keyword }),
     }
-    
+
     const response = await request.get(API_ENDPOINTS.USERS.ALL, { params: queryParams })
-    
+
     // 转换后端分页格式为前端期望格式
     return {
       data: response.data?.content || response.data || [],
       total: response.data?.totalElements || response.total || 0,
       current: response.data?.number ? response.data.number + 1 : page,
-      size: response.data?.size || size
+      size: response.data?.size || size,
     }
   } catch (error) {
     console.error('获取用户列表失败:', error)
@@ -155,7 +155,7 @@ export const {
   isLoggedIn: isUserLoggedIn,
   getCurrentUser,
   logout: userLogout,
-  getUserStats
+  getUserStats,
 } = UserAPI
 
 // 导出新增方法

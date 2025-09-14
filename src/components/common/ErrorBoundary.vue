@@ -31,25 +31,11 @@
 
           <!-- 操作按钮 -->
           <div class="error-boundary__actions">
-            <el-button
-              type="primary"
-              @click="retry"
-              :loading="retrying"
-            >
-              重试
-            </el-button>
+            <el-button type="primary" @click="retry" :loading="retrying"> 重试 </el-button>
 
-            <el-button
-              @click="reset"
-            >
-              重置
-            </el-button>
+            <el-button @click="reset"> 重置 </el-button>
 
-            <el-button
-              v-if="showReportButton"
-              type="warning"
-              @click="reportError"
-            >
+            <el-button v-if="showReportButton" type="warning" @click="reportError">
               报告问题
             </el-button>
           </div>
@@ -70,53 +56,53 @@ const props = defineProps({
   // 是否显示错误详情（开发环境默认显示）
   showDetails: {
     type: Boolean,
-    default: process.env.NODE_ENV === 'development'
+    default: process.env.NODE_ENV === 'development',
   },
   // 是否显示报告按钮
   showReportButton: {
     type: Boolean,
-    default: true
+    default: true,
   },
   // 自定义错误标题
   customTitle: {
     type: String,
-    default: ''
+    default: '',
   },
   // 自定义错误消息
   customMessage: {
     type: String,
-    default: ''
+    default: '',
   },
   // 最大重试次数
   maxRetries: {
     type: Number,
-    default: 3
+    default: 3,
   },
   // 是否自动重试
   autoRetry: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // 自动重试延迟（毫秒）
   retryDelay: {
     type: Number,
-    default: 1000
+    default: 1000,
   },
   // 错误回调函数
   onError: {
     type: Function,
-    default: null
+    default: null,
   },
   // 重试回调函数
   onRetry: {
     type: Function,
-    default: null
+    default: null,
   },
   // 重置回调函数
   onReset: {
     type: Function,
-    default: null
-  }
+    default: null,
+  },
 })
 
 // Emits
@@ -144,7 +130,7 @@ const errorTitle = computed(() => {
     [ERROR_TYPES.SYSTEM_ERROR]: '系统错误',
     [ERROR_TYPES.COMPONENT_ERROR]: '组件错误',
     [ERROR_TYPES.USER_INPUT_ERROR]: '输入错误',
-    [ERROR_TYPES.UNKNOWN_ERROR]: '未知错误'
+    [ERROR_TYPES.UNKNOWN_ERROR]: '未知错误',
   }
 
   return errorTitles[error.value.type] || '组件渲染错误'
@@ -173,7 +159,7 @@ onErrorCaptured((err, instance, info) => {
     null,
     {
       componentInfo: info,
-      instance: instance?.$options?.name || 'Unknown'
+      instance: instance?.$options?.name || 'Unknown',
     }
   )
 
@@ -182,13 +168,17 @@ onErrorCaptured((err, instance, info) => {
   error.value = appError
 
   // 处理错误（记录日志等）
-  handleError(appError, {
-    component: 'ErrorBoundary',
-    info,
-    instance: instance?.$options?.name
-  }, {
-    notify: false // 不显示通知，由组件自己处理
-  })
+  handleError(
+    appError,
+    {
+      component: 'ErrorBoundary',
+      info,
+      instance: instance?.$options?.name,
+    },
+    {
+      notify: false, // 不显示通知，由组件自己处理
+    }
+  )
 
   // 调用错误回调
   if (props.onError) {
@@ -282,7 +272,7 @@ defineExpose({
   reportError,
   hasError: () => hasError.value,
   getError: () => error.value,
-  getRetryCount: () => retryCount.value
+  getRetryCount: () => retryCount.value,
 })
 </script>
 

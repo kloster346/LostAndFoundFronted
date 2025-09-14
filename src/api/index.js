@@ -6,13 +6,13 @@ const request = axios.create({
   baseURL: 'http://localhost:8080', // 后端服务地址
   timeout: 10000, // 请求超时时间
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
 
 // 请求拦截器
 request.interceptors.request.use(
-  (config) => {
+  config => {
     // 从 localStorage 获取 token
     const token = localStorage.getItem('token')
     if (token) {
@@ -25,13 +25,13 @@ request.interceptors.request.use(
         url: config.url,
         method: config.method,
         data: config.data,
-        params: config.params
+        params: config.params,
       })
     }
 
     return config
   },
-  (error) => {
+  error => {
     console.error('❌ Request Error:', error)
     return Promise.reject(error)
   }
@@ -39,13 +39,13 @@ request.interceptors.request.use(
 
 // 响应拦截器
 request.interceptors.response.use(
-  (response) => {
+  response => {
     // 打印响应信息（开发环境）
     if (process.env.NODE_ENV === 'development') {
       console.log('✅ Response:', {
         url: response.config.url,
         status: response.status,
-        data: response.data
+        data: response.data,
       })
     }
 
@@ -70,13 +70,13 @@ request.interceptors.response.use(
     // 直接返回数据（兼容其他格式）
     return data
   },
-  (error) => {
+  error => {
     // 使用新的错误处理工具
     const context = {
       url: error.config?.url,
       method: error.config?.method,
       params: error.config?.params,
-      data: error.config?.data
+      data: error.config?.data,
     }
 
     // 处理特殊情况
@@ -91,7 +91,7 @@ request.interceptors.response.use(
     // 使用统一错误处理
     const appError = handleError(error, context, {
       notify: true, // 显示错误提示
-      showMessage: true
+      showMessage: true,
     })
 
     throw appError
@@ -103,55 +103,60 @@ export default request
 
 // 导出常用的请求方法
 export const get = (url, params = {}, options = {}) => {
-  const requestFn = () => request({
-    method: 'GET',
-    url,
-    params
-  })
+  const requestFn = () =>
+    request({
+      method: 'GET',
+      url,
+      params,
+    })
 
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
 export const post = (url, data = {}, options = {}) => {
-  const requestFn = () => request({
-    method: 'POST',
-    url,
-    data
-  })
+  const requestFn = () =>
+    request({
+      method: 'POST',
+      url,
+      data,
+    })
 
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
 export const put = (url, data = {}, options = {}) => {
-  const requestFn = () => request({
-    method: 'PUT',
-    url,
-    data
-  })
+  const requestFn = () =>
+    request({
+      method: 'PUT',
+      url,
+      data,
+    })
 
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
 export const del = (url, params = {}, options = {}) => {
-  const requestFn = () => request({
-    method: 'DELETE',
-    url,
-    params
-  })
+  const requestFn = () =>
+    request({
+      method: 'DELETE',
+      url,
+      params,
+    })
 
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
 // 文件上传方法
 export const upload = (url, formData, options = {}) => {
-  const requestFn = () => request({
-    method: 'POST',
-    url,
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
+  const requestFn = () =>
+    request({
+      method: 'POST',
+      url,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
 
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }

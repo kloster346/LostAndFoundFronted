@@ -1,21 +1,58 @@
 <template>
-  <aside class="sidebar" :class="{ 'collapsed': isCollapsed, 'mobile-open': isMobileOpen }">
+  <aside class="sidebar" :class="{ collapsed: isCollapsed, 'mobile-open': isMobileOpen }">
     <!-- 侧边栏头部 -->
     <div class="sidebar-header">
       <div class="sidebar-brand" v-show="!isCollapsed">
         <div class="brand-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2L2 7L12 12L22 7L12 2Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 17L12 22L22 17"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 12L12 17L22 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
           </svg>
         </div>
         <span class="brand-text">管理后台</span>
       </div>
 
-      <button class="collapse-btn" @click="toggleCollapse" :title="isCollapsed ? '展开侧边栏' : '收起侧边栏'">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <button
+        class="collapse-btn"
+        @click="toggleCollapse"
+        :title="isCollapsed ? '展开侧边栏' : '收起侧边栏'"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15 18L9 12L15 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </button>
     </div>
@@ -23,9 +60,19 @@
     <!-- 用户信息 -->
     <div class="sidebar-user" v-if="authStore.isLoggedIn">
       <div class="user-avatar">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 21V19A4 4 0 0 0 16 15H8A4 4 0 0 0 4 19V21" stroke="currentColor" stroke-width="2"/>
-          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M20 21V19A4 4 0 0 0 16 15H8A4 4 0 0 0 4 19V21"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
         </svg>
       </div>
       <div class="user-details" v-show="!isCollapsed">
@@ -47,9 +94,19 @@
           :title="isCollapsed ? '失物浏览' : ''"
         >
           <div class="nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 16V8A2 2 0 0 0 19 6H5A2 2 0 0 0 3 8V16A2 2 0 0 0 5 18H19A2 2 0 0 0 21 16Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M7 10H17" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 16V8A2 2 0 0 0 19 6H5A2 2 0 0 0 3 8V16A2 2 0 0 0 5 18H19A2 2 0 0 0 21 16Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path d="M7 10H17" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">失物浏览</span>
@@ -64,9 +121,19 @@
           :title="isCollapsed ? '个人信息' : ''"
         >
           <div class="nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 21V19A4 4 0 0 0 16 15H8A4 4 0 0 0 4 19V21" stroke="currentColor" stroke-width="2"/>
-              <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 21V19A4 4 0 0 0 16 15H8A4 4 0 0 0 4 19V21"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">个人信息</span>
@@ -86,9 +153,15 @@
           :title="isCollapsed ? '发布失物' : ''"
         >
           <div class="nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 5V19" stroke="currentColor" stroke-width="2"/>
-              <path d="M5 12H19" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 5V19" stroke="currentColor" stroke-width="2" />
+              <path d="M5 12H19" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">发布失物</span>
@@ -103,9 +176,19 @@
           :title="isCollapsed ? '我的失物' : ''"
         >
           <div class="nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14 2H6A2 2 0 0 0 4 4V20A2 2 0 0 0 6 22H18A2 2 0 0 0 20 20V8L14 2Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M14 2V8H20" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14 2H6A2 2 0 0 0 4 4V20A2 2 0 0 0 6 22H18A2 2 0 0 0 20 20V8L14 2Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">我的失物</span>
@@ -120,9 +203,19 @@
           :title="isCollapsed ? '总管理员控制台' : ''"
         >
           <div class="nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor" stroke-width="2"/>
-              <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">总管理员控制台</span>
@@ -141,10 +234,20 @@
           :title="isCollapsed ? '退出登录' : ''"
         >
           <div class="nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H9" stroke="currentColor" stroke-width="2"/>
-              <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2"/>
-              <path d="M21 12H9" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H9"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" />
+              <path d="M21 12H9" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">退出登录</span>
@@ -159,10 +262,20 @@
           :title="isCollapsed ? '登录' : ''"
         >
           <div class="nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 3H19A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H15" stroke="currentColor" stroke-width="2"/>
-              <path d="M10 17L15 12L10 7" stroke="currentColor" stroke-width="2"/>
-              <path d="M15 12H3" stroke="currentColor" stroke-width="2"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 3H19A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H15"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path d="M10 17L15 12L10 7" stroke="currentColor" stroke-width="2" />
+              <path d="M15 12H3" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">登录</span>
@@ -185,12 +298,12 @@ import { USER_ROLES } from '@/constants/enums'
 const props = defineProps({
   collapsed: {
     type: Boolean,
-    default: false
+    default: false,
   },
   mobileOpen: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 // Emits
@@ -203,12 +316,12 @@ const authStore = useAuthStore()
 // 响应式状态
 const isCollapsed = computed({
   get: () => props.collapsed,
-  set: (value) => emit('toggle-collapse', value)
+  set: value => emit('toggle-collapse', value),
 })
 
 const isMobileOpen = computed({
   get: () => props.mobileOpen,
-  set: (value) => emit('close-mobile', !value)
+  set: value => emit('close-mobile', !value),
 })
 
 // 切换折叠状态
@@ -222,7 +335,7 @@ const closeMobileSidebar = () => {
 }
 
 // 获取角色文本
-const getRoleText = (role) => {
+const getRoleText = role => {
   switch (role) {
     case USER_ROLES.NORMAL_USER:
       return '普通用户'
@@ -497,7 +610,9 @@ onUnmounted(() => {
 }
 
 /* 动画效果 */
-.nav-item, .collapse-btn, .user-avatar {
+.nav-item,
+.collapse-btn,
+.user-avatar {
   transition: all 0.2s ease;
 }
 

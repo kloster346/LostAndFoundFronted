@@ -10,18 +10,9 @@
         <!-- 角色选择 -->
         <div class="form-group">
           <label for="role" class="form-label">登录身份</label>
-          <select
-            id="role"
-            v-model="loginForm.role"
-            class="form-select"
-            :disabled="loading"
-          >
+          <select id="role" v-model="loginForm.role" class="form-select" :disabled="loading">
             <option value="" disabled>请选择登录身份</option>
-            <option
-              v-for="(name, role) in USER_ROLE_NAMES"
-              :key="role"
-              :value="role"
-            >
+            <option v-for="(name, role) in USER_ROLE_NAMES" :key="role" :value="role">
               {{ name }}
             </option>
           </select>
@@ -61,11 +52,7 @@
         </div>
 
         <!-- 登录按钮 -->
-        <button
-          type="submit"
-          class="login-button"
-          :disabled="loading || !isFormValid"
-        >
+        <button type="submit" class="login-button" :disabled="loading || !isFormValid">
           <span v-if="loading" class="loading-spinner"></span>
           {{ loading ? '登录中...' : '登录' }}
         </button>
@@ -93,7 +80,7 @@ const authStore = useAuthStore()
 const loginForm = ref({
   role: '',
   username: '',
-  password: ''
+  password: '',
 })
 
 // 状态管理
@@ -102,9 +89,7 @@ const errorMessage = ref('')
 
 // 计算属性
 const isFormValid = computed(() => {
-  return loginForm.value.role &&
-         loginForm.value.username.trim() &&
-         loginForm.value.password.trim()
+  return loginForm.value.role && loginForm.value.username.trim() && loginForm.value.password.trim()
 })
 
 // 清除错误信息
@@ -125,7 +110,7 @@ const handleLogin = async () => {
   try {
     const loginData = {
       username: loginForm.value.username.trim(),
-      password: loginForm.value.password.trim()
+      password: loginForm.value.password.trim(),
     }
 
     const role = loginForm.value.role
@@ -173,7 +158,7 @@ const handleLogin = async () => {
 }
 
 // 根据角色获取重定向路径
-const getRedirectPath = (role) => {
+const getRedirectPath = role => {
   // 优先使用URL查询参数中的重定向路径
   const redirectParam = route.query.redirect
   if (redirectParam && typeof redirectParam === 'string') {

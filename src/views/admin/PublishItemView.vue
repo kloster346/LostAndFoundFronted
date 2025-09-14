@@ -10,17 +10,18 @@
 
         <!-- 发布表单 -->
         <el-card class="form-card">
-          <el-form @submit.prevent="handleSubmit" :model="form" label-width="120px" class="publish-form">
+          <el-form
+            @submit.prevent="handleSubmit"
+            :model="form"
+            label-width="120px"
+            class="publish-form"
+          >
             <!-- 物品基本信息 -->
             <el-row :gutter="20">
               <!-- 物品名称 -->
               <el-col :span="12">
                 <el-form-item label="物品名称" required>
-                  <el-input
-                    v-model="form.itemName"
-                    placeholder="请输入物品名称"
-                    clearable
-                  />
+                  <el-input v-model="form.itemName" placeholder="请输入物品名称" clearable />
                 </el-form-item>
               </el-col>
 
@@ -136,9 +137,7 @@
                 :limit="5"
               >
                 <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-                <div class="el-upload__text">
-                  将图片拖到此处，或<em>点击上传</em>
-                </div>
+                <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
                 <template #tip>
                   <div class="el-upload__tip">
                     支持 PNG, JPG, GIF 格式，单个文件不超过 10MB，最多上传 5 张
@@ -152,22 +151,14 @@
               <!-- 联系人 -->
               <el-col :span="12">
                 <el-form-item label="联系人" required>
-                  <el-input
-                    v-model="form.contactName"
-                    placeholder="请输入联系人姓名"
-                    clearable
-                  />
+                  <el-input v-model="form.contactName" placeholder="请输入联系人姓名" clearable />
                 </el-form-item>
               </el-col>
 
               <!-- 联系电话 -->
               <el-col :span="12">
                 <el-form-item label="联系电话" required>
-                  <el-input
-                    v-model="form.contactPhone"
-                    placeholder="请输入联系电话"
-                    clearable
-                  />
+                  <el-input v-model="form.contactPhone" placeholder="请输入联系电话" clearable />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -175,11 +166,7 @@
             <!-- 提交按钮 -->
             <el-form-item class="submit-buttons">
               <el-button @click="resetForm">重置</el-button>
-              <el-button
-                type="primary"
-                @click="handleSubmit"
-                :loading="isSubmitting"
-              >
+              <el-button type="primary" @click="handleSubmit" :loading="isSubmitting">
                 {{ isSubmitting ? '发布中...' : '发布失物' }}
               </el-button>
             </el-form-item>
@@ -195,7 +182,13 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LostItemAPI from '@/api/lostItem'
-import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES, getBuildingOptions } from '@/constants/enums'
+import {
+  ITEM_TYPES,
+  ITEM_TYPE_NAMES,
+  COLORS,
+  COLOR_NAMES,
+  getBuildingOptions,
+} from '@/constants/enums'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 
@@ -218,14 +211,14 @@ export default {
       description: '',
       contactName: '',
       contactPhone: '',
-      images: []
+      images: [],
     })
 
     // 物品类型选项
     const itemTypeOptions = computed(() => {
       return Object.entries(ITEM_TYPES).map(([_key, value]) => ({
         value,
-        label: ITEM_TYPE_NAMES[value] || value
+        label: ITEM_TYPE_NAMES[value] || value,
       }))
     })
 
@@ -233,7 +226,7 @@ export default {
     const colorOptions = computed(() => {
       return Object.entries(COLORS).map(([_key, value]) => ({
         value,
-        label: COLOR_NAMES[value] || value
+        label: COLOR_NAMES[value] || value,
       }))
     })
 
@@ -255,13 +248,14 @@ export default {
     const handleImageUpload = (uploadFile, _uploadFiles) => {
       const file = uploadFile.raw
 
-      if (file.size > 10 * 1024 * 1024) { // 10MB限制
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB限制
         ElMessage.error(`文件 ${file.name} 超过10MB限制`)
         return false
       }
 
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = e => {
         uploadFile.url = e.target.result
         form.images.push(file)
       }
@@ -314,7 +308,7 @@ export default {
           description: form.description || null,
           contactName: form.contactName,
           contactPhone: form.contactPhone,
-          images: form.images
+          images: form.images,
         }
 
         // 调用API发布失物
@@ -358,9 +352,9 @@ export default {
       removeImage,
       resetForm,
       handleSubmit,
-      UploadFilled
+      UploadFilled,
     }
-  }
+  },
 }
 </script>
 

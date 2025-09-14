@@ -21,7 +21,7 @@ export default {
       // 错误回调函数
       onError = null,
       // 是否自动上报错误
-      autoReport = process.env.NODE_ENV === 'production'
+      autoReport = process.env.NODE_ENV === 'production',
     } = options
 
     if (!enabled) return
@@ -45,7 +45,7 @@ export default {
           null,
           {
             componentInfo: info,
-            instance: instance?.$options?.name || 'Unknown'
+            instance: instance?.$options?.name || 'Unknown',
           }
         )
       }
@@ -55,7 +55,7 @@ export default {
         type: 'vue-error',
         info,
         instance: instance?.$options?.name,
-        url: window.location.href
+        url: window.location.href,
       })
 
       // 控制台输出
@@ -83,13 +83,13 @@ export default {
           message: '应用遇到严重错误，请刷新页面重试',
           type: 'error',
           duration: 0,
-          showClose: true
+          showClose: true,
         })
       } else {
         ElMessage({
           message: appError.message || '应用运行时出现错误',
           type: 'error',
-          duration: 3000
+          duration: 3000,
         })
       }
 
@@ -111,17 +111,14 @@ export default {
 
       // 记录警告日志
       ErrorLogger.log(
-        new AppError(
-          msg,
-          ERROR_TYPES.COMPONENT_ERROR,
-          ERROR_LEVELS.LOW,
-          null,
-          { trace, instance: instance?.$options?.name }
-        ),
+        new AppError(msg, ERROR_TYPES.COMPONENT_ERROR, ERROR_LEVELS.LOW, null, {
+          trace,
+          instance: instance?.$options?.name,
+        }),
         {
           type: 'vue-warning',
           trace,
-          instance: instance?.$options?.name
+          instance: instance?.$options?.name,
         }
       )
     }
@@ -132,7 +129,7 @@ export default {
 
     // 捕获未处理的 Promise 拒绝
     if (capturePromiseRejection) {
-      window.addEventListener('unhandledrejection', (event) => {
+      window.addEventListener('unhandledrejection', event => {
         const error = event.reason
 
         // 创建应用错误对象
@@ -147,7 +144,7 @@ export default {
         // 记录错误日志
         ErrorLogger.log(appError, {
           type: 'unhandled-promise-rejection',
-          url: window.location.href
+          url: window.location.href,
         })
 
         // 控制台输出
@@ -162,7 +159,7 @@ export default {
         ElMessage({
           message: appError.message,
           type: 'error',
-          duration: 3000
+          duration: 3000,
         })
 
         // 自动上报错误
@@ -177,48 +174,52 @@ export default {
 
     // 捕获资源加载错误
     if (captureResourceError) {
-      window.addEventListener('error', (event) => {
-        // 只处理资源加载错误
-        if (event.target !== window) {
-          const target = event.target
-          const tagName = target.tagName?.toLowerCase()
-          const src = target.src || target.href
+      window.addEventListener(
+        'error',
+        event => {
+          // 只处理资源加载错误
+          if (event.target !== window) {
+            const target = event.target
+            const tagName = target.tagName?.toLowerCase()
+            const src = target.src || target.href
 
-          const appError = new AppError(
-            `资源加载失败: ${src}`,
-            ERROR_TYPES.SYSTEM_ERROR,
-            ERROR_LEVELS.MEDIUM,
-            null,
-            {
+            const appError = new AppError(
+              `资源加载失败: ${src}`,
+              ERROR_TYPES.SYSTEM_ERROR,
+              ERROR_LEVELS.MEDIUM,
+              null,
+              {
+                tagName,
+                src,
+                type: event.type,
+              }
+            )
+
+            // 记录错误日志
+            ErrorLogger.log(appError, {
+              type: 'resource-error',
               tagName,
               src,
-              type: event.type
+              url: window.location.href,
+            })
+
+            // 控制台输出
+            if (showConsoleError) {
+              console.group('🚨 Resource Load Error')
+              console.error('Tag:', tagName)
+              console.error('Source:', src)
+              console.error('Event:', event)
+              console.groupEnd()
             }
-          )
 
-          // 记录错误日志
-          ErrorLogger.log(appError, {
-            type: 'resource-error',
-            tagName,
-            src,
-            url: window.location.href
-          })
-
-          // 控制台输出
-          if (showConsoleError) {
-            console.group('🚨 Resource Load Error')
-            console.error('Tag:', tagName)
-            console.error('Source:', src)
-            console.error('Event:', event)
-            console.groupEnd()
+            // 自动上报错误
+            if (autoReport) {
+              reportError(appError, { type: 'resource-error', tagName, src })
+            }
           }
-
-          // 自动上报错误
-          if (autoReport) {
-            reportError(appError, { type: 'resource-error', tagName, src })
-          }
-        }
-      }, true)
+        },
+        true
+      )
     }
 
     // 监听认证失效事件
@@ -227,7 +228,7 @@ export default {
         title: '登录已过期',
         message: '您的登录已过期，请重新登录',
         type: 'warning',
-        duration: 5000
+        duration: 5000,
       })
 
       // 可以在这里添加跳转到登录页面的逻辑
@@ -242,9 +243,9 @@ export default {
     app.provide('errorHandler', {
       handleError,
       ErrorLogger,
-      reportError
+      reportError,
     })
-  }
+  },
 }
 
 /**
@@ -268,17 +269,17 @@ async function reportError(error, context = {}) {
         url: window.location.href,
         userAgent: navigator.userAgent,
         userId: localStorage.getItem('userId'),
-        ...context
-      }
+        ...context,
+      },
     }
 
     // 发送到服务器
     await fetch('/api/errors/report', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(errorReport)
+      body: JSON.stringify(errorReport),
     })
 
     console.log('Error reported successfully')
@@ -293,18 +294,18 @@ async function reportError(error, context = {}) {
  * @returns {Function} 高阶组件
  */
 export function withErrorBoundary(options = {}) {
-  return (WrappedComponent) => {
+  return WrappedComponent => {
     return {
       name: `ErrorBoundary(${WrappedComponent.name || 'Component'})`,
       components: {
         WrappedComponent,
-        ErrorBoundary: () => import('@/components/common/ErrorBoundary.vue')
+        ErrorBoundary: () => import('@/components/common/ErrorBoundary.vue'),
       },
       render() {
         return h(this.$options.components.ErrorBoundary, options, {
-          default: () => h(WrappedComponent, this.$attrs, this.$slots)
+          default: () => h(WrappedComponent, this.$attrs, this.$slots),
         })
-      }
+      },
     }
   }
 }
@@ -315,18 +316,22 @@ export function withErrorBoundary(options = {}) {
  * @returns {Function} 装饰器函数
  */
 export function errorHandler(options = {}) {
-  return function(target, propertyKey, descriptor) {
+  return function (target, propertyKey, descriptor) {
     const originalMethod = descriptor.value
 
-    descriptor.value = async function(...args) {
+    descriptor.value = async function (...args) {
       try {
         return await originalMethod.apply(this, args)
       } catch (error) {
-        const appError = handleError(error, {
-          component: this.$options?.name,
-          method: propertyKey,
-          args
-        }, options)
+        const appError = handleError(
+          error,
+          {
+            component: this.$options?.name,
+            method: propertyKey,
+            args,
+          },
+          options
+        )
 
         if (options.rethrow !== false) {
           throw appError

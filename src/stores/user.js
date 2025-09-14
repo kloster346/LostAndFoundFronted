@@ -25,7 +25,6 @@ export const useUserStore = defineStore('user', () => {
 
   // 头像上传状态
 
-
   // ==================== 计算属性 ====================
 
   // 用户基本信息
@@ -38,7 +37,7 @@ export const useUserStore = defineStore('user', () => {
       college: userProfile.value.college,
       phone: userProfile.value.phone,
       email: userProfile.value.email,
-      avatar: userProfile.value.avatar
+      avatar: userProfile.value.avatar,
     }
   })
 
@@ -47,8 +46,6 @@ export const useUserStore = defineStore('user', () => {
     if (!userProfile.value) return ''
     return userProfile.value.name || userProfile.value.username || '未知用户'
   })
-
-
 
   // 是否有用户信息
   const hasProfile = computed(() => {
@@ -89,7 +86,6 @@ export const useUserStore = defineStore('user', () => {
       } else {
         throw new Error('获取用户信息失败')
       }
-
     } catch (err) {
       console.error('获取用户信息失败:', err)
       error.value = err.message || '获取用户信息失败'
@@ -105,7 +101,7 @@ export const useUserStore = defineStore('user', () => {
    * @param {Object} userData - 要更新的用户数据
    * @returns {Promise<Object>} 更新结果
    */
-  const updateUserProfile = async (userData) => {
+  const updateUserProfile = async userData => {
     try {
       updating.value = true
       error.value = null
@@ -121,7 +117,7 @@ export const useUserStore = defineStore('user', () => {
       // 准备更新数据
       const updateData = {
         ...userData,
-        id: userId
+        id: userId,
       }
 
       const response = await UserAPI.updateUserProfile(updateData)
@@ -133,7 +129,7 @@ export const useUserStore = defineStore('user', () => {
         // 同步更新认证store中的用户信息
         authStore.currentUser = {
           ...authStore.currentUser,
-          ...response.data
+          ...response.data,
         }
 
         ElMessage.success('用户信息更新成功')
@@ -141,7 +137,6 @@ export const useUserStore = defineStore('user', () => {
       } else {
         throw new Error('更新用户信息失败')
       }
-
     } catch (err) {
       console.error('更新用户信息失败:', err)
       error.value = err.message || '更新用户信息失败'
@@ -152,8 +147,6 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-
-
   /**
    * 修改密码
    * @param {Object} passwordData - 密码数据
@@ -162,7 +155,7 @@ export const useUserStore = defineStore('user', () => {
    * @param {string} passwordData.confirmPassword - 确认密码
    * @returns {Promise<void>}
    */
-  const changePassword = async (passwordData) => {
+  const changePassword = async passwordData => {
     try {
       updating.value = true
       error.value = null
@@ -180,7 +173,7 @@ export const useUserStore = defineStore('user', () => {
       // 构造包含新密码的用户数据
       const userData = {
         ...userProfile.value,
-        password: passwordData.newPassword
+        password: passwordData.newPassword,
       }
 
       await UserAPI.updateUserProfile(userData)
@@ -190,7 +183,6 @@ export const useUserStore = defineStore('user', () => {
       // 修改密码后需要重新登录
       const authStore = useAuthStore()
       authStore.logout()
-
     } catch (err) {
       console.error('修改密码失败:', err)
       error.value = err.message || '修改密码失败'
@@ -219,7 +211,7 @@ export const useUserStore = defineStore('user', () => {
     const authStore = useAuthStore()
     if (authStore.currentUser && !userProfile.value) {
       userProfile.value = {
-        ...authStore.currentUser
+        ...authStore.currentUser,
       }
     }
   }
@@ -245,7 +237,7 @@ export const useUserStore = defineStore('user', () => {
 
     changePassword,
     clearUserProfile,
-    initUserProfile
+    initUserProfile,
   }
 })
 
@@ -254,5 +246,5 @@ export const {
   fetchUserProfile,
   updateUserProfile,
 
-  changePassword
+  changePassword,
 } = useUserStore()

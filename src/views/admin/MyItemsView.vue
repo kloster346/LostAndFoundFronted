@@ -182,9 +182,7 @@
               <el-col :span="8" class="item-actions">
                 <!-- 操作按钮 -->
                 <el-button-group>
-                  <el-button @click="viewItem(item)" size="small">
-                    查看
-                  </el-button>
+                  <el-button @click="viewItem(item)" size="small"> 查看 </el-button>
                   <el-button
                     v-if="item.status === 'UNCLAIMED'"
                     @click="editItem(item)"
@@ -229,12 +227,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LostItemAPI from '@/api/lostItem'
-import {
-  ITEM_TYPES,
-  ITEM_TYPE_NAMES,
-  CLAIM_STATUS,
-  CLAIM_STATUS_NAMES
-} from '@/constants/enums'
+import { ITEM_TYPES, ITEM_TYPE_NAMES, CLAIM_STATUS, CLAIM_STATUS_NAMES } from '@/constants/enums'
 // 移除未使用的图标导入
 
 export default {
@@ -250,14 +243,14 @@ export default {
     const filters = reactive({
       search: '',
       status: '',
-      type: ''
+      type: '',
     })
 
     // 分页信息
     const pagination = reactive({
       current: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
     })
 
     // 统计信息
@@ -265,14 +258,14 @@ export default {
       total: 0,
       unclaimed: 0,
       claimed: 0,
-      deleted: 0
+      deleted: 0,
     })
 
     // 状态选项
     const statusOptions = computed(() => {
       return Object.entries(CLAIM_STATUS).map(([_key, value]) => ({
         value,
-        label: CLAIM_STATUS_NAMES[value] || value
+        label: CLAIM_STATUS_NAMES[value] || value,
       }))
     })
 
@@ -280,7 +273,7 @@ export default {
     const itemTypeOptions = computed(() => {
       return Object.entries(ITEM_TYPES).map(([_key, value]) => ({
         value,
-        label: ITEM_TYPE_NAMES[value] || value
+        label: ITEM_TYPE_NAMES[value] || value,
       }))
     })
 
@@ -294,27 +287,27 @@ export default {
     }
 
     // 获取状态标签类型
-    const getStatusTagType = (status) => {
+    const getStatusTagType = status => {
       const statusTypes = {
-        'UNCLAIMED': 'warning',
-        'CLAIMED': 'success',
-        'DELETED': 'danger'
+        UNCLAIMED: 'warning',
+        CLAIMED: 'success',
+        DELETED: 'danger',
       }
       return statusTypes[status] || 'info'
     }
 
     // 获取状态名称
-    const getStatusName = (status) => {
+    const getStatusName = status => {
       return CLAIM_STATUS_NAMES[status] || status
     }
 
     // 获取物品类型名称
-    const getItemTypeName = (type) => {
+    const getItemTypeName = type => {
       return ITEM_TYPE_NAMES[type] || type
     }
 
     // 格式化日期
-    const formatDate = (dateString) => {
+    const formatDate = dateString => {
       if (!dateString) return ''
       const date = new Date(dateString)
       return date.toLocaleString('zh-CN', {
@@ -322,7 +315,7 @@ export default {
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     }
 
@@ -339,7 +332,7 @@ export default {
           search: filters.search || undefined,
           status: filters.status || undefined,
           itemType: filters.type || undefined,
-          publisherId: authStore.user?.id // 只获取当前管理员发布的失物
+          publisherId: authStore.user?.id, // 只获取当前管理员发布的失物
         }
 
         // 移除空值参数
@@ -349,17 +342,19 @@ export default {
           }
         })
 
-        const response = await LostItemAPI.getLostItems(params)
+        const response = await LostItemAPI.getAdminLostItems(authStore.user?.id, {
+          page: pagination.current,
+          size: pagination.pageSize,
+        })
 
-        if (response.success) {
-          items.value = response.data.items || []
-          pagination.total = response.data.total || 0
+        // getAdminLostItems 直接返回数据，不需要检查 success
+        items.value = response.items || []
+        pagination.total = response.total || 0
+        pagination.current = response.currentPage || 1
+        pagination.pageSize = response.pageSize || 10
 
-          // 更新统计信息
-          updateStatistics()
-        } else {
-          throw new Error(response.message || '获取失物列表失败')
-        }
+        // 更新统计信息
+        updateStatistics()
       } catch (error) {
         console.error('获取失物列表失败:', error)
         alert(error.message || '获取失物列表失败')
@@ -387,26 +382,26 @@ export default {
     }
 
     // 切换页码
-    const changePage = (page) => {
+    const changePage = page => {
       if (page < 1 || page > Math.ceil(pagination.total / pagination.pageSize)) return
       pagination.current = page
       loadItems()
     }
 
     // 查看失物详情
-    const viewItem = (item) => {
+    const viewItem = item => {
       // 可以跳转到详情页面或打开模态框
       router.push(`/lost-items/${item.id}`)
     }
 
     // 编辑失物
-    const editItem = (item) => {
+    const editItem = item => {
       // 可以跳转到编辑页面或打开编辑模态框
       router.push(`/admin/edit/${item.id}`)
     }
 
     // 删除失物
-    const deleteItem = async (item) => {
+    const deleteItem = async item => {
       if (!confirm(`确定要删除失物「${item.itemName}」吗？此操作不可恢复。`)) {
         return
       }
@@ -450,9 +445,9 @@ export default {
       changePage,
       viewItem,
       editItem,
-      deleteItem
+      deleteItem,
     }
-  }
+  },
 }
 </script>
 
@@ -672,7 +667,10 @@ export default {
 <style scoped>
 /* 自定义样式 */
 .transition-colors {
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
 }
 
 /* 文本截断 */

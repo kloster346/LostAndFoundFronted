@@ -2,12 +2,7 @@
   <form class="search-form" @submit.prevent="handleSubmit">
     <div class="search-form__header">
       <h3 class="search-form__title">搜索失物</h3>
-      <BaseButton
-        v-if="hasActiveFilters"
-        type="secondary"
-        size="small"
-        @click="handleReset"
-      >
+      <BaseButton v-if="hasActiveFilters" type="secondary" size="small" @click="handleReset">
         重置
       </BaseButton>
     </div>
@@ -28,16 +23,9 @@
       <div class="search-form__field">
         <label class="search-form__label">物品类型</label>
         <div class="search-form__select-group">
-          <select
-            v-model="formData.type"
-            class="search-form__select"
-          >
+          <select v-model="formData.type" class="search-form__select">
             <option value="">全部类型</option>
-            <option
-              v-for="(name, _key) in ITEM_TYPE_NAMES"
-              :key="_key"
-              :value="_key"
-            >
+            <option v-for="(name, _key) in ITEM_TYPE_NAMES" :key="_key" :value="_key">
               {{ name }}
             </option>
           </select>
@@ -69,10 +57,7 @@
       <div class="search-form__field">
         <label class="search-form__label">楼栋</label>
         <div class="search-form__select-group">
-          <select
-            v-model="formData.building"
-            class="search-form__select"
-          >
+          <select v-model="formData.building" class="search-form__select">
             <option value="">全部楼栋</option>
             <option value="1">1号楼</option>
             <option value="2">2号楼</option>
@@ -91,21 +76,9 @@
 
     <!-- 操作按钮 -->
     <div class="search-form__actions">
-      <BaseButton
-        type="primary"
-        :loading="loading"
-        @click="handleSubmit"
-      >
-        搜索
-      </BaseButton>
+      <BaseButton type="primary" :loading="loading" @click="handleSubmit"> 搜索 </BaseButton>
 
-      <BaseButton
-        type="secondary"
-        :disabled="loading"
-        @click="handleReset"
-      >
-        重置
-      </BaseButton>
+      <BaseButton type="secondary" :disabled="loading" @click="handleReset"> 重置 </BaseButton>
     </div>
   </form>
 </template>
@@ -120,20 +93,20 @@ import { ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '../../constants/enums.js'
 const props = defineProps({
   initialValues: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
   loading: {
     type: Boolean,
-    default: false
+    default: false,
   },
   autoSubmit: {
     type: Boolean,
-    default: false
+    default: false,
   },
   debounceDelay: {
     type: Number,
-    default: 300
-  }
+    default: 300,
+  },
 })
 
 // 事件定义
@@ -145,7 +118,7 @@ const formData = ref({
   type: '',
   color: '',
   building: '',
-  ...props.initialValues
+  ...props.initialValues,
 })
 
 // 防抖定时器
@@ -159,7 +132,7 @@ const hasActiveFilters = computed(() => {
 })
 
 // 方法
-const getColorValue = (color) => {
+const getColorValue = color => {
   const colorMap = {
     [COLORS.RED]: '#ef4444',
     [COLORS.LIGHT_RED]: '#fca5a5',
@@ -178,12 +151,12 @@ const getColorValue = (color) => {
     [COLORS.GRAY]: '#6b7280',
     [COLORS.BLACK]: '#1f2937',
     [COLORS.WHITE]: '#f9fafb',
-    [COLORS.OTHER]: '#9ca3af'
+    [COLORS.OTHER]: '#9ca3af',
   }
   return colorMap[color] || '#6b7280'
 }
 
-const toggleColor = (color) => {
+const toggleColor = color => {
   if (formData.value.color === color) {
     formData.value.color = ''
   } else {
@@ -213,7 +186,7 @@ const handleReset = () => {
     name: '',
     type: '',
     color: '',
-    building: ''
+    building: '',
   }
 
   emit('reset')
@@ -236,7 +209,7 @@ const debouncedSubmit = () => {
 // 监听表单数据变化
 watch(
   formData,
-  (newValue) => {
+  newValue => {
     emit('change', newValue)
 
     if (props.autoSubmit) {
@@ -360,8 +333,6 @@ watch(
   font-size: 13px;
   color: #374151;
 }
-
-
 
 /* 操作按钮 */
 .search-form__actions {

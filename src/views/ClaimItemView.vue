@@ -56,7 +56,7 @@
               v-model="claimForm.claimerName"
               type="text"
               class="form-input"
-              :class="{ 'error': errors.claimerName }"
+              :class="{ error: errors.claimerName }"
               placeholder="请输入您的真实姓名"
               maxlength="20"
               :disabled="submitting"
@@ -77,7 +77,7 @@
               v-model="claimForm.contactInfo"
               type="text"
               class="form-input"
-              :class="{ 'error': errors.contactInfo }"
+              :class="{ error: errors.contactInfo }"
               placeholder="请输入手机号码或微信号"
               maxlength="50"
               :disabled="submitting"
@@ -98,7 +98,7 @@
               v-model="claimForm.studentId"
               type="text"
               class="form-input"
-              :class="{ 'error': errors.studentId }"
+              :class="{ error: errors.studentId }"
               placeholder="请输入您的学号"
               maxlength="20"
               :disabled="submitting"
@@ -118,21 +118,19 @@
               id="claimDescription"
               v-model="claimForm.claimDescription"
               class="form-textarea"
-              :class="{ 'error': errors.claimDescription }"
+              :class="{ error: errors.claimDescription }"
               placeholder="请详细描述失物的特征、丢失时间地点等信息，以便我们核实失物归属"
               rows="4"
               maxlength="500"
               :disabled="submitting"
             ></textarea>
-            <div class="char-count">
-              {{ claimForm.claimDescription.length }}/500
-            </div>
+            <div class="char-count">{{ claimForm.claimDescription.length }}/500</div>
             <div v-if="errors.claimDescription" class="error-message">
               {{ errors.claimDescription }}
             </div>
           </div>
 
-          <div class="form-group" style="display: none;">
+          <div class="form-group" style="display: none">
             <label for="lossTime">丢失时间</label>
             <input
               id="lossTime"
@@ -180,7 +178,9 @@
             <h4>后续流程：</h4>
             <ul>
               <li>管理员将在1-2个工作日内审核您的申请</li>
-              <li>审核通过后，我们会通过 <strong>{{ claimForm.contactInfo }}</strong> 联系您</li>
+              <li>
+                审核通过后，我们会通过 <strong>{{ claimForm.contactInfo }}</strong> 联系您
+              </li>
               <li>请保持联系方式畅通，并准备好相关证明材料</li>
             </ul>
           </div>
@@ -223,7 +223,7 @@ export default {
       studentId: '',
       claimDescription: '',
       lossTime: '',
-      lossLocation: ''
+      lossLocation: '',
     })
 
     // 表单错误
@@ -231,15 +231,17 @@ export default {
       claimerName: '',
       contactInfo: '',
       studentId: '',
-      claimDescription: ''
+      claimDescription: '',
     })
 
     // 计算属性
     const isFormValid = computed(() => {
-      return claimForm.value.claimerName.trim() &&
-             claimForm.value.contactInfo.trim() &&
-             claimForm.value.studentId.trim() &&
-             claimForm.value.claimDescription.trim()
+      return (
+        claimForm.value.claimerName.trim() &&
+        claimForm.value.contactInfo.trim() &&
+        claimForm.value.studentId.trim() &&
+        claimForm.value.claimDescription.trim()
+      )
     })
 
     // 方法
@@ -263,7 +265,7 @@ export default {
       }
     }
 
-    const formatDate = (dateString) => {
+    const formatDate = dateString => {
       if (!dateString) return ''
       const date = new Date(dateString)
       return date.toLocaleString('zh-CN', {
@@ -271,7 +273,7 @@ export default {
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     }
 
@@ -345,7 +347,7 @@ export default {
           claimerName: claimForm.value.claimerName,
           contactInfo: claimForm.value.contactInfo,
           studentId: claimForm.value.studentId,
-          claimDescription: claimForm.value.claimDescription
+          claimDescription: claimForm.value.claimDescription,
         }
 
         await claimLostItem(itemId, claimData)
@@ -388,9 +390,9 @@ export default {
       closeSuccessModal,
       goBack,
       getItemTypeName,
-      getBuildingName
+      getBuildingName,
     }
-  }
+  },
 }
 </script>
 
@@ -450,8 +452,12 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-icon {

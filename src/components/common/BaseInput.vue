@@ -4,7 +4,7 @@
       {{ label }}
       <span v-if="required" class="base-input__required">*</span>
     </label>
-    
+
     <div class="base-input__wrapper" :class="wrapperClasses">
       <input
         :id="inputId"
@@ -25,7 +25,7 @@
         @focus="handleFocus"
         @keyup.enter="handleEnter"
       />
-      
+
       <!-- 清除按钮 -->
       <button
         v-if="clearable && modelValue && !disabled && !readonly"
@@ -36,12 +36,12 @@
         ×
       </button>
     </div>
-    
+
     <!-- 错误信息 -->
     <div v-if="errorMessage" class="base-input__error">
       {{ errorMessage }}
     </div>
-    
+
     <!-- 帮助文本 -->
     <div v-if="helpText && !errorMessage" class="base-input__help">
       {{ helpText }}
@@ -56,80 +56,90 @@ import { computed, ref, nextTick } from 'vue'
 const props = defineProps({
   modelValue: {
     type: [String, Number],
-    default: ''
+    default: '',
   },
   type: {
     type: String,
     default: 'text',
-    validator: (value) => [
-      'text', 'password', 'email', 'number', 'tel', 'url', 'search', 'date', 'datetime-local', 'time'
-    ].includes(value)
+    validator: value =>
+      [
+        'text',
+        'password',
+        'email',
+        'number',
+        'tel',
+        'url',
+        'search',
+        'date',
+        'datetime-local',
+        'time',
+      ].includes(value),
   },
   label: {
     type: String,
-    default: ''
+    default: '',
   },
   placeholder: {
     type: String,
-    default: ''
+    default: '',
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   readonly: {
     type: Boolean,
-    default: false
+    default: false,
   },
   required: {
     type: Boolean,
-    default: false
+    default: false,
   },
   clearable: {
     type: Boolean,
-    default: false
+    default: false,
   },
   size: {
     type: String,
     default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value)
+    validator: value => ['small', 'medium', 'large'].includes(value),
   },
   errorMessage: {
     type: String,
-    default: ''
+    default: '',
   },
   helpText: {
     type: String,
-    default: ''
+    default: '',
   },
   maxlength: {
     type: [String, Number],
-    default: undefined
+    default: undefined,
   },
   minlength: {
     type: [String, Number],
-    default: undefined
+    default: undefined,
   },
   min: {
     type: [String, Number],
-    default: undefined
+    default: undefined,
   },
   max: {
     type: [String, Number],
-    default: undefined
+    default: undefined,
   },
   step: {
     type: [String, Number],
-    default: undefined
+    default: undefined,
   },
   autocomplete: {
     type: String,
-    default: 'off'
+    default: 'off',
   },
   validateOnBlur: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
 // 事件定义
@@ -142,56 +152,56 @@ const inputId = ref(`base-input-${Math.random().toString(36).substr(2, 9)}`)
 // 计算属性
 const wrapperClasses = computed(() => {
   const classes = ['base-input__wrapper']
-  
+
   classes.push(`base-input__wrapper--${props.size}`)
-  
+
   if (props.disabled) {
     classes.push('base-input__wrapper--disabled')
   }
-  
+
   if (props.readonly) {
     classes.push('base-input__wrapper--readonly')
   }
-  
+
   if (props.errorMessage) {
     classes.push('base-input__wrapper--error')
   }
-  
+
   if (isFocused.value) {
     classes.push('base-input__wrapper--focused')
   }
-  
+
   return classes
 })
 
 // 事件处理
-const handleInput = (event) => {
+const handleInput = event => {
   const value = event.target.value
   emit('update:modelValue', value)
 }
 
-const handleBlur = (event) => {
+const handleBlur = event => {
   isFocused.value = false
   emit('blur', event)
-  
+
   if (props.validateOnBlur) {
     emit('validate', props.modelValue)
   }
 }
 
-const handleFocus = (event) => {
+const handleFocus = event => {
   isFocused.value = true
   emit('focus', event)
 }
 
-const handleEnter = (event) => {
+const handleEnter = event => {
   emit('enter', event)
 }
 
 const handleClear = () => {
   emit('update:modelValue', '')
   emit('clear')
-  
+
   nextTick(() => {
     const input = document.getElementById(inputId.value)
     if (input) {
@@ -334,13 +344,13 @@ const handleClear = () => {
 }
 
 /* 数字输入框样式 */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
@@ -350,21 +360,21 @@ input[type="number"] {
     min-height: 44px; /* 移动设备触摸友好 */
     font-size: 16px; /* 防止iOS缩放 */
   }
-  
+
   .base-input--small .base-input__field {
     min-height: 36px;
     font-size: 14px;
   }
-  
+
   .base-input--large .base-input__field {
     min-height: 52px;
     font-size: 18px;
   }
-  
+
   .base-input__label {
     font-size: 15px;
   }
-  
+
   .base-input__clear {
     width: 24px;
     height: 24px;
