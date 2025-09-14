@@ -69,15 +69,7 @@ const router = createRouter({
         requiresAuth: false
       }
     },
-    {
-      path: '/error-test',
-      name: 'ErrorTest',
-      component: () => import('../views/ErrorTestPage.vue'),
-      meta: {
-        title: '错误处理测试',
-        requiresAuth: false
-      }
-    },
+
     {
       path: '/',
       redirect: '/lost-items'
@@ -101,12 +93,12 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
-  
+
   // 设置页面标题
   if (to.meta.title) {
     document.title = `${to.meta.title} - 失物招领系统`
   }
-  
+
   // 如果已登录用户访问登录页面，重定向到适当的页面
   if (to.path === '/login' && authStore.isLoggedIn) {
     if (authStore.isAdmin) {
@@ -116,7 +108,7 @@ router.beforeEach((to, from, next) => {
     }
     return
   }
-  
+
   // 检查是否需要登录
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
     // 保存原本想访问的页面，登录后重定向
@@ -127,7 +119,7 @@ router.beforeEach((to, from, next) => {
     })
     return
   }
-  
+
   // 检查是否需要管理员权限
   if (to.meta.requiresAdmin && !authStore.isAdmin) {
     // 如果已登录但不是管理员，跳转到失物列表页面
@@ -147,7 +139,7 @@ router.beforeEach((to, from, next) => {
     }
     return
   }
-  
+
   next()
 })
 

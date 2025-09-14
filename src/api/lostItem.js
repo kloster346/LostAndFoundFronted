@@ -24,14 +24,14 @@ class LostItemAPI {
     if (!lostItemData || typeof lostItemData !== 'object') {
       throw new Error('失物信息不能为空')
     }
-    
+
     if (!adminId) {
       throw new Error('管理员ID不能为空')
     }
 
     // 构建 FormData
     const formData = new FormData()
-    
+
     // 构建 request 对象（不包含 images）
     const requestData = {
       name: lostItemData.name,
@@ -41,10 +41,10 @@ class LostItemAPI {
       building: lostItemData.building,
       specificLocation: lostItemData.specificLocation
     }
-    
+
     // 添加 request 数据作为 JSON 字符串
     formData.append('request', JSON.stringify(requestData))
-    
+
     // 添加图片文件（如果有的话）
     if (lostItemData.images && lostItemData.images.length > 0) {
       // 只取第一张图片，因为接口只支持单张图片
@@ -58,9 +58,9 @@ class LostItemAPI {
    * 领取失物
    * @param {Object} claimData - 领取信息
    * @param {number} claimData.lostItemId - 失物ID
-   * @param {number} claimData.studentId - 学生ID
-   * @param {string} claimData.claimReason - 领取理由
-   * @param {string} claimData.contactInfo - 联系方式
+   * @param {string} claimData.claimerStudentId - 领取人学号
+   * @param {string} claimData.claimerName - 领取人姓名
+   * @param {string} claimData.claimerPhone - 领取人手机号
    * @returns {Promise<Object>} 领取结果
    */
   static async claimLostItem(claimData) {
@@ -69,7 +69,7 @@ class LostItemAPI {
         throw new Error('领取信息不能为空')
       }
 
-      const requiredFields = ['lostItemId', 'studentId', 'claimReason', 'contactInfo']
+      const requiredFields = ['lostItemId', 'claimerStudentId', 'claimerName', 'claimerPhone']
       for (const field of requiredFields) {
         if (!claimData[field]) {
           throw new Error(`${field} 字段不能为空`)
