@@ -25,7 +25,7 @@ export default defineConfig([
   ...pluginVue.configs['flat/essential'],
   {
     rules: {
-      'no-unused-vars': ['warn', { 
+      'no-unused-vars': ['warn', {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_'
       }],

@@ -182,7 +182,7 @@ const getRedirectPath = (role) => {
       return redirectParam
     }
   }
-  
+
   // 根据角色返回默认路径
   switch (role) {
     case USER_ROLES.NORMAL_USER:

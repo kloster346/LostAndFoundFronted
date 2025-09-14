@@ -68,6 +68,20 @@ export class AdminAPI {
   }
 
   /**
+   * 获取所有管理员列表
+   * @returns {Promise<Array>} 管理员列表
+   */
+  static async getAllAdmins() {
+    try {
+      const response = await request.get(API_ENDPOINTS.ADMIN.ALL)
+      return response
+    } catch (error) {
+      console.error('获取管理员列表失败:', error)
+      throw error
+    }
+  }
+
+  /**
    * 验证管理员登录状态
    * @returns {boolean} 是否已登录
    */
@@ -150,6 +164,7 @@ export const {
   lostItemAdminLogin,
   superAdminLogin,
   getLostItemAdminProfile,
+  getAllAdmins,
   isAdminLoggedIn,
   getCurrentAdmin,
   getCurrentAdminRole,

@@ -34,9 +34,9 @@
           >
             <option value="">全部类型</option>
             <option
-              v-for="(name, type) in ITEM_TYPE_NAMES"
-              :key="type"
-              :value="type"
+              v-for="(name, _key) in ITEM_TYPE_NAMES"
+              :key="_key"
+              :value="_key"
             >
               {{ name }}
             </option>
@@ -114,7 +114,7 @@
 import { ref, computed, watch } from 'vue'
 import BaseInput from '../common/BaseInput.vue'
 import BaseButton from '../common/BaseButton.vue'
-import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '../../constants/enums.js'
+import { ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '../../constants/enums.js'
 
 // Props定义
 const props = defineProps({
@@ -153,7 +153,7 @@ let debounceTimer = null
 
 // 计算属性
 const hasActiveFilters = computed(() => {
-  return Object.entries(formData.value).some(([key, value]) => {
+  return Object.entries(formData.value).some(([_key, value]) => {
     return value !== '' && value !== null && value !== undefined
   })
 })

@@ -52,11 +52,11 @@ export class AuthUtil {
    */
   static isTokenExpired(token) {
     if (!token) return true
-    
+
     try {
       const payload = this.parseTokenPayload(token)
       if (!payload.exp) return false // 如果没有过期时间，认为不过期
-      
+
       const currentTime = Math.floor(Date.now() / 1000)
       return payload.exp < currentTime
     } catch (error) {
@@ -72,11 +72,11 @@ export class AuthUtil {
    */
   static parseTokenPayload(token) {
     if (!token) return {}
-    
+
     try {
       const parts = token.split('.')
       if (parts.length !== 3) throw new Error('Invalid token format')
-      
+
       const payload = parts[1]
       const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
       return JSON.parse(decoded)
@@ -91,11 +91,11 @@ export class AuthUtil {
    * @returns {Object|null} 用户信息
    */
   static getCurrentUser() {
-    const userInfo = localStorage.getItem(STORAGE_KEYS.USER_INFO) || 
+    const userInfo = localStorage.getItem(STORAGE_KEYS.USER_INFO) ||
                     sessionStorage.getItem(STORAGE_KEYS.USER_INFO)
-    
+
     if (!userInfo) return null
-    
+
     try {
       return JSON.parse(userInfo)
     } catch (error) {
@@ -111,7 +111,7 @@ export class AuthUtil {
    */
   static setCurrentUser(userInfo, remember = false) {
     const userInfoStr = JSON.stringify(userInfo)
-    
+
     if (remember) {
       localStorage.setItem(STORAGE_KEYS.USER_INFO, userInfoStr)
       sessionStorage.removeItem(STORAGE_KEYS.USER_INFO)
@@ -198,7 +198,7 @@ export class AuthUtil {
   static hasPermission(permission) {
     const user = this.getCurrentUser()
     if (!user || !user.permissions) return false
-    
+
     const permissions = Array.isArray(permission) ? permission : [permission]
     return permissions.some(perm => user.permissions.includes(perm))
   }
@@ -227,7 +227,7 @@ export class AuthUtil {
   static clearAuth() {
     this.removeToken()
     this.removeCurrentUser()
-    
+
     // 清除其他可能的认证相关数据
     localStorage.removeItem(STORAGE_KEYS.REMEMBER_LOGIN)
     sessionStorage.clear()
@@ -240,28 +240,28 @@ export class AuthUtil {
    */
   static canAccessRoute(route) {
     if (!route.meta) return true
-    
+
     const { requiresAuth, roles, permissions } = route.meta
-    
+
     // 检查是否需要登录
     if (requiresAuth && !this.isLoggedIn()) {
       return false
     }
-    
+
     // 检查角色权限
     if (roles && roles.length > 0) {
       if (!this.hasAnyRole(roles)) {
         return false
       }
     }
-    
+
     // 检查具体权限
     if (permissions && permissions.length > 0) {
       if (!this.hasPermission(permissions)) {
         return false
       }
     }
-    
+
     return true
   }
 
@@ -271,7 +271,7 @@ export class AuthUtil {
    */
   static getLoginRedirectPath() {
     const role = this.getUserRole()
-    
+
     switch (role) {
       case USER_ROLES.NORMAL_USER:
         return '/user/dashboard'
@@ -305,14 +305,14 @@ export class AuthUtil {
   static async autoRefreshToken() {
     const token = this.getToken()
     if (!token) return false
-    
+
     try {
       const payload = this.parseTokenPayload(token)
       if (!payload.exp) return true // 没有过期时间，不需要刷新
-      
+
       const currentTime = Math.floor(Date.now() / 1000)
       const timeUntilExpiry = payload.exp - currentTime
-      
+
       // 如果token在5分钟内过期，尝试刷新
       if (timeUntilExpiry < 300) {
         const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN)
@@ -322,7 +322,7 @@ export class AuthUtil {
           return true
         }
       }
-      
+
       return true
     } catch (error) {
       console.error('自动刷新token失败:', error)

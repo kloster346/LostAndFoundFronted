@@ -198,6 +198,45 @@ class LostItemAPI {
   }
 
   /**
+   * 获取所有失物（用于统计和管理）
+   * @param {Object} params - 查询参数
+   * @param {number} [params.page] - 页码
+   * @param {number} [params.size] - 每页大小
+   * @param {boolean} [params.all=false] - 是否获取全部数据（不分页）
+   * @returns {Promise<Object|Array>} 失物列表
+   */
+  static async getAllLostItems(params = {}) {
+    try {
+      if (params.all) {
+        // 获取全部数据用于统计
+        const response = await request.get(API_ENDPOINTS.LOST_ITEMS.ALL)
+        return response.data || []
+      } else {
+        // 分页获取
+        const response = await request.get(API_ENDPOINTS.LOST_ITEMS.ALL, {
+          params: {
+            pageNum: params.page || 1,
+            pageSize: params.size || 10
+          }
+        })
+        
+        // 转换后端分页格式为前端期望格式
+        const backendData = response.data
+        return {
+          items: backendData.records || [],
+          currentPage: backendData.current || 1,
+          pageSize: backendData.size || 10,
+          total: backendData.total || 0,
+          totalPages: backendData.pages || 0
+        }
+      }
+    } catch (error) {
+      console.error('获取所有失物失败:', error)
+      throw error
+    }
+  }
+
+  /**
    * 获取指定管理员发布的失物
    * @param {number} adminId - 管理员ID
    * @param {Object} pageParams - 分页参数
@@ -243,6 +282,7 @@ export const {
   getLostItemById,
   deleteLostItem,
   searchLostItems,
+  getAllLostItems,
   getAllUnclaimedItems,
   getAdminLostItems
 } = LostItemAPI

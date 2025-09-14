@@ -303,7 +303,7 @@ export default {
         const phoneRegex = /^1[3-9]\d{9}$/
         // 微信号验证（字母数字下划线，6-20位）
         const wechatRegex = /^[a-zA-Z][a-zA-Z0-9_]{5,19}$/
-        
+
         if (!phoneRegex.test(contactInfo) && !wechatRegex.test(contactInfo)) {
           errors.value.contactInfo = '请输入有效的手机号码或微信号'
           isValid = false

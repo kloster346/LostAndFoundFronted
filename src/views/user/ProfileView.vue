@@ -17,8 +17,8 @@
       <el-card class="user-info-card" shadow="hover">
         <div class="user-info-section">
           <div class="user-avatar-container">
-            <el-avatar 
-              :size="120" 
+            <el-avatar
+              :size="120"
               class="user-avatar"
             >
               <el-icon><User /></el-icon>
@@ -37,19 +37,19 @@
         <template #header>
           <div class="card-header">
             <span>基本信息</span>
-            <el-button 
-              v-if="!isEditing" 
-              type="primary" 
-              :icon="Edit" 
+            <el-button
+              v-if="!isEditing"
+              type="primary"
+              :icon="Edit"
               @click="startEdit"
             >
               编辑信息
             </el-button>
             <div v-else class="edit-actions">
               <el-button @click="cancelEdit">取消</el-button>
-              <el-button 
-                type="primary" 
-                :loading="userStore.updating" 
+              <el-button
+                type="primary"
+                :loading="userStore.updating"
                 @click="saveProfile"
               >
                 保存
@@ -58,18 +58,18 @@
           </div>
         </template>
 
-        <el-form 
-          ref="profileForm" 
-          :model="profileData" 
-          :rules="profileRules" 
-          label-width="100px" 
+        <el-form
+          ref="profileForm"
+          :model="profileData"
+          :rules="profileRules"
+          label-width="100px"
           class="profile-form"
         >
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="用户名" prop="username">
-                <el-input 
-                  v-model="profileData.username" 
+                <el-input
+                  v-model="profileData.username"
                   :disabled="!isEditing"
                   placeholder="请输入用户名"
                 />
@@ -77,8 +77,8 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="学号" prop="studentId">
-                <el-input 
-                  v-model="profileData.studentId" 
+                <el-input
+                  v-model="profileData.studentId"
                   :disabled="!isEditing"
                   placeholder="请输入学号"
                 />
@@ -89,16 +89,16 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="学院" prop="college">
-                <el-select 
-                  v-model="profileData.college" 
+                <el-select
+                  v-model="profileData.college"
                   :disabled="!isEditing"
                   placeholder="请选择学院"
                   style="width: 100%"
                 >
-                  <el-option 
-                    v-for="college in collegeOptions" 
-                    :key="college.value" 
-                    :label="college.label" 
+                  <el-option
+                    v-for="college in collegeOptions"
+                    :key="college.value"
+                    :label="college.label"
                     :value="college.value"
                   />
                 </el-select>
@@ -106,8 +106,8 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="手机号" prop="phone">
-                <el-input 
-                  v-model="profileData.phone" 
+                <el-input
+                  v-model="profileData.phone"
                   :disabled="!isEditing"
                   placeholder="请输入手机号"
                 />
@@ -124,19 +124,19 @@
         <template #header>
           <div class="card-header">
             <span>安全设置</span>
-            <el-button 
-              v-if="!isChangingPassword" 
-              type="warning" 
-              :icon="Lock" 
+            <el-button
+              v-if="!isChangingPassword"
+              type="warning"
+              :icon="Lock"
               @click="startPasswordChange"
             >
               修改密码
             </el-button>
             <div v-else class="edit-actions">
               <el-button @click="cancelPasswordChange">取消</el-button>
-              <el-button 
-                type="primary" 
-                :loading="userStore.updating" 
+              <el-button
+                type="primary"
+                :loading="userStore.updating"
                 @click="changePassword"
               >
                 确认修改
@@ -159,35 +159,35 @@
           </el-descriptions>
         </div>
 
-        <el-form 
-          v-else 
-          ref="passwordForm" 
-          :model="passwordData" 
-          :rules="passwordRules" 
-          label-width="100px" 
+        <el-form
+          v-else
+          ref="passwordForm"
+          :model="passwordData"
+          :rules="passwordRules"
+          label-width="100px"
           class="password-form"
         >
           <el-form-item label="当前密码" prop="oldPassword">
-            <el-input 
-              v-model="passwordData.oldPassword" 
-              type="password" 
-              placeholder="请输入当前密码" 
+            <el-input
+              v-model="passwordData.oldPassword"
+              type="password"
+              placeholder="请输入当前密码"
               show-password
             />
           </el-form-item>
           <el-form-item label="新密码" prop="newPassword">
-            <el-input 
-              v-model="passwordData.newPassword" 
-              type="password" 
-              placeholder="请输入新密码" 
+            <el-input
+              v-model="passwordData.newPassword"
+              type="password"
+              placeholder="请输入新密码"
               show-password
             />
           </el-form-item>
           <el-form-item label="确认密码" prop="confirmPassword">
-            <el-input 
-              v-model="passwordData.confirmPassword" 
-              type="password" 
-              placeholder="请再次输入新密码" 
+            <el-input
+              v-model="passwordData.confirmPassword"
+              type="password"
+              placeholder="请再次输入新密码"
               show-password
             />
           </el-form-item>
@@ -209,8 +209,8 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { 
-  ElMessage, 
+import {
+  ElMessage,
   ElMessageBox,
   ElCard,
   ElButton,
@@ -229,10 +229,10 @@ import {
   ElSkeleton,
   ElEmpty
 } from 'element-plus'
-import { 
-  User, 
+import {
+  User,
   Edit,
-  Lock 
+  Lock
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user.js'
 import { useAuthStore } from '@/stores/auth.js'
@@ -308,10 +308,10 @@ const passwordRules = {
   newPassword: [
     { required: true, message: '请输入新密码', trigger: 'blur' },
     { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' },
-    { 
-      pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/, 
-      message: '密码必须包含字母和数字', 
-      trigger: 'blur' 
+    {
+      pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/,
+      message: '密码必须包含字母和数字',
+      trigger: 'blur'
     }
   ],
   confirmPassword: [
@@ -378,7 +378,7 @@ const saveProfile = async () => {
     // 表单验证
     const valid = await profileForm.value?.validate()
     if (!valid) return
-    
+
     // 确认操作
     await ElMessageBox.confirm(
       '确定要保存修改的信息吗？',
@@ -389,16 +389,16 @@ const saveProfile = async () => {
         type: 'info'
       }
     )
-    
+
     // 更新用户信息
     await userStore.updateUserProfile(profileData)
-    
+
     // 退出编辑模式
     isEditing.value = false
-    
+
     // 显示成功提示
     ElMessage.success('个人信息保存成功')
-    
+
   } catch (error) {
     if (error !== 'cancel') {
       console.error('保存失败:', error)
@@ -441,7 +441,7 @@ const changePassword = async () => {
     // 表单验证
     const valid = await passwordForm.value?.validate()
     if (!valid) return
-    
+
     // 确认操作
     await ElMessageBox.confirm(
       '修改密码后需要重新登录，确定要继续吗？',
@@ -452,16 +452,16 @@ const changePassword = async () => {
         type: 'warning'
       }
     )
-    
+
     // 修改密码
     await userStore.changePassword(passwordData)
-    
+
     // 退出修改模式
     isChangingPassword.value = false
-    
+
     // 跳转到登录页
     router.push('/login')
-    
+
   } catch (error) {
     if (error !== 'cancel') {
       console.error('修改密码失败:', error)
@@ -493,18 +493,18 @@ onMounted(async () => {
       router.push('/login')
       return
     }
-    
+
     // 初始化用户信息
     userStore.initUserProfile()
-    
+
     // 如果没有详细信息，则获取
     if (!userStore.hasProfile) {
       await userStore.fetchUserProfile()
     }
-    
+
     // 初始化表单数据
     initProfile()
-    
+
   } catch (error) {
     console.error('初始化失败:', error)
     ElMessage.error('页面初始化失败，请刷新重试')
@@ -639,19 +639,19 @@ onMounted(async () => {
   .profile-container {
     padding: 16px;
   }
-  
+
   .avatar-section {
     flex-direction: column;
     text-align: center;
     gap: 20px;
   }
-  
+
   .card-header {
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
   }
-  
+
   .edit-actions {
     justify-content: center;
   }
@@ -661,11 +661,11 @@ onMounted(async () => {
   .profile-content {
     gap: 16px;
   }
-  
+
   .avatar-card :deep(.el-card__body) {
     padding: 20px;
   }
-  
+
   .user-avatar {
     width: 80px !important;
     height: 80px !important;

@@ -52,6 +52,16 @@ const router = createRouter({
       }
     },
     {
+      path: '/admin/super',
+      name: 'SuperAdmin',
+      component: () => import('../views/admin/SuperAdminView.vue'),
+      meta: {
+        title: '总管理员',
+        requiresAuth: true,
+        requiresSuperAdmin: true
+      }
+    },
+    {
       path: '/lost-items/:id',
       name: 'LostItemDetail',
       component: () => import('../views/LostItemDetailView.vue'),
@@ -101,7 +111,9 @@ router.beforeEach((to, from, next) => {
 
   // 如果已登录用户访问登录页面，重定向到适当的页面
   if (to.path === '/login' && authStore.isLoggedIn) {
-    if (authStore.isAdmin) {
+    if (authStore.isSuperAdmin) {
+      next('/admin/super')
+    } else if (authStore.isAdmin) {
       next('/admin/my-items')
     } else {
       next('/lost-items')
@@ -117,6 +129,26 @@ router.beforeEach((to, from, next) => {
       path: '/login',
       query: { redirect: redirectPath }
     })
+    return
+  }
+
+  // 检查是否需要总管理员权限
+  if (to.meta.requiresSuperAdmin && !authStore.isSuperAdmin) {
+    // 如果已登录但不是总管理员，跳转到适当页面
+    if (authStore.isLoggedIn) {
+      const redirectPath = authStore.isAdmin ? '/admin/my-items' : '/lost-items'
+      next(redirectPath)
+      // 延迟显示提示，避免在路由跳转过程中显示
+      setTimeout(() => {
+        alert('您没有访问该页面的权限，需要总管理员权限')
+      }, 100)
+    } else {
+      // 如果未登录，跳转到登录页面
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    }
     return
   }
 

@@ -79,6 +79,7 @@
 
         <!-- 发布失物 -->
         <router-link
+          v-if="authStore.isLostItemAdmin"
           to="/admin/publish"
           class="nav-item"
           active-class="active"
@@ -95,6 +96,7 @@
 
         <!-- 我的失物 -->
         <router-link
+          v-if="authStore.isLostItemAdmin"
           to="/admin/my-items"
           class="nav-item"
           active-class="active"
@@ -107,6 +109,23 @@
             </svg>
           </div>
           <span class="nav-text" v-show="!isCollapsed">我的失物</span>
+        </router-link>
+
+        <!-- 总管理员控制台 -->
+        <router-link
+          v-if="authStore.isSuperAdmin"
+          to="/admin/super"
+          class="nav-item"
+          active-class="active"
+          :title="isCollapsed ? '总管理员控制台' : ''"
+        >
+          <div class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <span class="nav-text" v-show="!isCollapsed">总管理员控制台</span>
         </router-link>
       </div>
 
@@ -157,7 +176,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { USER_ROLES } from '@/constants/enums'

@@ -149,7 +149,7 @@ import { useAuthStore } from '@/stores/auth'
 import { USER_ROLES } from '@/constants/enums'
 
 // Props
-const props = defineProps({
+const _props = defineProps({
   showSidebarToggle: {
     type: Boolean,
     default: false

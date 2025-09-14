@@ -18,7 +18,7 @@ request.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    
+
     // 打印请求信息（开发环境）
     if (process.env.NODE_ENV === 'development') {
       console.log('🚀 Request:', {
@@ -28,7 +28,7 @@ request.interceptors.request.use(
         params: config.params
       })
     }
-    
+
     return config
   },
   (error) => {
@@ -48,17 +48,17 @@ request.interceptors.response.use(
         data: response.data
       })
     }
-    
+
     // 统一处理响应数据格式
     const { data } = response
-    
+
     // 根据后端返回的统一格式处理
     if (data && typeof data === 'object' && 'code' in data) {
       // 成功响应
       if (data.code === 200) {
         return data
       }
-      
+
       // 业务错误
       const error = new Error(data.message || '请求失败')
       error.code = data.code
@@ -66,7 +66,7 @@ request.interceptors.response.use(
       error.response = response
       throw error
     }
-    
+
     // 直接返回数据（兼容其他格式）
     return data
   },
@@ -78,7 +78,7 @@ request.interceptors.response.use(
       params: error.config?.params,
       data: error.config?.data
     }
-    
+
     // 处理特殊情况
     if (error.response?.status === 401) {
       // 清除本地存储的认证信息
@@ -87,13 +87,13 @@ request.interceptors.response.use(
       // 可以在这里触发跳转到登录页面
       window.dispatchEvent(new CustomEvent('auth:logout'))
     }
-    
+
     // 使用统一错误处理
     const appError = handleError(error, context, {
       notify: true, // 显示错误提示
       showMessage: true
     })
-    
+
     throw appError
   }
 )
@@ -108,7 +108,7 @@ export const get = (url, params = {}, options = {}) => {
     url,
     params
   })
-  
+
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
@@ -118,7 +118,7 @@ export const post = (url, data = {}, options = {}) => {
     url,
     data
   })
-  
+
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
@@ -128,7 +128,7 @@ export const put = (url, data = {}, options = {}) => {
     url,
     data
   })
-  
+
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
@@ -138,7 +138,7 @@ export const del = (url, params = {}, options = {}) => {
     url,
     params
   })
-  
+
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 
@@ -152,7 +152,7 @@ export const upload = (url, formData, options = {}) => {
       'Content-Type': 'multipart/form-data'
     }
   })
-  
+
   return options.retry ? withRetry(requestFn, options.retry) : requestFn()
 }
 

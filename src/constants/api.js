@@ -45,11 +45,17 @@ export const API_ENDPOINTS = {
     PROFILE: '/api/user/profile'
   },
 
+  // 用户管理接口（管理员功能）
+  USERS: {
+    ALL: '/api/users/all'
+  },
+
   // 管理员接口
   ADMIN: {
     LOST_ITEM_LOGIN: '/api/admin/lost-item/login',
     SUPER_LOGIN: '/api/admin/super/login',
-    LOST_ITEM_PROFILE: '/api/admin/lost-item/profile'
+    LOST_ITEM_PROFILE: '/api/admin/lost-item/profile',
+    ALL: '/api/admin/all'
   },
 
   // 失物接口

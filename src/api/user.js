@@ -90,6 +90,61 @@ export class UserAPI {
     localStorage.removeItem('user_info')
     localStorage.removeItem('user_role')
   }
+
+  /**
+   * 获取用户统计信息（基于失物数据推导）
+   * 注意：由于后端没有专门的用户列表接口，这里通过失物数据来推导用户信息
+   * @returns {Promise<Object>} 用户统计信息
+   */
+  static async getUserStats() {
+    try {
+      // 通过获取所有失物来推导用户统计
+      const lostItemsResponse = await request.get(API_ENDPOINTS.LOST_ITEMS.ALL)
+      const lostItems = lostItemsResponse.data || []
+      
+      // 统计活跃用户（有领取记录的用户）
+      const activeUsers = new Set()
+      lostItems.forEach(item => {
+        if (item.claimerName) {
+          activeUsers.add(item.claimerName)
+        }
+      })
+      
+      return {
+        totalActiveUsers: activeUsers.size,
+        totalClaims: lostItems.filter(item => item.claimerName).length,
+        recentActiveUsers: Array.from(activeUsers).slice(0, 10) // 最近活跃的10个用户
+      }
+    } catch (error) {
+      console.error('获取用户统计信息失败:', error)
+      throw error
+    }
+  }
+}
+
+// 获取所有用户（管理员功能）
+const getAllUsers = async (params = {}) => {
+  try {
+    const { page = 1, size = 10, keyword } = params
+    const queryParams = {
+      page,
+      size,
+      ...(keyword && { keyword })
+    }
+    
+    const response = await request.get(API_ENDPOINTS.USERS.ALL, { params: queryParams })
+    
+    // 转换后端分页格式为前端期望格式
+    return {
+      data: response.data?.content || response.data || [],
+      total: response.data?.totalElements || response.total || 0,
+      current: response.data?.number ? response.data.number + 1 : page,
+      size: response.data?.size || size
+    }
+  } catch (error) {
+    console.error('获取用户列表失败:', error)
+    throw error
+  }
 }
 
 // 导出便捷方法
@@ -99,8 +154,12 @@ export const {
   updateUserProfile,
   isLoggedIn: isUserLoggedIn,
   getCurrentUser,
-  logout: userLogout
+  logout: userLogout,
+  getUserStats
 } = UserAPI
+
+// 导出新增方法
+export { getAllUsers }
 
 // 默认导出
 export default UserAPI
