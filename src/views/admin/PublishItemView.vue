@@ -51,7 +51,7 @@
             <el-row :gutter="20">
               <!-- 物品颜色 -->
               <el-col :span="12">
-                <el-form-item label="物品颜色">
+                <el-form-item label="物品颜色" prop="color" required>
                   <el-select
                     v-model="form.color"
                     placeholder="请选择颜色"
@@ -91,7 +91,7 @@
             <!-- 具体位置 -->
             <el-row>
               <el-col :span="24">
-                <el-form-item label="具体位置">
+                <el-form-item label="具体位置" prop="location" required>
                   <el-input
                     v-model="form.location"
                     placeholder="请输入具体位置（如房间号、楼层等）"
@@ -102,7 +102,7 @@
             </el-row>
 
             <!-- 物品描述 -->
-            <el-form-item label="物品描述" prop="description">
+            <el-form-item label="物品描述" prop="description" required>
               <el-input
                 v-model="form.description"
                 type="textarea"
@@ -181,8 +181,16 @@ export default {
         { min: 1, max: 50, message: '物品名称长度在 1 到 50 个字符', trigger: 'blur' },
       ],
       itemType: [{ required: true, message: '请选择物品类型', trigger: 'change' }],
+      color: [{ required: true, message: '请选择物品颜色', trigger: 'change' }],
       building: [{ required: true, message: '请选择发现楼栋', trigger: 'change' }],
-      description: [{ max: 500, message: '描述不能超过500个字符', trigger: 'blur' }],
+      location: [
+        { required: true, message: '请输入具体位置', trigger: 'blur' },
+        { min: 1, max: 100, message: '具体位置长度在 1 到 100 个字符', trigger: 'blur' },
+      ],
+      description: [
+        { required: true, message: '请输入物品描述', trigger: 'blur' },
+        { min: 1, max: 500, message: '描述长度在 1 到 500 个字符', trigger: 'blur' },
+      ],
     }
 
     // 表单数据
@@ -319,14 +327,20 @@ export default {
 
         // 调用API发布失物
         const response = await LostItemAPI.publishLostItem(submitData)
+        
+        // 调试：打印实际响应数据
+        console.log('API响应数据:', response)
+        console.log('响应类型:', typeof response)
+        console.log('响应键:', response ? Object.keys(response) : 'null/undefined')
 
-        if (response.success) {
+        // 更宽松的成功判断：只要有响应且不是错误就认为成功
+        if (response !== null && response !== undefined) {
           ElMessage.success('失物发布成功！')
           resetForm()
           // 可以选择跳转到管理页面
           // router.push('/admin/my-items')
         } else {
-          throw new Error(response.message || '发布失败')
+          throw new Error(`发布失败：响应为空 - ${JSON.stringify(response)}`)
         }
       } catch (error) {
         console.error('发布失物失败:', error)

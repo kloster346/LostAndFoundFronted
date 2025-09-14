@@ -1,4 +1,4 @@
-import request from './index.js'
+import request, { upload } from './index.js'
 import { API_ENDPOINTS } from '../constants/api.js'
 
 /**
@@ -29,21 +29,22 @@ class LostItemAPI {
       throw new Error('管理员ID不能为空')
     }
 
-    // 构建 FormData
+    // 构建 FormData（直接添加字段，不使用JSON包装）
     const formData = new FormData()
-
-    // 构建 request 对象（根据后端LostItemRequest结构）
-    const requestData = {
-      itemName: lostItemData.itemName,
-      itemType: lostItemData.itemType,
-      color: lostItemData.color || null,
-      description: lostItemData.description || null,
-      building: lostItemData.building,
-      location: lostItemData.location,
+    
+    // 添加必填字段
+    formData.append('adminId', lostItemData.adminId)
+    formData.append('name', lostItemData.itemName)
+    formData.append('type', lostItemData.itemType)
+    formData.append('location', lostItemData.building + (lostItemData.location ? ' ' + lostItemData.location : ''))
+    
+    // 添加可选字段
+    if (lostItemData.color) {
+      formData.append('color', lostItemData.color)
     }
-
-    // 添加 request 数据作为 JSON 字符串
-    formData.append('request', JSON.stringify(requestData))
+    if (lostItemData.description) {
+      formData.append('description', lostItemData.description)
+    }
 
     // 添加图片文件（如果有的话）
     if (lostItemData.images && lostItemData.images.length > 0) {
@@ -51,10 +52,7 @@ class LostItemAPI {
       formData.append('image', lostItemData.images[0])
     }
 
-    return request.upload(
-      `${API_ENDPOINTS.LOST_ITEMS.PUBLISH}?adminId=${lostItemData.adminId}`,
-      formData
-    )
+    return upload(API_ENDPOINTS.LOST_ITEMS.PUBLISH, formData)
   }
 
   /**
