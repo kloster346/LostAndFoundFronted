@@ -9,37 +9,37 @@ class LostItemAPI {
   /**
    * 发布失物
    * @param {Object} lostItemData - 失物信息
-   * @param {string} lostItemData.name - 物品名称
-   * @param {number} lostItemData.type - 物品类型
-   * @param {number} lostItemData.color - 颜色
+   * @param {string} lostItemData.itemName - 物品名称
+   * @param {string} lostItemData.itemType - 物品类型
+   * @param {string} lostItemData.color - 颜色
    * @param {string} lostItemData.description - 物品描述
-   * @param {number} lostItemData.building - 楼栋编号
-   * @param {string} lostItemData.specificLocation - 具体位置
+   * @param {string} lostItemData.building - 楼栋编号
+   * @param {string} lostItemData.location - 具体位置
    * @param {Array<File>} [lostItemData.images] - 失物图片文件数组
-   * @param {number} adminId - 管理员ID
+   * @param {number} lostItemData.adminId - 管理员ID
    * @returns {Promise<Object>} 发布结果
    */
-  static async publishLostItem(lostItemData, adminId) {
+  static async publishLostItem(lostItemData) {
     // 参数校验
     if (!lostItemData || typeof lostItemData !== 'object') {
       throw new Error('失物信息不能为空')
     }
 
-    if (!adminId) {
+    if (!lostItemData.adminId) {
       throw new Error('管理员ID不能为空')
     }
 
     // 构建 FormData
     const formData = new FormData()
 
-    // 构建 request 对象（不包含 images）
+    // 构建 request 对象（根据后端LostItemRequest结构）
     const requestData = {
-      name: lostItemData.name,
-      type: lostItemData.type,
-      color: lostItemData.color,
-      description: lostItemData.description,
+      itemName: lostItemData.itemName,
+      itemType: lostItemData.itemType,
+      color: lostItemData.color || null,
+      description: lostItemData.description || null,
       building: lostItemData.building,
-      specificLocation: lostItemData.specificLocation,
+      location: lostItemData.location,
     }
 
     // 添加 request 数据作为 JSON 字符串
@@ -51,7 +51,10 @@ class LostItemAPI {
       formData.append('image', lostItemData.images[0])
     }
 
-    return request.upload(`${API_ENDPOINTS.LOST_ITEMS.PUBLISH}?adminId=${adminId}`, formData)
+    return request.upload(
+      `${API_ENDPOINTS.LOST_ITEMS.PUBLISH}?adminId=${lostItemData.adminId}`,
+      formData
+    )
   }
 
   /**

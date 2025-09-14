@@ -11,8 +11,10 @@
         <!-- 发布表单 -->
         <el-card class="form-card">
           <el-form
+            ref="formRef"
             @submit.prevent="handleSubmit"
             :model="form"
+            :rules="formRules"
             label-width="120px"
             class="publish-form"
           >
@@ -20,14 +22,14 @@
             <el-row :gutter="20">
               <!-- 物品名称 -->
               <el-col :span="12">
-                <el-form-item label="物品名称" required>
+                <el-form-item label="物品名称" prop="itemName" required>
                   <el-input v-model="form.itemName" placeholder="请输入物品名称" clearable />
                 </el-form-item>
               </el-col>
 
               <!-- 物品类型 -->
               <el-col :span="12">
-                <el-form-item label="物品类型" required>
+                <el-form-item label="物品类型" prop="itemType" required>
                   <el-select
                     v-model="form.itemType"
                     placeholder="请选择物品类型"
@@ -68,7 +70,7 @@
 
               <!-- 楼栋选择 -->
               <el-col :span="12">
-                <el-form-item label="发现楼栋" required>
+                <el-form-item label="发现楼栋" prop="building" required>
                   <el-select
                     v-model="form.building"
                     placeholder="请选择楼栋"
@@ -99,20 +101,8 @@
               </el-col>
             </el-row>
 
-            <!-- 发现时间 -->
-            <el-form-item label="发现时间" required>
-              <el-date-picker
-                v-model="form.foundTime"
-                type="datetime"
-                placeholder="请选择发现时间"
-                style="width: 100%"
-                format="YYYY-MM-DD HH:mm"
-                value-format="YYYY-MM-DDTHH:mm"
-              />
-            </el-form-item>
-
             <!-- 物品描述 -->
-            <el-form-item label="物品描述">
+            <el-form-item label="物品描述" prop="description">
               <el-input
                 v-model="form.description"
                 type="textarea"
@@ -129,39 +119,22 @@
                 class="upload-demo"
                 drag
                 action="#"
-                multiple
                 :auto-upload="false"
                 :on-change="handleImageUpload"
+                :on-remove="removeImage"
                 :file-list="imagePreview"
-                accept="image/*"
-                :limit="5"
+                accept="image/jpeg,image/jpg,image/png,image/gif"
+                :limit="1"
               >
                 <el-icon class="el-icon--upload"><upload-filled /></el-icon>
                 <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
                 <template #tip>
                   <div class="el-upload__tip">
-                    支持 PNG, JPG, GIF 格式，单个文件不超过 10MB，最多上传 5 张
+                    支持 JPG、PNG、GIF 格式，单个文件不超过 10MB，只能上传 1 张图片
                   </div>
                 </template>
               </el-upload>
             </el-form-item>
-
-            <!-- 联系方式 -->
-            <el-row :gutter="20">
-              <!-- 联系人 -->
-              <el-col :span="12">
-                <el-form-item label="联系人" required>
-                  <el-input v-model="form.contactName" placeholder="请输入联系人姓名" clearable />
-                </el-form-item>
-              </el-col>
-
-              <!-- 联系电话 -->
-              <el-col :span="12">
-                <el-form-item label="联系电话" required>
-                  <el-input v-model="form.contactPhone" placeholder="请输入联系电话" clearable />
-                </el-form-item>
-              </el-col>
-            </el-row>
 
             <!-- 提交按钮 -->
             <el-form-item class="submit-buttons">
@@ -199,6 +172,18 @@ export default {
     const authStore = useAuthStore()
     const isSubmitting = ref(false)
     const imagePreview = ref([])
+    const formRef = ref(null)
+
+    // 表单验证规则
+    const formRules = {
+      itemName: [
+        { required: true, message: '请输入物品名称', trigger: 'blur' },
+        { min: 1, max: 50, message: '物品名称长度在 1 到 50 个字符', trigger: 'blur' },
+      ],
+      itemType: [{ required: true, message: '请选择物品类型', trigger: 'change' }],
+      building: [{ required: true, message: '请选择发现楼栋', trigger: 'change' }],
+      description: [{ max: 500, message: '描述不能超过500个字符', trigger: 'blur' }],
+    }
 
     // 表单数据
     const form = reactive({
@@ -207,10 +192,7 @@ export default {
       color: '',
       building: '',
       location: '',
-      foundTime: '',
       description: '',
-      contactName: '',
-      contactPhone: '',
       images: [],
     })
 
@@ -244,8 +226,8 @@ export default {
       return true
     }
 
-    // 处理图片上传
-    const handleImageUpload = (uploadFile, _uploadFiles) => {
+    // 处理图片上传（后端只支持单张图片）
+    const handleImageUpload = (uploadFile, uploadFiles) => {
       const file = uploadFile.raw
 
       if (file.size > 10 * 1024 * 1024) {
@@ -254,22 +236,37 @@ export default {
         return false
       }
 
+      // 检查图片格式
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+      if (!allowedTypes.includes(file.type)) {
+        ElMessage.error('只支持 JPG、PNG、GIF 格式的图片')
+        return false
+      }
+
+      // 后端只支持单张图片，如果已有图片则替换
+      if (uploadFiles.length > 1) {
+        ElMessage.warning('只能上传一张图片，已替换之前的图片')
+        // 清空之前的图片
+        form.images = []
+        imagePreview.value = []
+      }
+
       const reader = new FileReader()
       reader.onload = e => {
         uploadFile.url = e.target.result
-        form.images.push(file)
+        // 只保存一张图片
+        form.images = [file]
       }
       reader.readAsDataURL(file)
 
       return true
     }
 
-    // 移除图片（Element Plus 上传组件自带移除功能）
+    // 移除图片（单图片模式）
     const removeImage = (uploadFile, _uploadFiles) => {
-      const index = form.images.findIndex(file => file.name === uploadFile.raw?.name)
-      if (index > -1) {
-        form.images.splice(index, 1)
-      }
+      // 清空所有图片（因为只支持单张）
+      form.images = []
+      imagePreview.value = []
     }
 
     // 重置表单
@@ -282,11 +279,23 @@ export default {
         }
       })
       imagePreview.value = []
+      // 重置表单验证状态
+      if (formRef.value) {
+        formRef.value.resetFields()
+      }
     }
 
     // 提交表单
     const handleSubmit = async () => {
       if (!checkAdminPermission()) return
+
+      // 表单验证
+      if (!formRef.value) return
+      const valid = await formRef.value.validate().catch(() => false)
+      if (!valid) {
+        ElMessage.error('请检查表单填写是否正确')
+        return
+      }
 
       try {
         isSubmitting.value = true
@@ -296,18 +305,15 @@ export default {
           throw new Error('管理员信息无效，请重新登录')
         }
 
-        // 构建提交数据
+        // 构建提交数据（匹配后端LostItemRequest结构）
         const submitData = {
-          adminId: authStore.currentUser.id, // 添加管理员ID
+          adminId: authStore.currentUser.id, // 管理员ID
           itemName: form.itemName,
           itemType: form.itemType,
           color: form.color || null,
+          description: form.description || null,
           building: form.building,
           location: form.location,
-          foundTime: form.foundTime,
-          description: form.description || null,
-          contactName: form.contactName,
-          contactPhone: form.contactPhone,
           images: form.images,
         }
 
@@ -315,7 +321,7 @@ export default {
         const response = await LostItemAPI.publishLostItem(submitData)
 
         if (response.success) {
-          alert('失物发布成功！')
+          ElMessage.success('失物发布成功！')
           resetForm()
           // 可以选择跳转到管理页面
           // router.push('/admin/my-items')
@@ -324,7 +330,7 @@ export default {
         }
       } catch (error) {
         console.error('发布失物失败:', error)
-        alert(error.message || '发布失败，请重试')
+        ElMessage.error(error.message || '发布失败，请重试')
       } finally {
         isSubmitting.value = false
       }
@@ -333,16 +339,12 @@ export default {
     // 组件挂载时检查权限
     onMounted(() => {
       checkAdminPermission()
-
-      // 设置默认联系人信息（如果用户已登录）
-      if (authStore.user) {
-        form.contactName = authStore.user.name || ''
-        form.contactPhone = authStore.user.phone || ''
-      }
     })
 
     return {
       form,
+      formRef,
+      formRules,
       isSubmitting,
       imagePreview,
       itemTypeOptions,
