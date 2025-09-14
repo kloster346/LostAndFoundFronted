@@ -136,7 +136,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { LostItemAPI } from '@/api/lostItem.js'
+import LostItemAPI from '@/api/lostItem.js'
 import {
   ITEM_TYPE_NAMES,
   COLOR_NAMES,
