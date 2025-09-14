@@ -289,7 +289,7 @@ export class AuthUtil {
    * @param {string} refreshToken - 刷新token
    * @returns {Promise<string>} 新的访问token
    */
-  static async refreshToken(refreshToken) {
+  static async refreshToken(_refreshToken) {
     // 这里应该调用刷新token的API
     // 暂时返回Promise，具体实现需要根据后端API
     return new Promise((resolve, reject) => {

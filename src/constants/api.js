@@ -140,7 +140,7 @@ export const buildQueryString = (params) => {
   }
 
   const queryParams = Object.entries(params)
-    .filter(([key, value]) => value !== null && value !== undefined && value !== '')
+    .filter(([_key, value]) => value !== null && value !== undefined && value !== '')
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join('&')
 

@@ -235,16 +235,7 @@ import {
   CLAIM_STATUS,
   CLAIM_STATUS_NAMES
 } from '@/constants/enums'
-import {
-  Plus,
-  Search,
-  Document,
-  Clock,
-  CircleCheck,
-  Delete,
-  Loading,
-  Picture
-} from '@element-plus/icons-vue'
+// 移除未使用的图标导入
 
 export default {
   name: 'MyItemsView',
@@ -279,7 +270,7 @@ export default {
 
     // 状态选项
     const statusOptions = computed(() => {
-      return Object.entries(CLAIM_STATUS).map(([key, value]) => ({
+      return Object.entries(CLAIM_STATUS).map(([_key, value]) => ({
         value,
         label: CLAIM_STATUS_NAMES[value] || value
       }))
@@ -287,7 +278,7 @@ export default {
 
     // 物品类型选项
     const itemTypeOptions = computed(() => {
-      return Object.entries(ITEM_TYPES).map(([key, value]) => ({
+      return Object.entries(ITEM_TYPES).map(([_key, value]) => ({
         value,
         label: ITEM_TYPE_NAMES[value] || value
       }))

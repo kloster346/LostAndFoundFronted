@@ -195,7 +195,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LostItemAPI from '@/api/lostItem'
-import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES, BUILDINGS, getBuildingOptions } from '@/constants/enums'
+import { ITEM_TYPES, ITEM_TYPE_NAMES, COLORS, COLOR_NAMES, getBuildingOptions } from '@/constants/enums'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 
@@ -223,7 +223,7 @@ export default {
 
     // 物品类型选项
     const itemTypeOptions = computed(() => {
-      return Object.entries(ITEM_TYPES).map(([key, value]) => ({
+      return Object.entries(ITEM_TYPES).map(([_key, value]) => ({
         value,
         label: ITEM_TYPE_NAMES[value] || value
       }))
@@ -231,7 +231,7 @@ export default {
 
     // 颜色选项
     const colorOptions = computed(() => {
-      return Object.entries(COLORS).map(([key, value]) => ({
+      return Object.entries(COLORS).map(([_key, value]) => ({
         value,
         label: COLOR_NAMES[value] || value
       }))
@@ -252,7 +252,7 @@ export default {
     }
 
     // 处理图片上传
-    const handleImageUpload = (uploadFile, uploadFiles) => {
+    const handleImageUpload = (uploadFile, _uploadFiles) => {
       const file = uploadFile.raw
 
       if (file.size > 10 * 1024 * 1024) { // 10MB限制
@@ -271,7 +271,7 @@ export default {
     }
 
     // 移除图片（Element Plus 上传组件自带移除功能）
-    const removeImage = (uploadFile, uploadFiles) => {
+    const removeImage = (uploadFile, _uploadFiles) => {
       const index = form.images.findIndex(file => file.name === uploadFile.raw?.name)
       if (index > -1) {
         form.images.splice(index, 1)

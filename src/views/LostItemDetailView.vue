@@ -138,14 +138,10 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import LostItemAPI from '@/api/lostItem.js'
 import {
-  ITEM_TYPE_NAMES,
-  COLOR_NAMES,
-  CLAIM_STATUS_NAMES,
   getItemTypeName,
   getColorName,
   getBuildingName,
-  CLAIM_STATUS,
-  BUILDING_NAMES
+  CLAIM_STATUS
 } from '@/constants/enums'
 
 export default {

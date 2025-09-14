@@ -223,7 +223,7 @@ export const BUILDING_NAMES = {
 
 // 获取楼栋选项列表
 export const getBuildingOptions = () => {
-  return Object.entries(BUILDINGS).map(([key, value]) => ({
+  return Object.entries(BUILDINGS).map(([_key, value]) => ({
     value,
     label: BUILDING_NAMES[value]
   }))

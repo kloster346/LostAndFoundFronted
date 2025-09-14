@@ -1,6 +1,5 @@
 import { apiClient } from '@/api/index.js'
-import { API_ENDPOINTS, HTTP_STATUS } from '@/constants/api.js'
-import { MESSAGE_TYPES } from '@/constants/index.js'
+import { HTTP_STATUS } from '@/constants/api.js'
 
 /**
  * 请求工具类

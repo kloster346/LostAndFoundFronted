@@ -13,21 +13,16 @@
 
     <!-- 主要内容 -->
     <div v-else-if="userStore.hasProfile" class="profile-content">
-      <!-- 头像区域 -->
-      <el-card class="avatar-card" shadow="hover">
-        <div class="avatar-section">
-          <div class="avatar-container">
+      <!-- 用户信息卡片 -->
+      <el-card class="user-info-card" shadow="hover">
+        <div class="user-info-section">
+          <div class="user-avatar-container">
             <el-avatar 
               :size="120" 
-              :src="userStore.avatarUrl" 
               class="user-avatar"
             >
               <el-icon><User /></el-icon>
             </el-avatar>
-            <div class="avatar-overlay" @click="handleAvatarClick">
-              <el-icon><Camera /></el-icon>
-              <span>更换头像</span>
-            </div>
           </div>
           <div class="user-info">
             <h3>{{ userStore.displayName }}</h3>
@@ -35,15 +30,6 @@
             <p class="user-id">ID: {{ userStore.basicInfo?.id }}</p>
           </div>
         </div>
-        
-        <!-- 隐藏的文件上传 -->
-        <input 
-          ref="avatarInput" 
-          type="file" 
-          accept="image/*" 
-          style="display: none" 
-          @change="handleAvatarUpload"
-        />
       </el-card>
 
       <!-- 信息编辑区域 -->
@@ -245,7 +231,6 @@ import {
 } from 'element-plus'
 import { 
   User, 
-  Camera, 
   Edit,
   Lock 
 } from '@element-plus/icons-vue'
@@ -262,7 +247,6 @@ const router = useRouter()
 // 表单引用
 const profileForm = ref(null)
 const passwordForm = ref(null)
-const avatarInput = ref(null)
 
 // 编辑状态
 const isEditing = ref(false)
@@ -485,29 +469,7 @@ const changePassword = async () => {
   }
 }
 
-/**
- * 处理头像点击
- */
-const handleAvatarClick = () => {
-  avatarInput.value?.click()
-}
 
-/**
- * 处理头像上传
- */
-const handleAvatarUpload = async (event) => {
-  const file = event.target.files?.[0]
-  if (!file) return
-  
-  try {
-    await userStore.uploadAvatar(file)
-    // 清空input值，允许重复选择同一文件
-    event.target.value = ''
-  } catch (error) {
-    console.error('头像上传失败:', error)
-    event.target.value = ''
-  }
-}
 
 /**
  * 刷新用户信息
@@ -585,56 +547,23 @@ onMounted(async () => {
   gap: 24px;
 }
 
-/* 头像卡片样式 */
-.avatar-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+/* 用户信息卡片样式 */
+.user-info-card {
+  margin-bottom: 24px;
 }
 
-.avatar-card :deep(.el-card__body) {
-  padding: 30px;
-}
-
-.avatar-section {
+.user-info-section {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 24px;
 }
 
-.avatar-container {
-  position: relative;
-  cursor: pointer;
+.user-avatar-container {
+  flex-shrink: 0;
 }
 
 .user-avatar {
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-}
-
-.avatar-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  color: white;
-  font-size: 12px;
-}
-
-.avatar-container:hover .avatar-overlay {
-  opacity: 1;
-}
-
-.avatar-container:hover .user-avatar {
-  transform: scale(1.05);
+  border: 4px solid #f0f0f0;
 }
 
 .user-info h3 {

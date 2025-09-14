@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import LostItemAPI from '../api/lostItem.js'
-import { ITEM_TYPES, COLORS } from '../constants/enums.js'
+import { CLAIM_STATUS } from '../constants/enums.js'
 
 /**
  * 失物状态管理 Store

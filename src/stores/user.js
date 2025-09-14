@@ -24,7 +24,7 @@ export const useUserStore = defineStore('user', () => {
   const error = ref(null)
   
   // 头像上传状态
-  const avatarUploading = ref(false)
+
   
   // ==================== 计算属性 ====================
   
@@ -48,13 +48,7 @@ export const useUserStore = defineStore('user', () => {
     return userProfile.value.name || userProfile.value.username || '未知用户'
   })
   
-  // 用户头像URL
-  const avatarUrl = computed(() => {
-    if (!userProfile.value || !userProfile.value.avatar) {
-      return '/default-avatar.png' // 默认头像
-    }
-    return userProfile.value.avatar
-  })
+
   
   // 是否有用户信息
   const hasProfile = computed(() => {
@@ -158,55 +152,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
   
-  /**
-   * 上传用户头像
-   * @param {File} file - 头像文件
-   * @returns {Promise<string>} 头像URL
-   */
-  const uploadAvatar = async (file) => {
-    try {
-      avatarUploading.value = true
-      error.value = null
-      
-      // 验证文件类型
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error('只支持 JPG、PNG、GIF 格式的图片')
-      }
-      
-      // 验证文件大小（2MB）
-      const maxSize = 2 * 1024 * 1024
-      if (file.size > maxSize) {
-        throw new Error('图片大小不能超过 2MB')
-      }
-      
-      // 创建FormData
-      const formData = new FormData()
-      formData.append('avatar', file)
-      
-      // 这里需要实现头像上传API
-      // const response = await UserAPI.uploadAvatar(formData)
-      
-      // 临时模拟上传成功
-      const mockAvatarUrl = URL.createObjectURL(file)
-      
-      // 更新用户信息中的头像
-      if (userProfile.value) {
-        userProfile.value.avatar = mockAvatarUrl
-      }
-      
-      ElMessage.success('头像上传成功')
-      return mockAvatarUrl
-      
-    } catch (err) {
-      console.error('头像上传失败:', err)
-      error.value = err.message || '头像上传失败'
-      ElMessage.error(error.value)
-      throw err
-    } finally {
-      avatarUploading.value = false
-    }
-  }
+
   
   /**
    * 修改密码
@@ -237,7 +183,7 @@ export const useUserStore = defineStore('user', () => {
         password: passwordData.newPassword
       }
       
-      const response = await UserAPI.updateUserProfile(userData)
+      await UserAPI.updateUserProfile(userData)
       
       ElMessage.success('密码修改成功，请重新登录')
       
@@ -263,7 +209,6 @@ export const useUserStore = defineStore('user', () => {
     error.value = null
     loading.value = false
     updating.value = false
-    avatarUploading.value = false
   }
   
   /**
@@ -287,18 +232,17 @@ export const useUserStore = defineStore('user', () => {
     loading: readonly(loading),
     updating: readonly(updating),
     error: readonly(error),
-    avatarUploading: readonly(avatarUploading),
     
     // 计算属性
     basicInfo,
     displayName,
-    avatarUrl,
+
     hasProfile,
     
     // 方法
     fetchUserProfile,
     updateUserProfile,
-    uploadAvatar,
+
     changePassword,
     clearUserProfile,
     initUserProfile
@@ -309,6 +253,6 @@ export const useUserStore = defineStore('user', () => {
 export const {
   fetchUserProfile,
   updateUserProfile,
-  uploadAvatar,
+
   changePassword
 } = useUserStore()

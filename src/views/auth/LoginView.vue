@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import { USER_ROLES, USER_ROLE_NAMES } from '../../constants/enums.js'
@@ -195,17 +195,7 @@ const getRedirectPath = (role) => {
   }
 }
 
-// 监听表单变化，清除错误信息
-const watchFormChange = () => {
-  if (errorMessage.value) {
-    clearError()
-  }
-}
-
-// 为表单字段添加变化监听
-const handleInputChange = () => {
-  watchFormChange()
-}
+// handleInputChange函数已移除
 </script>
 
 <style scoped>

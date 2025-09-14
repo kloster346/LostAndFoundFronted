@@ -167,11 +167,9 @@ const lostItemStore = useLostItemStore()
 
 // 解构状态和方法
 const {
-  items,
   loading,
   error,
   pagination,
-  searchParams,
   hasItems,
   isEmpty,
   hasMore,

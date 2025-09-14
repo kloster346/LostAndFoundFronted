@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { handleError, withRetry, ERROR_TYPES, ERROR_LEVELS } from '@/utils/error'
+import { handleError, withRetry } from '@/utils/error'
 
 // 创建 axios 实例
 const request = axios.create({
