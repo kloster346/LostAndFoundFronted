@@ -36,7 +36,8 @@ class LostItemAPI {
     formData.append('adminId', lostItemData.adminId)
     formData.append('name', lostItemData.itemName)
     formData.append('type', lostItemData.itemType)
-    formData.append('location', lostItemData.building + (lostItemData.location ? ' ' + lostItemData.location : ''))
+    formData.append('building', lostItemData.building)
+    formData.append('specificLocation', lostItemData.location)
     
     // 添加可选字段
     if (lostItemData.color) {
