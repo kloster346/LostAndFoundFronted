@@ -7,6 +7,7 @@ import App from './App.vue'
 import router from './router'
 import './styles/global.css'
 import errorHandler from './plugins/errorHandler'
+import { useAuthStore } from './stores/auth.js'
 
 const app = createApp(App)
 
@@ -15,9 +16,14 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 app.use(router)
 app.use(ElementPlus)
+
+// 初始化认证状态
+const authStore = useAuthStore()
+authStore.initAuth()
 app.use(errorHandler, {
   enabled: true,
   capturePromiseRejection: true,

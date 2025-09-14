@@ -229,7 +229,6 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
 import { useLostItemStore } from '@/stores/lostItem'
-import { useUserStore } from '@/stores/user'
 import { debounce } from 'lodash-es'
 import LostItemAPI from '@/api/lostItem'
 import { ITEM_TYPES, ITEM_TYPE_NAMES, CLAIM_STATUS, CLAIM_STATUS_NAMES, BUILDINGS, BUILDING_NAMES } from '@/constants/enums'
@@ -242,7 +241,6 @@ export default {
     const router = useRouter()
     const authStore = useAuthStore()
     const lostItemStore = useLostItemStore()
-    const userStore = useUserStore()
 
     const loading = ref(false)
     const items = ref([])
@@ -327,9 +325,9 @@ export default {
       try {
         loading.value = true
         
-        const adminId = userStore.userInfo?.id
+        const adminId = authStore.currentUser?.id
         if (!adminId) {
-          ElMessage.error('用户信息获取失败，请重新登录')
+          ElMessage.error('管理员信息获取失败，请重新登录')
           return
         }
 
