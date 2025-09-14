@@ -39,10 +39,14 @@ coverage/
 *.min.js
 *.min.css
 
-# Documentation
-README.md
-CHANGELOG.md
+# Documentation (allow formatting for project docs)
+# README.md - removed to allow formatting
+# CHANGELOG.md - removed to allow formatting
 LICENSE
+
+# History and auto-generated files
+.history/
+**/接口文档/api-docs.json
 
 # Config files that should maintain their format
 .gitignore

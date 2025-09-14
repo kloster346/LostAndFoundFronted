@@ -25,14 +25,20 @@ export default defineConfig([
   ...pluginVue.configs['flat/essential'],
   {
     rules: {
-      'no-unused-vars': ['warn', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_'
-      }],
-      'vue/no-unused-vars': ['warn', {
-        ignorePattern: '^_'
-      }]
-    }
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      'vue/no-unused-vars': [
+        'warn',
+        {
+          ignorePattern: '^_',
+        },
+      ],
+    },
   },
   skipFormatting,
 ])

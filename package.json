@@ -11,8 +11,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
-    "format": "prettier --write \"src/**/*.{js,ts,vue,json,css,scss,html,md}\"",
-    "format:check": "prettier --check \"src/**/*.{js,ts,vue,json,css,scss,html,md}\""
+    "format": "prettier --write \"**/*.{js,ts,vue,json,css,scss,html,md,yml,yaml}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{js,ts,vue,json,css,scss,html,md,yml,yaml}\" --ignore-path .prettierignore",
+    "format:docs": "prettier --write \"**/*.{md,json,yml,yaml}\" --ignore-path .prettierignore"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

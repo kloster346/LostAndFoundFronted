@@ -1,1 +1,534 @@
-{"openapi":"3.0.1","info":{"title":"OpenAPI definition","version":"v0"},"servers":[{"url":"http://localhost:8080","description":"Generated server url"}],"tags":[{"name":"失物管理员接口","description":"失物管理员相关接口"},{"name":"总管理员接口","description":"总管理员相关接口"},{"name":"失物接口","description":"失物相关接口"},{"name":"普通用户接口","description":"普通用户相关接口"}],"paths":{"/api/user/profile":{"put":{"tags":["普通用户接口"],"summary":"更新用户信息","operationId":"updateUserProfile","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultUser"}}}}}}},"/api/user/login":{"post":{"tags":["普通用户接口"],"summary":"用户登录","operationId":"login","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultUser"}}}}}}},"/api/lost-items/publish":{"post":{"tags":["失物接口"],"summary":"发布失物","operationId":"publishLostItem","parameters":[{"name":"adminId","in":"query","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"request":{"$ref":"#/components/schemas/LostItemRequest"},"image":{"type":"string","format":"binary"}}}}}},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultLostItem"}}}}}}},"/api/lost-items/claim":{"post":{"tags":["失物接口"],"summary":"领取失物","operationId":"claimLostItem","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ClaimRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultBoolean"}}}}}}},"/api/admin/super/login":{"post":{"tags":["总管理员接口"],"summary":"超级管理员登录","operationId":"login_1","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultSuperAdmin"}}}}}}},"/api/admin/lost-item/login":{"post":{"tags":["失物管理员接口"],"summary":"管理员登录","operationId":"login_2","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultLostItemAdmin"}}}}}}},"/api/user/profile/{id}":{"get":{"tags":["普通用户接口"],"summary":"获取用户信息","operationId":"getUserProfile","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultUser"}}}}}}},"/api/lost-items/{id}":{"get":{"tags":["失物接口"],"summary":"获取失物详情","operationId":"getLostItem","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultLostItem"}}}}}},"delete":{"tags":["失物接口"],"summary":"删除失物","operationId":"deleteLostItem","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}},{"name":"adminId","in":"query","required":true,"schema":{"type":"integer","format":"int64"}},{"name":"isSuperAdmin","in":"query","required":false,"schema":{"type":"boolean","default":false}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultBoolean"}}}}}}},"/api/lost-items/search":{"get":{"tags":["失物接口"],"summary":"搜索失物","operationId":"searchLostItems","parameters":[{"name":"searchRequest","in":"query","required":true,"schema":{"$ref":"#/components/schemas/LostItemSearchRequest"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultIPageLostItem"}}}}}}},"/api/lost-items/all":{"get":{"tags":["失物接口"],"summary":"获取所有未领取的失物","operationId":"getAllLostItems","parameters":[{"name":"pageNum","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":1}},{"name":"pageSize","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":10}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultIPageLostItem"}}}}}}},"/api/lost-items/admin/{adminId}":{"get":{"tags":["失物接口"],"summary":"获取管理员发布的失物","operationId":"getLostItemsByAdmin","parameters":[{"name":"adminId","in":"path","required":true,"schema":{"type":"integer","format":"int64"}},{"name":"pageNum","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":1}},{"name":"pageSize","in":"query","required":false,"schema":{"type":"integer","format":"int32","default":10}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultIPageLostItem"}}}}}}},"/api/admin/lost-item/profile/{id}":{"get":{"tags":["失物管理员接口"],"summary":"获取管理员信息","operationId":"getAdminProfile","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ResultLostItemAdmin"}}}}}}}},"components":{"schemas":{"User":{"type":"object","properties":{"id":{"type":"integer","description":"用户ID","format":"int64"},"studentId":{"type":"string","description":"学号"},"username":{"type":"string","description":"账号名"},"college":{"type":"string","description":"学院"},"password":{"type":"string","description":"密码"},"phone":{"type":"string","description":"手机号"},"createTime":{"type":"string","description":"创建时间","format":"date-time"},"updateTime":{"type":"string","description":"更新时间","format":"date-time"}},"description":"普通用户实体"},"ResultUser":{"type":"object","properties":{"code":{"type":"integer","description":"响应码","format":"int32"},"message":{"type":"string","description":"响应消息"},"data":{"$ref":"#/components/schemas/User"}},"description":"统一响应结果"},"LoginRequest":{"type":"object","properties":{"username":{"type":"string","description":"用户名"},"password":{"type":"string","description":"密码"}},"description":"登录请求DTO"},"LostItemRequest":{"type":"object","properties":{"name":{"type":"string","description":"物品名称"},"type":{"type":"integer","description":"物品类型 1:书 2:包 3:卡 4:钥匙 5:手机 6:手表 7:笔 8:伞 9:耳机 10:其他","format":"int32"},"color":{"type":"integer","description":"颜色 1:红色 2:浅红色 3:暗红色 4:绿色 5:浅绿色 6:暗绿色 7:蓝色 8:浅蓝色 9:深蓝色 10:黄色 11:橙色 12:紫色 13:粉红色 14:棕色 15:灰色 16:黑色 17:白色 18:其他","format":"int32"},"description":{"type":"string","description":"物品描述"},"building":{"type":"integer","description":"楼栋编号","format":"int32"},"specificLocation":{"type":"string","description":"具体位置（如房间号）"},"image":{"type":"string","format":"binary"}},"description":"发布失物请求DTO"},"LostItem":{"type":"object","properties":{"id":{"type":"integer","description":"失物ID","format":"int64"},"name":{"type":"string","description":"物品名称"},"type":{"type":"integer","description":"物品类型 1:书 2:包 3:卡 4:钥匙 5:手机 6:手表 7:笔 8:伞 9:耳机 10:其他","format":"int32"},"color":{"type":"integer","description":"颜色 1:红色 2:浅红色 3:暗红色 4:绿色 5:浅绿色 6:暗绿色 7:蓝色 8:浅蓝色 9:深蓝色 10:黄色 11:橙色 12:紫色 13:粉红色 14:棕色 15:灰色 16:黑色 17:白色 18:其他","format":"int32"},"description":{"type":"string","description":"物品描述"},"foundLocation":{"type":"string","description":"捡到地点"},"building":{"type":"integer","description":"楼栋编号","format":"int32"},"specificLocation":{"type":"string","description":"具体位置（如房间号）"},"imageUrl":{"type":"string","description":"图片路径"},"publishTime":{"type":"string","description":"发布到平台时间","format":"date-time"},"isClaimed":{"type":"integer","description":"是否被领取 0:未领取 1:已领取","format":"int32"},"claimTime":{"type":"string","description":"领取时间","format":"date-time"},"adminId":{"type":"integer","description":"发布管理员ID","format":"int64"},"claimerStudentId":{"type":"string","description":"领取人学号"},"claimerName":{"type":"string","description":"领取人姓名"},"claimerPhone":{"type":"string","description":"领取人手机号"},"createTime":{"type":"string","description":"创建时间","format":"date-time"},"updateTime":{"type":"string","description":"更新时间","format":"date-time"}},"description":"失物实体"},"ResultLostItem":{"type":"object","properties":{"code":{"type":"integer","description":"响应码","format":"int32"},"message":{"type":"string","description":"响应消息"},"data":{"$ref":"#/components/schemas/LostItem"}},"description":"统一响应结果"},"ClaimRequest":{"type":"object","properties":{"lostItemId":{"type":"integer","description":"失物ID","format":"int64"},"claimerStudentId":{"type":"string","description":"领取人学号"},"claimerName":{"type":"string","description":"领取人姓名"},"claimerPhone":{"type":"string","description":"领取人手机号"}},"description":"领取失物请求DTO"},"ResultBoolean":{"type":"object","properties":{"code":{"type":"integer","description":"响应码","format":"int32"},"message":{"type":"string","description":"响应消息"},"data":{"type":"boolean","description":"响应数据"}},"description":"统一响应结果"},"ResultSuperAdmin":{"type":"object","properties":{"code":{"type":"integer","description":"响应码","format":"int32"},"message":{"type":"string","description":"响应消息"},"data":{"$ref":"#/components/schemas/SuperAdmin"}},"description":"统一响应结果"},"SuperAdmin":{"type":"object","properties":{"id":{"type":"integer","description":"管理员ID","format":"int64"},"username":{"type":"string","description":"账号名"},"password":{"type":"string","description":"密码"},"college":{"type":"string","description":"学院"},"phone":{"type":"string","description":"手机号"},"createTime":{"type":"string","description":"创建时间","format":"date-time"},"updateTime":{"type":"string","description":"更新时间","format":"date-time"}},"description":"总管理员实体"},"LostItemAdmin":{"type":"object","properties":{"id":{"type":"integer","description":"管理员ID","format":"int64"},"username":{"type":"string","description":"账号名"},"password":{"type":"string","description":"密码"},"college":{"type":"string","description":"学院"},"officeLocation":{"type":"string","description":"办公地点"},"phone":{"type":"string","description":"手机号"},"createTime":{"type":"string","description":"创建时间","format":"date-time"},"updateTime":{"type":"string","description":"更新时间","format":"date-time"}},"description":"失物管理员实体"},"ResultLostItemAdmin":{"type":"object","properties":{"code":{"type":"integer","description":"响应码","format":"int32"},"message":{"type":"string","description":"响应消息"},"data":{"$ref":"#/components/schemas/LostItemAdmin"}},"description":"统一响应结果"},"LostItemSearchRequest":{"type":"object","properties":{"type":{"type":"integer","description":"物品类型 1:书 2:包 3:卡 4:钥匙 5:手机 6:手表 7:笔 8:伞 9:耳机 10:其他","format":"int32"},"color":{"type":"integer","description":"颜色 1:红色 2:浅红色 3:暗红色 4:绿色 5:浅绿色 6:暗绿色 7:蓝色 8:浅蓝色 9:深蓝色 10:黄色 11:橙色 12:紫色 13:粉红色 14:棕色 15:灰色 16:黑色 17:白色 18:其他","format":"int32"},"name":{"type":"string","description":"物品名称"},"building":{"type":"integer","description":"楼栋编号","format":"int32"},"pageNum":{"type":"integer","description":"页码，默认1","format":"int32"},"pageSize":{"type":"integer","description":"每页数量，默认10","format":"int32"}},"description":"失物搜索请求DTO"},"IPageLostItem":{"type":"object","properties":{"size":{"type":"integer","format":"int64"},"records":{"type":"array","items":{"$ref":"#/components/schemas/LostItem"}},"current":{"type":"integer","format":"int64"},"total":{"type":"integer","format":"int64"},"pages":{"type":"integer","format":"int64"}},"description":"响应数据"},"ResultIPageLostItem":{"type":"object","properties":{"code":{"type":"integer","description":"响应码","format":"int32"},"message":{"type":"string","description":"响应消息"},"data":{"$ref":"#/components/schemas/IPageLostItem"}},"description":"统一响应结果"}}}}
+{
+  "openapi": "3.0.1",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [{ "url": "http://localhost:8080", "description": "Generated server url" }],
+  "tags": [
+    { "name": "失物管理员接口", "description": "失物管理员相关接口" },
+    { "name": "总管理员接口", "description": "总管理员相关接口" },
+    { "name": "失物接口", "description": "失物相关接口" },
+    { "name": "普通用户接口", "description": "普通用户相关接口" }
+  ],
+  "paths": {
+    "/api/user/profile": {
+      "put": {
+        "tags": ["普通用户接口"],
+        "summary": "更新用户信息",
+        "operationId": "updateUserProfile",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultUser" } } }
+          }
+        }
+      }
+    },
+    "/api/user/login": {
+      "post": {
+        "tags": ["普通用户接口"],
+        "summary": "用户登录",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultUser" } } }
+          }
+        }
+      }
+    },
+    "/api/lost-items/publish": {
+      "post": {
+        "tags": ["失物接口"],
+        "summary": "发布失物",
+        "operationId": "publishLostItem",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request": { "$ref": "#/components/schemas/LostItemRequest" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultLostItem" } } }
+          }
+        }
+      }
+    },
+    "/api/lost-items/claim": {
+      "post": {
+        "tags": ["失物接口"],
+        "summary": "领取失物",
+        "operationId": "claimLostItem",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ClaimRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultBoolean" } } }
+          }
+        }
+      }
+    },
+    "/api/admin/super/login": {
+      "post": {
+        "tags": ["总管理员接口"],
+        "summary": "超级管理员登录",
+        "operationId": "login_1",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultSuperAdmin" } } }
+          }
+        }
+      }
+    },
+    "/api/admin/lost-item/login": {
+      "post": {
+        "tags": ["失物管理员接口"],
+        "summary": "管理员登录",
+        "operationId": "login_2",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/ResultLostItemAdmin" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/profile/{id}": {
+      "get": {
+        "tags": ["普通用户接口"],
+        "summary": "获取用户信息",
+        "operationId": "getUserProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultUser" } } }
+          }
+        }
+      }
+    },
+    "/api/lost-items/{id}": {
+      "get": {
+        "tags": ["失物接口"],
+        "summary": "获取失物详情",
+        "operationId": "getLostItem",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultLostItem" } } }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["失物接口"],
+        "summary": "删除失物",
+        "operationId": "deleteLostItem",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "adminId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "isSuperAdmin",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/ResultBoolean" } } }
+          }
+        }
+      }
+    },
+    "/api/lost-items/search": {
+      "get": {
+        "tags": ["失物接口"],
+        "summary": "搜索失物",
+        "operationId": "searchLostItems",
+        "parameters": [
+          {
+            "name": "searchRequest",
+            "in": "query",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/LostItemSearchRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/ResultIPageLostItem" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/lost-items/all": {
+      "get": {
+        "tags": ["失物接口"],
+        "summary": "获取所有未领取的失物",
+        "operationId": "getAllLostItems",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 1 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/ResultIPageLostItem" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/lost-items/admin/{adminId}": {
+      "get": {
+        "tags": ["失物接口"],
+        "summary": "获取管理员发布的失物",
+        "operationId": "getLostItemsByAdmin",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "pageNum",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 1 }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 10 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/ResultIPageLostItem" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/lost-item/profile/{id}": {
+      "get": {
+        "tags": ["失物管理员接口"],
+        "summary": "获取管理员信息",
+        "operationId": "getAdminProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/ResultLostItemAdmin" } }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "用户ID", "format": "int64" },
+          "studentId": { "type": "string", "description": "学号" },
+          "username": { "type": "string", "description": "账号名" },
+          "college": { "type": "string", "description": "学院" },
+          "password": { "type": "string", "description": "密码" },
+          "phone": { "type": "string", "description": "手机号" },
+          "createTime": { "type": "string", "description": "创建时间", "format": "date-time" },
+          "updateTime": { "type": "string", "description": "更新时间", "format": "date-time" }
+        },
+        "description": "普通用户实体"
+      },
+      "ResultUser": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "description": "响应码", "format": "int32" },
+          "message": { "type": "string", "description": "响应消息" },
+          "data": { "$ref": "#/components/schemas/User" }
+        },
+        "description": "统一响应结果"
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string", "description": "用户名" },
+          "password": { "type": "string", "description": "密码" }
+        },
+        "description": "登录请求DTO"
+      },
+      "LostItemRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "物品名称" },
+          "type": {
+            "type": "integer",
+            "description": "物品类型 1:书 2:包 3:卡 4:钥匙 5:手机 6:手表 7:笔 8:伞 9:耳机 10:其他",
+            "format": "int32"
+          },
+          "color": {
+            "type": "integer",
+            "description": "颜色 1:红色 2:浅红色 3:暗红色 4:绿色 5:浅绿色 6:暗绿色 7:蓝色 8:浅蓝色 9:深蓝色 10:黄色 11:橙色 12:紫色 13:粉红色 14:棕色 15:灰色 16:黑色 17:白色 18:其他",
+            "format": "int32"
+          },
+          "description": { "type": "string", "description": "物品描述" },
+          "building": { "type": "integer", "description": "楼栋编号", "format": "int32" },
+          "specificLocation": { "type": "string", "description": "具体位置（如房间号）" },
+          "image": { "type": "string", "format": "binary" }
+        },
+        "description": "发布失物请求DTO"
+      },
+      "LostItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "失物ID", "format": "int64" },
+          "name": { "type": "string", "description": "物品名称" },
+          "type": {
+            "type": "integer",
+            "description": "物品类型 1:书 2:包 3:卡 4:钥匙 5:手机 6:手表 7:笔 8:伞 9:耳机 10:其他",
+            "format": "int32"
+          },
+          "color": {
+            "type": "integer",
+            "description": "颜色 1:红色 2:浅红色 3:暗红色 4:绿色 5:浅绿色 6:暗绿色 7:蓝色 8:浅蓝色 9:深蓝色 10:黄色 11:橙色 12:紫色 13:粉红色 14:棕色 15:灰色 16:黑色 17:白色 18:其他",
+            "format": "int32"
+          },
+          "description": { "type": "string", "description": "物品描述" },
+          "foundLocation": { "type": "string", "description": "捡到地点" },
+          "building": { "type": "integer", "description": "楼栋编号", "format": "int32" },
+          "specificLocation": { "type": "string", "description": "具体位置（如房间号）" },
+          "imageUrl": { "type": "string", "description": "图片路径" },
+          "publishTime": {
+            "type": "string",
+            "description": "发布到平台时间",
+            "format": "date-time"
+          },
+          "isClaimed": {
+            "type": "integer",
+            "description": "是否被领取 0:未领取 1:已领取",
+            "format": "int32"
+          },
+          "claimTime": { "type": "string", "description": "领取时间", "format": "date-time" },
+          "adminId": { "type": "integer", "description": "发布管理员ID", "format": "int64" },
+          "claimerStudentId": { "type": "string", "description": "领取人学号" },
+          "claimerName": { "type": "string", "description": "领取人姓名" },
+          "claimerPhone": { "type": "string", "description": "领取人手机号" },
+          "createTime": { "type": "string", "description": "创建时间", "format": "date-time" },
+          "updateTime": { "type": "string", "description": "更新时间", "format": "date-time" }
+        },
+        "description": "失物实体"
+      },
+      "ResultLostItem": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "description": "响应码", "format": "int32" },
+          "message": { "type": "string", "description": "响应消息" },
+          "data": { "$ref": "#/components/schemas/LostItem" }
+        },
+        "description": "统一响应结果"
+      },
+      "ClaimRequest": {
+        "type": "object",
+        "properties": {
+          "lostItemId": { "type": "integer", "description": "失物ID", "format": "int64" },
+          "claimerStudentId": { "type": "string", "description": "领取人学号" },
+          "claimerName": { "type": "string", "description": "领取人姓名" },
+          "claimerPhone": { "type": "string", "description": "领取人手机号" }
+        },
+        "description": "领取失物请求DTO"
+      },
+      "ResultBoolean": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "description": "响应码", "format": "int32" },
+          "message": { "type": "string", "description": "响应消息" },
+          "data": { "type": "boolean", "description": "响应数据" }
+        },
+        "description": "统一响应结果"
+      },
+      "ResultSuperAdmin": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "description": "响应码", "format": "int32" },
+          "message": { "type": "string", "description": "响应消息" },
+          "data": { "$ref": "#/components/schemas/SuperAdmin" }
+        },
+        "description": "统一响应结果"
+      },
+      "SuperAdmin": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "管理员ID", "format": "int64" },
+          "username": { "type": "string", "description": "账号名" },
+          "password": { "type": "string", "description": "密码" },
+          "college": { "type": "string", "description": "学院" },
+          "phone": { "type": "string", "description": "手机号" },
+          "createTime": { "type": "string", "description": "创建时间", "format": "date-time" },
+          "updateTime": { "type": "string", "description": "更新时间", "format": "date-time" }
+        },
+        "description": "总管理员实体"
+      },
+      "LostItemAdmin": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "管理员ID", "format": "int64" },
+          "username": { "type": "string", "description": "账号名" },
+          "password": { "type": "string", "description": "密码" },
+          "college": { "type": "string", "description": "学院" },
+          "officeLocation": { "type": "string", "description": "办公地点" },
+          "phone": { "type": "string", "description": "手机号" },
+          "createTime": { "type": "string", "description": "创建时间", "format": "date-time" },
+          "updateTime": { "type": "string", "description": "更新时间", "format": "date-time" }
+        },
+        "description": "失物管理员实体"
+      },
+      "ResultLostItemAdmin": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "description": "响应码", "format": "int32" },
+          "message": { "type": "string", "description": "响应消息" },
+          "data": { "$ref": "#/components/schemas/LostItemAdmin" }
+        },
+        "description": "统一响应结果"
+      },
+      "LostItemSearchRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "integer",
+            "description": "物品类型 1:书 2:包 3:卡 4:钥匙 5:手机 6:手表 7:笔 8:伞 9:耳机 10:其他",
+            "format": "int32"
+          },
+          "color": {
+            "type": "integer",
+            "description": "颜色 1:红色 2:浅红色 3:暗红色 4:绿色 5:浅绿色 6:暗绿色 7:蓝色 8:浅蓝色 9:深蓝色 10:黄色 11:橙色 12:紫色 13:粉红色 14:棕色 15:灰色 16:黑色 17:白色 18:其他",
+            "format": "int32"
+          },
+          "name": { "type": "string", "description": "物品名称" },
+          "building": { "type": "integer", "description": "楼栋编号", "format": "int32" },
+          "pageNum": { "type": "integer", "description": "页码，默认1", "format": "int32" },
+          "pageSize": { "type": "integer", "description": "每页数量，默认10", "format": "int32" }
+        },
+        "description": "失物搜索请求DTO"
+      },
+      "IPageLostItem": {
+        "type": "object",
+        "properties": {
+          "size": { "type": "integer", "format": "int64" },
+          "records": { "type": "array", "items": { "$ref": "#/components/schemas/LostItem" } },
+          "current": { "type": "integer", "format": "int64" },
+          "total": { "type": "integer", "format": "int64" },
+          "pages": { "type": "integer", "format": "int64" }
+        },
+        "description": "响应数据"
+      },
+      "ResultIPageLostItem": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "description": "响应码", "format": "int32" },
+          "message": { "type": "string", "description": "响应消息" },
+          "data": { "$ref": "#/components/schemas/IPageLostItem" }
+        },
+        "description": "统一响应结果"
+      }
+    }
+  }
+}

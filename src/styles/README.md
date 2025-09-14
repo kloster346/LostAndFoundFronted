@@ -64,17 +64,20 @@ import './styles/global.css'
 ### 颜色系统
 
 #### 主色调
+
 - `--primary-color`: 主品牌色 (#409EFF)
 - `--primary-light`: 主色浅色版
 - `--primary-dark`: 主色深色版
 
 #### 功能色
+
 - `--success-color`: 成功色 (#67C23A)
 - `--warning-color`: 警告色 (#E6A23C)
 - `--danger-color`: 危险色 (#F56C6C)
 - `--info-color`: 信息色 (#909399)
 
 #### 中性色
+
 - `--text-primary`: 主要文本色
 - `--text-regular`: 常规文本色
 - `--text-secondary`: 次要文本色
@@ -82,12 +85,14 @@ import './styles/global.css'
 - `--text-disabled`: 禁用文本色
 
 #### 背景色
+
 - `--bg-page`: 页面背景色
 - `--bg-color`: 组件背景色
 - `--bg-color-light`: 浅色背景
 - `--bg-color-lighter`: 更浅背景
 
 #### 边框色
+
 - `--border-base`: 基础边框色
 - `--border-light`: 浅色边框
 - `--border-lighter`: 更浅边框
@@ -96,9 +101,11 @@ import './styles/global.css'
 ### 字体系统
 
 #### 字体族
+
 - `--font-family`: 系统字体栈
 
 #### 字体大小
+
 - `--font-size-extra-small`: 10px
 - `--font-size-small`: 12px
 - `--font-size-base`: 14px (基准)
@@ -107,6 +114,7 @@ import './styles/global.css'
 - `--font-size-extra-large`: 20px
 
 #### 字体粗细
+
 - `--font-weight-light`: 300
 - `--font-weight-normal`: 400
 - `--font-weight-medium`: 500
@@ -114,6 +122,7 @@ import './styles/global.css'
 - `--font-weight-bolder`: 700
 
 #### 行高
+
 - `--line-height-small`: 1.2
 - `--line-height-base`: 1.5
 - `--line-height-large`: 1.8
@@ -205,7 +214,7 @@ import './styles/global.css'
 ```html
 <div class="form-group">
   <label class="form-label required">用户名</label>
-  <input type="text" class="form-control" placeholder="请输入用户名">
+  <input type="text" class="form-control" placeholder="请输入用户名" />
   <div class="form-help">用户名长度为3-20个字符</div>
 </div>
 ```
@@ -277,6 +286,7 @@ document.documentElement.classList.remove('dark-theme', 'light-theme')
 ### 1. 使用设计令牌
 
 ❌ 不推荐：
+
 ```css
 .my-component {
   color: #303133;
@@ -286,6 +296,7 @@ document.documentElement.classList.remove('dark-theme', 'light-theme')
 ```
 
 ✅ 推荐：
+
 ```css
 .my-component {
   color: var(--text-primary);
@@ -297,6 +308,7 @@ document.documentElement.classList.remove('dark-theme', 'light-theme')
 ### 2. 优先使用工具类
 
 ❌ 不推荐：
+
 ```css
 .my-component {
   display: flex;
@@ -307,6 +319,7 @@ document.documentElement.classList.remove('dark-theme', 'light-theme')
 ```
 
 ✅ 推荐：
+
 ```html
 <div class="flex items-center justify-between mb-md">
   <!-- 内容 -->
@@ -316,6 +329,7 @@ document.documentElement.classList.remove('dark-theme', 'light-theme')
 ### 3. 响应式设计
 
 ❌ 不推荐：
+
 ```css
 .my-component {
   width: 300px;
@@ -323,6 +337,7 @@ document.documentElement.classList.remove('dark-theme', 'light-theme')
 ```
 
 ✅ 推荐：
+
 ```html
 <div class="col-12 col-md-6 col-lg-4">
   <!-- 内容 -->
@@ -394,9 +409,15 @@ document.documentElement.classList.remove('dark-theme', 'light-theme')
 
 ```css
 /* 新工具类 */
-.text-brand { color: var(--brand-color); }
-.bg-brand { background-color: var(--brand-color); }
-.border-brand { border-color: var(--brand-color); }
+.text-brand {
+  color: var(--brand-color);
+}
+.bg-brand {
+  background-color: var(--brand-color);
+}
+.border-brand {
+  border-color: var(--brand-color);
+}
 ```
 
 ## 注意事项
