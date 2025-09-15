@@ -61,9 +61,8 @@ class LostItemAPI {
    * @param {number} itemId - 失物ID
    * @param {Object} claimData - 领取信息
    * @param {string} claimData.claimerName - 领取人姓名
-   * @param {string} claimData.contactInfo - 联系方式
-   * @param {string} claimData.studentId - 学号
-   * @param {string} claimData.claimDescription - 领取说明
+   * @param {string} claimData.claimerPhone - 联系电话
+   * @param {string} claimData.claimerStudentId - 学号
    * @returns {Promise<Object>} 领取结果
    */
   static async claimLostItem(itemId, claimData) {
@@ -76,14 +75,22 @@ class LostItemAPI {
         throw new Error('领取信息不能为空')
       }
 
-      const requiredFields = ['claimerName', 'contactInfo', 'studentId', 'claimDescription']
+      const requiredFields = ['claimerName', 'claimerPhone', 'claimerStudentId']
       for (const field of requiredFields) {
         if (!claimData[field]) {
           throw new Error(`${field} 字段不能为空`)
         }
       }
 
-      const response = await request.post(`${API_ENDPOINTS.LOST_ITEMS.CLAIM}/${itemId}`, claimData)
+      // 构建符合后端API的请求体
+      const requestBody = {
+        lostItemId: itemId,
+        claimerName: claimData.claimerName,
+        claimerPhone: claimData.claimerPhone,
+        claimerStudentId: claimData.claimerStudentId
+      }
+
+      const response = await request.post(API_ENDPOINTS.LOST_ITEMS.CLAIM, requestBody)
       return response.data
     } catch (error) {
       console.error('领取失物失败:', error)

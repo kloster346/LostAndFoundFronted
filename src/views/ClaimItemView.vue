@@ -66,69 +66,49 @@
             </div>
           </div>
 
-          <!-- 联系方式 -->
+          <!-- 手机号 -->
           <div class="form-group">
-            <label for="contactInfo" class="form-label">
+            <label for="claimerPhone" class="form-label">
               <span class="required">*</span>
-              联系方式
+              手机号
             </label>
             <input
-              id="contactInfo"
-              v-model="claimForm.contactInfo"
-              type="text"
+              id="claimerPhone"
+              v-model="claimForm.claimerPhone"
+              type="tel"
               class="form-input"
-              :class="{ error: errors.contactInfo }"
-              placeholder="请输入手机号码或微信号"
-              maxlength="50"
+              :class="{ error: errors.claimerPhone }"
+              placeholder="请输入手机号码"
+              maxlength="11"
               :disabled="submitting"
             />
-            <div v-if="errors.contactInfo" class="error-message">
-              {{ errors.contactInfo }}
+            <div v-if="errors.claimerPhone" class="error-message">
+              {{ errors.claimerPhone }}
             </div>
           </div>
 
           <!-- 学号 -->
           <div class="form-group">
-            <label for="studentId" class="form-label">
+            <label for="claimerStudentId" class="form-label">
               <span class="required">*</span>
               学号
             </label>
             <input
-              id="studentId"
-              v-model="claimForm.studentId"
+              id="claimerStudentId"
+              v-model="claimForm.claimerStudentId"
               type="text"
               class="form-input"
-              :class="{ error: errors.studentId }"
+              :class="{ error: errors.claimerStudentId }"
               placeholder="请输入您的学号"
-              maxlength="20"
+              maxlength="15"
               :disabled="submitting"
             />
-            <div v-if="errors.studentId" class="error-message">
-              {{ errors.studentId }}
+            <div v-if="errors.claimerStudentId" class="error-message">
+              {{ errors.claimerStudentId }}
             </div>
           </div>
 
-          <!-- 领取说明 -->
-          <div class="form-group">
-            <label for="claimDescription" class="form-label">
-              <span class="required">*</span>
-              领取说明
-            </label>
-            <textarea
-              id="claimDescription"
-              v-model="claimForm.claimDescription"
-              class="form-textarea"
-              :class="{ error: errors.claimDescription }"
-              placeholder="请详细描述失物的特征、丢失时间地点等信息，以便我们核实失物归属"
-              rows="4"
-              maxlength="500"
-              :disabled="submitting"
-            ></textarea>
-            <div class="char-count">{{ claimForm.claimDescription.length }}/500</div>
-            <div v-if="errors.claimDescription" class="error-message">
-              {{ errors.claimDescription }}
-            </div>
-          </div>
+
 
           <div class="form-group" style="display: none">
             <label for="lossTime">丢失时间</label>
@@ -219,9 +199,8 @@ export default {
     // 认领表单数据
     const claimForm = ref({
       claimerName: '',
-      contactInfo: '',
-      studentId: '',
-      claimDescription: '',
+      claimerPhone: '',
+      claimerStudentId: '',
       lossTime: '',
       lossLocation: '',
     })
@@ -229,18 +208,16 @@ export default {
     // 表单错误
     const errors = ref({
       claimerName: '',
-      contactInfo: '',
-      studentId: '',
-      claimDescription: '',
+      claimerPhone: '',
+      claimerStudentId: '',
     })
 
     // 计算属性
     const isFormValid = computed(() => {
       return (
         claimForm.value.claimerName.trim() &&
-        claimForm.value.contactInfo.trim() &&
-        claimForm.value.studentId.trim() &&
-        claimForm.value.claimDescription.trim()
+        claimForm.value.claimerPhone.trim() &&
+        claimForm.value.claimerStudentId.trim()
       )
     })
 
@@ -295,40 +272,31 @@ export default {
         isValid = false
       }
 
-      // 验证联系方式
-      if (!claimForm.value.contactInfo.trim()) {
-        errors.value.contactInfo = '请输入联系方式'
+      // 验证手机号
+      if (!claimForm.value.claimerPhone.trim()) {
+        errors.value.claimerPhone = '请输入手机号'
         isValid = false
       } else {
-        const contactInfo = claimForm.value.contactInfo.trim()
-        // 简单的手机号验证
+        const phone = claimForm.value.claimerPhone.trim()
+        // 手机号验证
         const phoneRegex = /^1[3-9]\d{9}$/
-        // 微信号验证（字母数字下划线，6-20位）
-        const wechatRegex = /^[a-zA-Z][a-zA-Z0-9_]{5,19}$/
 
-        if (!phoneRegex.test(contactInfo) && !wechatRegex.test(contactInfo)) {
-          errors.value.contactInfo = '请输入有效的手机号码或微信号'
+        if (!phoneRegex.test(phone)) {
+          errors.value.claimerPhone = '请输入有效的手机号码'
           isValid = false
         }
       }
 
       // 验证学号
-      if (!claimForm.value.studentId.trim()) {
-        errors.value.studentId = '请输入学号'
+      if (!claimForm.value.claimerStudentId.trim()) {
+        errors.value.claimerStudentId = '请输入学号'
         isValid = false
-      } else if (!/^\d{15}$/.test(claimForm.value.studentId.trim())) {
-        errors.value.studentId = '学号应为15位数字'
+      } else if (!/^\d{15}$/.test(claimForm.value.claimerStudentId.trim())) {
+        errors.value.claimerStudentId = '学号应为15位数字'
         isValid = false
       }
 
-      // 验证领取说明
-      if (!claimForm.value.claimDescription.trim()) {
-        errors.value.claimDescription = '请输入领取说明'
-        isValid = false
-      } else if (claimForm.value.claimDescription.trim().length < 10) {
-        errors.value.claimDescription = '领取说明至少需要10个字符'
-        isValid = false
-      }
+
 
       return isValid
     }
@@ -345,16 +313,47 @@ export default {
         const itemId = parseInt(route.params.id)
         const claimData = {
           claimerName: claimForm.value.claimerName,
-          contactInfo: claimForm.value.contactInfo,
-          studentId: claimForm.value.studentId,
-          claimDescription: claimForm.value.claimDescription,
+          claimerPhone: claimForm.value.claimerPhone,
+          claimerStudentId: claimForm.value.claimerStudentId,
         }
 
         await claimLostItem(itemId, claimData)
         showSuccessModal.value = true
       } catch (err) {
         console.error('提交认领失败:', err)
-        error.value = err.message || '提交失败，请稍后重试'
+        
+        // 根据错误类型提供更友好的提示
+        if (err.response) {
+          const status = err.response.status
+          const data = err.response.data
+          
+          switch (status) {
+            case 400:
+              error.value = data.message || '请求参数有误，请检查填写信息'
+              break
+            case 401:
+              error.value = '登录已过期，请重新登录'
+              break
+            case 403:
+              error.value = '没有权限进行此操作'
+              break
+            case 404:
+              error.value = '失物信息不存在或已被删除'
+              break
+            case 409:
+              error.value = '该失物已被认领或状态已变更'
+              break
+            case 500:
+              error.value = '服务器内部错误，请稍后重试'
+              break
+            default:
+              error.value = data.message || `请求失败 (${status})，请稍后重试`
+          }
+        } else if (err.code === 'NETWORK_ERROR') {
+          error.value = '网络连接失败，请检查网络设置'
+        } else {
+          error.value = err.message || '提交失败，请稍后重试'
+        }
       } finally {
         submitting.value = false
       }
