@@ -111,7 +111,7 @@ onUnmounted(() => {
 
 /* 有顶部导航栏时的样式 */
 .main-content.with-navbar {
-  padding-top: 64px;
+  /* 移除padding-top，让页面内容直接贴合导航栏 */
 }
 
 /* 有侧边栏时的样式 */
