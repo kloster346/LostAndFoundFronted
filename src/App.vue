@@ -16,13 +16,13 @@ const isMobile = ref(false)
 
 // 计算属性
 const showNavBar = computed(() => {
-  // 在登录页面不显示顶部导航栏
-  return route.name !== 'Login'
+  // 非登录页面且非管理员时显示导航栏
+  return route.name !== 'Login' && !authStore.isAdmin
 })
 
 const showSideBar = computed(() => {
-  // 只在管理员页面显示侧边栏
-  return authStore.isAdmin && route.path.startsWith('/admin')
+  // 管理员登录后始终显示侧边栏，不限制页面路径
+  return authStore.isAdmin
 })
 
 const mainContentClass = computed(() => {
