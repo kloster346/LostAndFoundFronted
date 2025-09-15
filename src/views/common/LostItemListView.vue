@@ -122,6 +122,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { useLostItemStore } from '../../stores/lostItem.js'
 import SearchForm from '../../components/forms/SearchForm.vue'
 import LostItemCard from '../../components/cards/LostItemCard.vue'
@@ -133,7 +134,7 @@ const router = useRouter()
 // 状态管理
 const lostItemStore = useLostItemStore()
 
-// 解构状态和方法
+// 解构响应式状态（保持响应式连接）
 const {
   loading,
   error,
@@ -143,6 +144,10 @@ const {
   hasMore,
   filteredItems,
   isSearching,
+} = storeToRefs(lostItemStore)
+
+// 解构方法（方法不需要响应式）
+const {
   getAllItems,
   searchItems,
   updateSearchParams,

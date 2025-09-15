@@ -332,12 +332,10 @@ export const useLostItemStore = defineStore('lostItem', () => {
    */
   const resetSearchParams = () => {
     searchParams.value = {
-      keyword: '',
+      name: '',
       type: null,
       color: null,
       building: '',
-      foundLocation: '',
-      claimStatus: null,
     }
   }
 

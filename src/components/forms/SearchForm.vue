@@ -59,16 +59,13 @@
         <div class="search-form__select-group">
           <select v-model="formData.building" class="search-form__select">
             <option value="">全部楼栋</option>
-            <option value="1">1号楼</option>
-            <option value="2">2号楼</option>
-            <option value="3">3号楼</option>
-            <option value="4">4号楼</option>
-            <option value="5">5号楼</option>
-            <option value="6">6号楼</option>
-            <option value="7">7号楼</option>
-            <option value="8">8号楼</option>
-            <option value="9">9号楼</option>
-            <option value="10">10号楼</option>
+            <option
+              v-for="option in buildingOptions"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </option>
           </select>
         </div>
       </div>
@@ -87,7 +84,7 @@
 import { ref, computed, watch } from 'vue'
 import BaseInput from '../common/BaseInput.vue'
 import BaseButton from '../common/BaseButton.vue'
-import { ITEM_TYPE_NAMES, COLORS, COLOR_NAMES } from '../../constants/enums.js'
+import { ITEM_TYPE_NAMES, COLORS, COLOR_NAMES, getBuildingOptions } from '../../constants/enums.js'
 
 // Props定义
 const props = defineProps({
@@ -129,6 +126,10 @@ const hasActiveFilters = computed(() => {
   return Object.entries(formData.value).some(([_key, value]) => {
     return value !== '' && value !== null && value !== undefined
   })
+})
+
+const buildingOptions = computed(() => {
+  return getBuildingOptions()
 })
 
 // 方法
