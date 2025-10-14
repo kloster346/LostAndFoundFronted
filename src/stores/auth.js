@@ -187,8 +187,14 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await UserAPI.login(loginData)
 
       if (response && response.data) {
-        const authToken = response.token || ''
-        const userInfo = response.data
+        // 适配新的JWT登录响应格式
+        const loginResponse = response.data
+        const authToken = loginResponse.token
+        const userInfo = {
+          id: loginResponse.id,
+          username: loginResponse.username,
+          role: loginResponse.role
+        }
         const role = USER_ROLES.NORMAL_USER
 
         saveAuth(authToken, userInfo, role)
@@ -217,8 +223,14 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await AdminAPI.lostItemAdminLogin(loginData)
 
       if (response && response.data) {
-        const authToken = response.token || ''
-        const userInfo = response.data
+        // 适配新的JWT登录响应格式
+        const loginResponse = response.data
+        const authToken = loginResponse.token
+        const userInfo = {
+          id: loginResponse.id,
+          username: loginResponse.username,
+          role: loginResponse.role
+        }
         const role = USER_ROLES.LOST_ITEM_ADMIN
 
         saveAuth(authToken, userInfo, role)
@@ -247,8 +259,14 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await AdminAPI.superAdminLogin(loginData)
 
       if (response && response.data) {
-        const authToken = response.token || ''
-        const userInfo = response.data
+        // 适配新的JWT登录响应格式
+        const loginResponse = response.data
+        const authToken = loginResponse.token
+        const userInfo = {
+          id: loginResponse.id,
+          username: loginResponse.username,
+          role: loginResponse.role
+        }
         const role = USER_ROLES.SUPER_ADMIN
 
         saveAuth(authToken, userInfo, role)
