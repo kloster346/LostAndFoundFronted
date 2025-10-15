@@ -70,6 +70,7 @@ export const API_ENDPOINTS = {
     SEARCH: '/api/lost-items/search',
     ALL: '/api/lost-items/all',
     BY_ADMIN: '/api/lost-items/admin',
+    ADMIN_ITEMS: '/api/lost-items/admin/:adminId',
   },
 }
 

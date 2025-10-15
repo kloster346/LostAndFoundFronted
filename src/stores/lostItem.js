@@ -292,20 +292,21 @@ export const useLostItemStore = defineStore('lostItem', () => {
       error.value = null
 
       const params = {
-        page: pageParams.page || pagination.value.currentPage,
-        size: pageParams.size || pagination.value.pageSize,
+        pageNum: pageParams.pageNum || pagination.value.currentPage,
+        pageSize: pageParams.pageSize || pagination.value.pageSize,
       }
 
       const response = await LostItemAPI.getAdminLostItems(adminId, params)
 
-      items.value = response.items || []
+      // 正确映射后端返回的数据结构
+      items.value = response.data?.records || []
 
-      // 更新分页信息
+      // 更新分页信息，使用后端实际返回的字段
       pagination.value = {
-        currentPage: response.currentPage || 1,
-        pageSize: response.pageSize || 10,
-        total: response.total || 0,
-        totalPages: response.totalPages || 0,
+        currentPage: response.data?.current || 1,
+        pageSize: response.data?.size || 10,
+        total: response.data?.total || 0,
+        totalPages: Math.ceil((response.data?.total || 0) / (response.data?.size || 10)),
       }
     } catch (err) {
       console.error('获取管理员失物失败:', err)

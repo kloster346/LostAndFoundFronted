@@ -54,13 +54,13 @@ request.interceptors.response.use(
 
     // 根据后端返回的统一格式处理
     if (data && typeof data === 'object' && 'code' in data) {
-      // 成功响应
-      if (data.code === 200) {
+      // 成功响应 - 支持多种成功状态码
+      if (data.code === 200 || data.code === 0 || data.code === '200' || data.code === '0') {
         return data
       }
 
       // 业务错误
-      const error = new Error(data.message || '请求失败')
+      const error = new Error(data.message || data.msg || '请求失败')
       error.code = data.code
       error.data = data
       error.response = response

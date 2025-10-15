@@ -357,28 +357,56 @@ class LostItemAPI {
    */
   static async getAdminLostItems(adminId, pageParams = {}) {
     try {
-      if (!adminId || typeof adminId !== 'number') {
-        throw new Error('管理员ID不能为空且必须为数字')
+      const params = {
+        adminId,
+        pageNum: pageParams.pageNum || 1,
+        pageSize: pageParams.pageSize || 10,
+        ...pageParams
       }
 
-      const response = await request.get(`${API_ENDPOINTS.LOST_ITEMS.BY_ADMIN}/${adminId}`, {
-        params: {
-          pageNum: pageParams.page || 1,
-          pageSize: pageParams.size || 10,
-        },
+      const response = await request({
+        url: API_ENDPOINTS.LOST_ITEMS.ADMIN_ITEMS.replace(':adminId', adminId),
+        method: 'get',
+        params
       })
 
-      // 转换后端分页格式为前端期望格式
-      const backendData = response.data
-      return {
-        items: transformLostItemList(backendData.records || []),
-        currentPage: backendData.current || 1,
-        pageSize: backendData.size || 10,
-        total: backendData.total || 0,
-        totalPages: backendData.pages || 0,
+      if (response.data && response.data.records) {
+        response.data.records = transformLostItemList(response.data.records)
       }
+
+      return response
     } catch (error) {
       console.error('获取管理员失物列表失败:', error)
+      throw error
+    }
+  }
+
+  // 获取待审核申请列表
+  static async getPendingClaims(params) {
+    try {
+      const response = await request({
+        url: '/api/lost-items/pending-claims',
+        method: 'get',
+        params
+      })
+      return response
+    } catch (error) {
+      console.error('获取待审核申请列表失败:', error)
+      throw error
+    }
+  }
+
+  // 审核申请
+  static async approveClaim(data) {
+    try {
+      const response = await request({
+        url: '/api/lost-items/approve-claim',
+        method: 'post',
+        data
+      })
+      return response
+    } catch (error) {
+      console.error('审核申请失败:', error)
       throw error
     }
   }
@@ -396,6 +424,8 @@ export const {
   getAllLostItems,
   getAllUnclaimedItems,
   getAdminLostItems,
+  getPendingClaims,
+  approveClaim,
 } = LostItemAPI
 
 // 为了向后兼容，添加 getLostItems 别名

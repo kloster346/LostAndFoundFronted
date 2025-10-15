@@ -68,6 +68,16 @@ const router = createRouter({
       },
     },
     {
+      path: '/admin/claim-approval',
+      name: 'ClaimApproval',
+      component: () => import('../views/admin/ClaimApprovalView.vue'),
+      meta: {
+        title: '申领审核',
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
+    {
       path: '/lost-items/:id',
       name: 'LostItemDetail',
       component: () => import('../views/LostItemDetailView.vue'),

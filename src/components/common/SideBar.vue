@@ -194,6 +194,35 @@
           <span class="nav-text" v-show="!isCollapsed">我的失物</span>
         </router-link>
 
+        <!-- 申领审核 -->
+        <router-link
+          v-if="authStore.isLostItemAdmin"
+          to="/admin/claim-approval"
+          class="nav-item"
+          active-class="active"
+          :title="isCollapsed ? '申领审核' : ''"
+        >
+          <div class="nav-icon">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 12L11 14L15 10"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            </svg>
+          </div>
+          <span class="nav-text" v-show="!isCollapsed">申领审核</span>
+        </router-link>
+
         <!-- 总管理员控制台 -->
         <router-link
           v-if="authStore.isSuperAdmin"
