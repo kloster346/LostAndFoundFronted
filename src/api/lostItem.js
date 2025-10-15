@@ -17,46 +17,66 @@ function transformLostItemData(backendItem) {
     type: backendItem.type || backendItem.itemType,
     color: backendItem.color,
     description: backendItem.description,
-    
+
     // 地点字段映射
     building: backendItem.building,
     location: backendItem.specificLocation || backendItem.location,
-    
+
     // 时间字段映射
     foundTime: backendItem.foundTime || backendItem.createdAt,
     createdAt: backendItem.createdAt,
     updatedAt: backendItem.updatedAt,
-    
+
     // 状态转换：将后端的 isClaimed (boolean) 转换为前端的 claimStatus (string)
     claimStatus: backendItem.isClaimed ? 'claimed' : 'unclaimed',
     isClaimed: backendItem.isClaimed,
-    
+
     // 管理员信息
     adminId: backendItem.adminId,
     adminName: backendItem.adminName,
-    
+
     // 领取信息
     claimerName: backendItem.claimerName,
     claimerPhone: backendItem.claimerPhone,
     claimerStudentId: backendItem.claimerStudentId,
     claimTime: backendItem.claimTime,
-    
+
     // 图片信息
     imageUrl: backendItem.imageUrl,
     images: backendItem.images || (backendItem.imageUrl ? [backendItem.imageUrl] : []),
-    
+
     // 保留其他可能的字段
     ...Object.keys(backendItem).reduce((acc, key) => {
-      if (![
-        'id', 'name', 'itemName', 'type', 'itemType', 'color', 'description',
-        'building', 'specificLocation', 'location', 'foundTime', 'createdAt', 'updatedAt',
-        'isClaimed', 'adminId', 'adminName', 'claimerName', 'claimerPhone', 'claimerStudentId',
-        'claimTime', 'imageUrl', 'images'
-      ].includes(key)) {
+      if (
+        ![
+          'id',
+          'name',
+          'itemName',
+          'type',
+          'itemType',
+          'color',
+          'description',
+          'building',
+          'specificLocation',
+          'location',
+          'foundTime',
+          'createdAt',
+          'updatedAt',
+          'isClaimed',
+          'adminId',
+          'adminName',
+          'claimerName',
+          'claimerPhone',
+          'claimerStudentId',
+          'claimTime',
+          'imageUrl',
+          'images',
+        ].includes(key)
+      ) {
         acc[key] = backendItem[key]
       }
       return acc
-    }, {})
+    }, {}),
   }
 }
 
@@ -158,7 +178,7 @@ class LostItemAPI {
         lostItemId: itemId,
         claimerName: claimData.claimerName,
         claimerPhone: claimData.claimerPhone,
-        claimerStudentId: claimData.claimerStudentId
+        claimerStudentId: claimData.claimerStudentId,
       }
 
       const response = await request.post(API_ENDPOINTS.LOST_ITEMS.CLAIM, requestBody)
@@ -208,8 +228,8 @@ class LostItemAPI {
       const response = await request.delete(`${API_ENDPOINTS.LOST_ITEMS.DELETE}/${id}`, {
         params: {
           adminId,
-          isSuperAdmin: isSuperAdmin || false
-        }
+          isSuperAdmin: isSuperAdmin || false,
+        },
       })
       return response.data
     } catch (error) {

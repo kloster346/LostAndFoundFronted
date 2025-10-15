@@ -43,6 +43,9 @@ export const API_ENDPOINTS = {
   USER: {
     LOGIN: '/api/user/login',
     PROFILE: '/api/user/profile',
+    REGISTER: '/api/user/register',
+    CHECK_USERNAME: '/api/user/check-username',
+    CHECK_STUDENT_ID: '/api/user/check-student-id',
   },
 
   // 用户管理接口（管理员功能）

@@ -134,7 +134,10 @@
         </div>
 
         <!-- 空状态 -->
-        <el-empty v-else-if="lostItemStore.items.length === 0" description="您还没有发布任何失物信息">
+        <el-empty
+          v-else-if="lostItemStore.items.length === 0"
+          description="您还没有发布任何失物信息"
+        >
           <el-button type="primary" @click="$router.push('/admin/publish')">
             <el-icon><Plus /></el-icon>
             发布第一个失物
@@ -153,7 +156,7 @@
                   :alt="item.name"
                   class="item-image"
                   fit="cover"
-                  @error="(e) => handleImageError(e, item.type)"
+                  @error="e => handleImageError(e, item.type)"
                 />
                 <div v-else class="item-image-placeholder">
                   <el-icon><Picture /></el-icon>
@@ -174,7 +177,9 @@
                   </div>
                   <div class="item-details">
                     <span class="item-type">{{ getItemTypeName(item.type) }}</span>
-                    <span class="item-location">{{ getBuildingName(item.building) }} {{ item.specificLocation }}</span>
+                    <span class="item-location"
+                      >{{ getBuildingName(item.building) }} {{ item.specificLocation }}</span
+                    >
                   </div>
                   <p class="item-description">{{ item.description }}</p>
                 </div>
@@ -207,16 +212,19 @@
         </div>
 
         <!-- 分页 -->
-        <div v-if="lostItemStore.pagination.total > lostItemStore.pagination.pageSize" class="pagination-container">
+        <div
+          v-if="lostItemStore.pagination.total > lostItemStore.pagination.pageSize"
+          class="pagination-container"
+        >
           <el-pagination
-          v-model:current-page="lostItemStore.pagination.currentPage"
-          v-model:page-size="lostItemStore.pagination.pageSize"
-          :total="lostItemStore.pagination.total"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+            v-model:current-page="lostItemStore.pagination.currentPage"
+            v-model:page-size="lostItemStore.pagination.pageSize"
+            :total="lostItemStore.pagination.total"
+            :page-sizes="[10, 20, 50, 100]"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
         </div>
       </el-card>
     </div>
@@ -231,8 +239,26 @@ import { useAuthStore } from '@/stores/auth'
 import { useLostItemStore } from '@/stores/lostItem'
 import { debounce } from 'lodash-es'
 import LostItemAPI from '@/api/lostItem'
-import { ITEM_TYPES, ITEM_TYPE_NAMES, CLAIM_STATUS, CLAIM_STATUS_NAMES, BUILDINGS, BUILDING_NAMES } from '@/constants/enums'
-import { Plus, Search, Picture, Edit, Delete, View, Document, Clock, CircleCheck, Loading } from '@element-plus/icons-vue'
+import {
+  ITEM_TYPES,
+  ITEM_TYPE_NAMES,
+  CLAIM_STATUS,
+  CLAIM_STATUS_NAMES,
+  BUILDINGS,
+  BUILDING_NAMES,
+} from '@/constants/enums'
+import {
+  Plus,
+  Search,
+  Picture,
+  Edit,
+  Delete,
+  View,
+  Document,
+  Clock,
+  CircleCheck,
+  Loading,
+} from '@element-plus/icons-vue'
 import { getImageUrl, handleImageError } from '@/utils/imageUtils'
 
 export default {
@@ -251,8 +277,6 @@ export default {
       status: '',
       type: '',
     })
-
-
 
     // 统计信息
     const statistics = reactive({
@@ -333,7 +357,7 @@ export default {
 
         await lostItemStore.getAdminItems(adminId, {
           pageNum: lostItemStore.pagination.currentPage,
-          pageSize: lostItemStore.pagination.pageSize
+          pageSize: lostItemStore.pagination.pageSize,
         })
 
         // 更新统计信息
@@ -361,11 +385,11 @@ export default {
     }, 500)
 
     // 分页处理
-    const handleCurrentChange = (page) => {
+    const handleCurrentChange = page => {
       loadItems()
     }
 
-    const handleSizeChange = (size) => {
+    const handleSizeChange = size => {
       lostItemStore.pagination.currentPage = 1
       loadItems()
     }
@@ -391,7 +415,7 @@ export default {
           {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            type: 'warning'
+            type: 'warning',
           }
         )
 
@@ -409,7 +433,7 @@ export default {
     // 监听认证状态变化
     watch(
       () => authStore.isLoggedIn,
-      (newValue) => {
+      newValue => {
         if (newValue && checkAdminPermission()) {
           loadItems()
         }

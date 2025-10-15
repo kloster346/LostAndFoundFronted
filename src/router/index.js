@@ -14,6 +14,12 @@ const router = createRouter({
       },
     },
     {
+      path: '/register',
+      name: 'Register',
+      component: () => import('../views/RegisterView.vue'),
+      meta: { title: '用户注册' },
+    },
+    {
       path: '/lost-items',
       name: 'LostItemList',
       component: () => import('../views/common/LostItemListView.vue'),

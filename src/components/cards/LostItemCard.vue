@@ -7,7 +7,7 @@
         :src="getImageUrl(item.imageUrl)"
         :alt="item.name"
         class="lost-item-card__img"
-        @error="(e) => handleImageError(e, item.type)"
+        @error="e => handleImageError(e, item.type)"
       />
       <div v-else class="lost-item-card__placeholder">
         <span class="lost-item-card__placeholder-text">{{ getItemTypeIcon(item.type) }}</span>

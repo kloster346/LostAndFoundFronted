@@ -108,8 +108,6 @@
             </div>
           </div>
 
-
-
           <div class="form-group" style="display: none">
             <label for="lossTime">丢失时间</label>
             <input
@@ -296,8 +294,6 @@ export default {
         isValid = false
       }
 
-
-
       return isValid
     }
 
@@ -321,12 +317,12 @@ export default {
         showSuccessModal.value = true
       } catch (err) {
         console.error('提交认领失败:', err)
-        
+
         // 根据错误类型提供更友好的提示
         if (err.response) {
           const status = err.response.status
           const data = err.response.data
-          
+
           switch (status) {
             case 400:
               error.value = data.message || '请求参数有误，请检查填写信息'

@@ -31,7 +31,7 @@ const authStore = useAuthStore()
   } catch (error) {
     console.error('认证状态初始化失败:', error)
   }
-  
+
   app.use(errorHandler, {
     enabled: true,
     capturePromiseRejection: true,
@@ -39,6 +39,6 @@ const authStore = useAuthStore()
     showConsoleError: process.env.NODE_ENV === 'development',
     autoReport: process.env.NODE_ENV === 'production',
   })
-  
+
   app.mount('#app')
 })()

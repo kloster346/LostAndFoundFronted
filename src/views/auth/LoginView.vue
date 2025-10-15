@@ -60,6 +60,11 @@
 
       <div class="login-footer">
         <p class="footer-text">请使用您的账号密码登录系统</p>
+        <!-- 在登录表单底部添加注册链接 -->
+        <div class="register-link">
+          <span>还没有账户？</span>
+          <el-link type="primary" @click="goToRegister">立即注册</el-link>
+        </div>
       </div>
     </div>
   </div>
@@ -178,6 +183,11 @@ const getRedirectPath = role => {
     default:
       return '/lost-items'
   }
+}
+
+// 跳转到注册页面
+const goToRegister = () => {
+  router.push('/register')
 }
 
 // handleInputChange函数已移除
@@ -336,6 +346,16 @@ const getRedirectPath = role => {
   font-size: 12px;
   color: #999;
   margin: 0;
+}
+
+.register-link {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #666;
+}
+
+.register-link span {
+  margin-right: 5px;
 }
 
 /* 响应式设计 */

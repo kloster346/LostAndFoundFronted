@@ -59,11 +59,7 @@
         <div class="search-form__select-group">
           <select v-model="formData.building" class="search-form__select">
             <option value="">全部楼栋</option>
-            <option
-              v-for="option in buildingOptions"
-              :key="option.value"
-              :value="option.value"
-            >
+            <option v-for="option in buildingOptions" :key="option.value" :value="option.value">
               {{ option.label }}
             </option>
           </select>

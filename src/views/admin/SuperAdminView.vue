@@ -372,10 +372,7 @@
           <el-button
             v-if="selectedItem && !selectedItem.isClaimed"
             type="danger"
-            @click="
-              deleteItem(selectedItem)
-              itemDetailVisible = false
-            "
+            @click="handleDeleteItem"
           >
             删除失物
           </el-button>
@@ -675,6 +672,13 @@ const deleteItem = item => {
     })
 }
 
+const handleDeleteItem = () => {
+  if (selectedItem.value) {
+    deleteItem(selectedItem.value)
+    itemDetailVisible.value = false
+  }
+}
+
 const handleItemsPageSizeChange = size => {
   itemsPagination.size = size
   loadAllItems()
@@ -860,6 +864,7 @@ defineExpose({
   refreshItems,
   viewItemDetail,
   deleteItem,
+  handleDeleteItem,
   handleItemsPageSizeChange,
   handleItemsPageChange,
   loadUsers,

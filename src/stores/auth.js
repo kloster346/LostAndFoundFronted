@@ -193,7 +193,7 @@ export const useAuthStore = defineStore('auth', () => {
         const userInfo = {
           id: loginResponse.id,
           username: loginResponse.username,
-          role: loginResponse.role
+          role: loginResponse.role,
         }
         const role = USER_ROLES.NORMAL_USER
 
@@ -229,7 +229,7 @@ export const useAuthStore = defineStore('auth', () => {
         const userInfo = {
           id: loginResponse.id,
           username: loginResponse.username,
-          role: loginResponse.role
+          role: loginResponse.role,
         }
         const role = USER_ROLES.LOST_ITEM_ADMIN
 
@@ -265,7 +265,7 @@ export const useAuthStore = defineStore('auth', () => {
         const userInfo = {
           id: loginResponse.id,
           username: loginResponse.username,
-          role: loginResponse.role
+          role: loginResponse.role,
         }
         const role = USER_ROLES.SUPER_ADMIN
 
@@ -321,7 +321,7 @@ export const useAuthStore = defineStore('auth', () => {
       const { useUserStore } = await import('./user.js')
       const userStore = useUserStore()
       userStore.clearUserProfile()
-      
+
       // 清除认证信息
       await clearAuth()
     }

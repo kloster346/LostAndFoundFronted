@@ -41,7 +41,7 @@
           :alt="item.name"
           class="item-image"
           @click="openImagePreview"
-          @error="(e) => handleImageError(e, item.type)"
+          @error="e => handleImageError(e, item.type)"
         />
       </div>
       <div v-else class="no-image">

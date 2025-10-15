@@ -59,6 +59,60 @@ export class UserAPI {
   }
 
   /**
+   * 用户注册
+   * @param {Object} data - 注册数据
+   * @param {string} data.studentId - 学号
+   * @param {string} data.username - 用户名
+   * @param {string} data.password - 密码
+   * @param {string} [data.phone] - 手机号（可选）
+   * @param {string} [data.college] - 学院（可选）
+   * @returns {Promise<Object>} 注册结果
+   */
+  static async register(data) {
+    try {
+      const response = await request.post(API_ENDPOINTS.USER.REGISTER, data)
+      return response
+    } catch (error) {
+      console.error('用户注册失败:', error)
+      throw error
+    }
+  }
+
+  /**
+   * 检查用户名是否存在
+   * @param {string} username - 用户名
+   * @returns {Promise<Object>} 检查结果
+   */
+  static async checkUsername(username) {
+    try {
+      const response = await request.get(`${API_ENDPOINTS.USER.CHECK_USERNAME}/${username}`)
+      return response
+    } catch (error) {
+      console.error('检查用户名失败:', error)
+      throw error
+    }
+  }
+
+  /**
+   * 检查学号是否存在
+   * @param {string} studentId - 学号
+   * @returns {Promise<Object>} 检查结果
+  /**
+   * 检查学号是否已存在
+   * @param {string} studentId - 学号
+   * @returns {Promise} 检查结果
+   */
+  static async checkStudentId(studentId) {
+    try {
+      const response = await request.get(`${API_ENDPOINTS.USER.CHECK_STUDENT_ID}/${studentId}`)
+      return response
+    } catch (error) {
+      console.error('检查学号失败:', error)
+      throw error
+    }
+  }
+
+  /**
    * 验证用户登录状态
    * @returns {boolean} 是否已登录
    */

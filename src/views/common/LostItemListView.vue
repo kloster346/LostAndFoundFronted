@@ -135,24 +135,11 @@ const router = useRouter()
 const lostItemStore = useLostItemStore()
 
 // 解构响应式状态（保持响应式连接）
-const {
-  loading,
-  error,
-  pagination,
-  hasItems,
-  isEmpty,
-  hasMore,
-  filteredItems,
-  isSearching,
-} = storeToRefs(lostItemStore)
+const { loading, error, pagination, hasItems, isEmpty, hasMore, filteredItems, isSearching } =
+  storeToRefs(lostItemStore)
 
 // 解构方法（方法不需要响应式）
-const {
-  getAllItems,
-  searchItems,
-  updateSearchParams,
-  resetSearchParams,
-} = lostItemStore
+const { getAllItems, searchItems, updateSearchParams, resetSearchParams } = lostItemStore
 
 // 本地状态
 const searchDebounceTimer = ref(null)

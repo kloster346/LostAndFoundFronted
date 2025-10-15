@@ -65,7 +65,7 @@ export function getImagePreviewUrl(imagePath, options = {}) {
  * @returns {Promise<boolean>} 图片是否存在
  */
 export function checkImageExists(imagePath) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const img = new Image()
     const fullUrl = getImageUrl(imagePath)
 
@@ -84,16 +84,16 @@ export function checkImageExists(imagePath) {
 export function getDefaultImageUrl(type) {
   // 根据失物类型返回不同的默认图片
   const defaultImages = {
-    1: '/images/defaults/book.svg',      // 书
-    2: '/images/defaults/bag.svg',       // 包
-    3: '/images/defaults/card.svg',      // 卡
-    4: '/images/defaults/key.svg',       // 钥匙
-    5: '/images/defaults/phone.svg',     // 手机
-    6: '/images/defaults/watch.svg',     // 手表
-    7: '/images/defaults/pen.svg',       // 笔
-    8: '/images/defaults/umbrella.svg',  // 伞
-    9: '/images/defaults/earphone.svg',  // 耳机
-    10: '/images/defaults/other.svg'     // 其他
+    1: '/images/defaults/book.svg', // 书
+    2: '/images/defaults/bag.svg', // 包
+    3: '/images/defaults/card.svg', // 卡
+    4: '/images/defaults/key.svg', // 钥匙
+    5: '/images/defaults/phone.svg', // 手机
+    6: '/images/defaults/watch.svg', // 手表
+    7: '/images/defaults/pen.svg', // 笔
+    8: '/images/defaults/umbrella.svg', // 伞
+    9: '/images/defaults/earphone.svg', // 耳机
+    10: '/images/defaults/other.svg', // 其他
   }
 
   return defaultImages[type] || '/images/defaults/item.svg'
@@ -119,5 +119,5 @@ export default {
   getImagePreviewUrl,
   checkImageExists,
   getDefaultImageUrl,
-  handleImageError
+  handleImageError,
 }
