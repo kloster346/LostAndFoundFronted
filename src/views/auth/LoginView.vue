@@ -1,6 +1,16 @@
 <template>
   <div class="login-container">
     <div class="login-card">
+      <!-- 返回按钮 -->
+      <div class="back-button-container">
+        <button @click="goBack" class="back-button" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          返回
+        </button>
+      </div>
+
       <div class="login-header">
         <h1 class="login-title">校园失物招领系统</h1>
         <p class="login-subtitle">请选择您的身份并登录</p>
@@ -190,6 +200,11 @@ const goToRegister = () => {
   router.push('/register')
 }
 
+// 返回：始终跳转到失物列表页面
+const goBack = () => {
+  router.push('/lost-items')
+}
+
 // handleInputChange函数已移除
 </script>
 
@@ -356,6 +371,35 @@ const goToRegister = () => {
 
 .register-link span {
   margin-right: 5px;
+}
+
+/* 返回按钮样式 */
+.back-button-container {
+  margin-bottom: 20px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #f8f9fa;
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.back-button svg {
+  flex-shrink: 0;
 }
 
 /* 响应式设计 */

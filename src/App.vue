@@ -16,8 +16,8 @@ const isMobile = ref(false)
 
 // 计算属性
 const showNavBar = computed(() => {
-  // 判断是否为认证页面（不需要导航栏的页面）
-  const isAuthPage = route.meta?.requiresAuth === false
+  // 仅在登录或注册页面隐藏导航栏
+  const isAuthPage = route.name === 'Login' || route.name === 'Register'
   // 认证页面或管理员页面不显示导航栏
   return !isAuthPage && !authStore.isAdmin
 })
