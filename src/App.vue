@@ -16,8 +16,10 @@ const isMobile = ref(false)
 
 // 计算属性
 const showNavBar = computed(() => {
-  // 非登录页面且非管理员时显示导航栏
-  return route.name !== 'Login' && !authStore.isAdmin
+  // 判断是否为认证页面（不需要导航栏的页面）
+  const isAuthPage = route.meta?.requiresAuth === false
+  // 认证页面或管理员页面不显示导航栏
+  return !isAuthPage && !authStore.isAdmin
 })
 
 const showSideBar = computed(() => {

@@ -16,8 +16,11 @@ const router = createRouter({
     {
       path: '/register',
       name: 'Register',
-      component: () => import('../views/RegisterView.vue'),
-      meta: { title: '用户注册' },
+      component: () => import('../views/auth/RegisterView.vue'),
+      meta: { 
+        title: '用户注册',
+        requiresAuth: false 
+      },
     },
     {
       path: '/lost-items',
