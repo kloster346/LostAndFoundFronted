@@ -29,8 +29,8 @@
       <!-- 失物基本信息 -->
       <div class="item-header">
         <h1 class="item-title">{{ item.name }}</h1>
-        <div class="item-status" :class="getStatusClass(item.claimStatus)">
-          {{ getStatusText(item.claimStatus) }}
+        <div class="item-status" :class="getStatusClass(item.isClaimed)">
+          {{ getStatusText(item.isClaimed) }}
         </div>
       </div>
 
@@ -70,11 +70,11 @@
             </div>
             <div class="info-item">
               <label>发现地点：</label>
-              <span>{{ getBuildingName(item.location) }}</span>
+              <span>{{ item.foundLocation }}</span>
             </div>
             <div class="info-item">
-              <label>发现时间：</label>
-              <span>{{ formatDate(item.foundTime) }}</span>
+              <label>具体位置：</label>
+              <span>{{ getBuildingName(item.building) }}{{ item.specificLocation ? ' - ' + item.specificLocation : '' }}</span>
             </div>
           </div>
         </div>
@@ -88,12 +88,20 @@
           <h3>发布信息</h3>
           <div class="info-grid">
             <div class="info-item">
-              <label>发布时间：</label>
-              <span>{{ formatDate(item.createdAt) }}</span>
+              <label>创建时间：</label>
+              <span>{{ formatDate(item.createTime) }}</span>
             </div>
-            <div class="info-item">
-              <label>联系方式：</label>
-              <span>{{ item.contactInfo || '请通过系统联系' }}</span>
+            <div class="info-item" v-if="item.updateTime">
+              <label>更新时间：</label>
+              <span>{{ formatDate(item.updateTime) }}</span>
+            </div>
+            <div class="info-item" v-if="item.isClaimed && item.claimTime">
+              <label>认领时间：</label>
+              <span>{{ formatDate(item.claimTime) }}</span>
+            </div>
+            <div class="info-item" v-if="item.isClaimed && item.claimerName">
+              <label>认领人：</label>
+              <span>{{ item.claimerName }}</span>
             </div>
           </div>
         </div>
@@ -101,7 +109,7 @@
 
       <!-- 操作按钮 -->
       <div class="action-buttons">
-        <button v-if="item.claimStatus === 0" @click="goToClaim" class="claim-button primary">
+        <button v-if="!item.isClaimed" @click="goToClaim" class="claim-button primary">
           我要认领
         </button>
         <button v-else class="claim-button disabled" disabled>已被认领</button>
@@ -127,7 +135,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import LostItemAPI from '@/api/lostItem.js'
-import { getItemTypeName, getColorName, getBuildingName, CLAIM_STATUS } from '@/constants/enums'
+import { getItemTypeName, getColorName, getBuildingName } from '@/constants/enums'
 import { getImageUrl, handleImageError } from '@/utils/imageUtils.js'
 
 export default {
@@ -177,13 +185,13 @@ export default {
     }
 
     // 获取状态样式类
-    const getStatusClass = status => {
-      return status === CLAIM_STATUS.CLAIMED ? 'claimed' : 'unclaimed'
+    const getStatusClass = isClaimed => {
+      return isClaimed ? 'claimed' : 'unclaimed'
     }
 
     // 获取状态文本
-    const getStatusText = status => {
-      return status === CLAIM_STATUS.CLAIMED ? '已认领' : '待认领'
+    const getStatusText = isClaimed => {
+      return isClaimed ? '已认领' : '待认领'
     }
 
     // handleImageError已移除，现在使用imageUtils中的handleImageError

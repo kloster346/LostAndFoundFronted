@@ -397,7 +397,7 @@ export default {
     // 查看失物详情
     const viewItem = item => {
       // 跳转到详情页面
-      router.push(`/admin/items/${item.id}`)
+      router.push(`/lost-items/${item.id}`)
     }
 
     // 编辑失物
