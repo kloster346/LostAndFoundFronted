@@ -27,9 +27,9 @@ function transformLostItemData(backendItem) {
     createdAt: backendItem.createdAt,
     updatedAt: backendItem.updatedAt,
 
-    // 状态转换：将后端的 isClaimed (boolean) 转换为前端的 claimStatus (string)
-    claimStatus: backendItem.isClaimed ? 'claimed' : 'unclaimed',
-    isClaimed: backendItem.isClaimed,
+    // 状态转换：将后端的 isClaimed (0/1 或 boolean) 转换为数值型状态
+    claimStatus: Number(backendItem.isClaimed) === 1 ? 1 : 0,
+    isClaimed: Number(backendItem.isClaimed),
 
     // 管理员信息
     adminId: backendItem.adminId,

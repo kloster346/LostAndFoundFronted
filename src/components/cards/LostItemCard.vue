@@ -15,7 +15,7 @@
 
       <!-- 状态标签 -->
       <div class="lost-item-card__status" :class="statusClasses">
-        {{ getStatusText(item.claimStatus) }}
+        {{ getStatusText(item.isClaimed) }}
       </div>
     </div>
 
@@ -133,7 +133,7 @@ const cardClasses = computed(() => {
   const classes = ['lost-item-card']
   classes.push(`lost-item-card--${props.size}`)
 
-  if (props.item.claimStatus === CLAIM_STATUS.CLAIMED) {
+  if (Number(props.item.isClaimed) === 1) {
     classes.push('lost-item-card--claimed')
   }
 
@@ -143,15 +143,12 @@ const cardClasses = computed(() => {
 const statusClasses = computed(() => {
   const classes = ['lost-item-card__status']
 
-  switch (props.item.claimStatus) {
-    case CLAIM_STATUS.UNCLAIMED:
+  switch (Number(props.item.isClaimed)) {
+    case 0:
       classes.push('lost-item-card__status--unclaimed')
       break
-    case CLAIM_STATUS.CLAIMED:
+    case 1:
       classes.push('lost-item-card__status--claimed')
-      break
-    case CLAIM_STATUS.PENDING:
-      classes.push('lost-item-card__status--pending')
       break
     default:
       classes.push('lost-item-card__status--unknown')
@@ -162,7 +159,7 @@ const statusClasses = computed(() => {
 
 // 方法
 const getStatusText = status => {
-  return CLAIM_STATUS_NAMES[status] || '未知状态'
+  return CLAIM_STATUS_NAMES[Number(status)] || '未知状态'
 }
 
 const getItemTypeName = type => {
