@@ -45,9 +45,10 @@
         <!-- 学院选择 -->
         <el-form-item prop="college">
           <el-select v-model="registerForm.college" placeholder="请选择学院（可选）">
-            <el-option label="计算机学院" value="计算机学院" />
-            <el-option label="电子信息学院" value="电子信息学院" />
-            <!-- 更多学院选项 -->
+            <el-option label="人工智能学院" value="人工智能学院" />
+            <el-option label="物理与电子信息学院" value="物理与电子信息学院" />
+            <el-option label="文学院" value="文学院" />
+            <el-option label="法学院" value="法学院" />
           </el-select>
         </el-form-item>
 

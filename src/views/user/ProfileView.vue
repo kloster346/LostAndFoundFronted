@@ -242,13 +242,10 @@ const passwordData = reactive({
 
 // 学院选项
 const collegeOptions = ref([
-  { label: '计算机科学与技术学院', value: 'computer' },
-  { label: '电子信息工程学院', value: 'electronic' },
-  { label: '机械工程学院', value: 'mechanical' },
-  { label: '经济管理学院', value: 'economics' },
-  { label: '外国语学院', value: 'foreign' },
-  { label: '艺术设计学院', value: 'art' },
-  { label: '其他', value: 'other' },
+  { label: '人工智能学院', value: '人工智能学院' },
+  { label: '物理与电子信息学院', value: '物理与电子信息学院' },
+  { label: '文学院', value: '文学院' },
+  { label: '法学院', value: '法学院' },
 ])
 
 const lastPasswordChange = ref('2024-01-15 14:30:00')
