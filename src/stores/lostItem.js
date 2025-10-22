@@ -40,6 +40,15 @@ export const useLostItemStore = defineStore('lostItem', () => {
     totalPages: 0,
   })
 
+  // 审核页：待审核申领列表与分页
+  const pendingClaims = ref([])
+  const pendingPagination = ref({
+    currentPage: 1,
+    pageSize: 10,
+    total: 0,
+    totalPages: 0,
+  })
+
   // 筛选器状态（已简化）
   const filters = ref({})
 
@@ -318,6 +327,77 @@ export const useLostItemStore = defineStore('lostItem', () => {
   }
 
   /**
+   * 获取待审核申领列表（管理员）
+   * @param {Object} pageParams - { pageNum, pageSize }
+   */
+  const getPendingClaimsForAdmin = async (pageParams = {}) => {
+    try {
+      loading.value = true
+      error.value = null
+
+      const params = {
+        pageNum: pageParams.pageNum || pendingPagination.value.currentPage,
+        pageSize: pageParams.pageSize || pendingPagination.value.pageSize,
+      }
+
+      const response = await LostItemAPI.getPendingClaims(params)
+      const data = response?.data || {}
+
+      pendingClaims.value = data.records || []
+      pendingPagination.value = {
+        currentPage: data.current || 1,
+        pageSize: data.size || 10,
+        total: data.total || 0,
+        totalPages: Math.ceil((data.total || 0) / (data.size || 10)),
+      }
+    } catch (err) {
+      console.error('获取待审核列表失败:', err)
+      error.value = err.message || '获取待审核列表失败'
+      pendingClaims.value = []
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * 审核申领（批准/拒绝）
+   * @param {{claimId:number, action:string, adminId?:number}} params
+   */
+  const approveClaimAction = async (params = {}) => {
+    try {
+      operationLoading.value = true
+      error.value = null
+
+      const { claimId, action, adminId } = params
+      if (!claimId) {
+        throw new Error('缺少 claimId')
+      }
+
+      const response = await LostItemAPI.approveClaim({ claimId, action, adminId })
+
+      // 更新待审核列表（移除已处理记录或刷新）
+      const idx = pendingClaims.value.findIndex(c => (c.claimId ?? c.id) === claimId)
+      if (idx !== -1) {
+        pendingClaims.value.splice(idx, 1)
+        pendingPagination.value.total = Math.max(0, pendingPagination.value.total - 1)
+      } else {
+        await getPendingClaimsForAdmin({
+          pageNum: pendingPagination.value.currentPage,
+          pageSize: pendingPagination.value.pageSize,
+        })
+      }
+
+      return response
+    } catch (err) {
+      console.error('审核申请失败:', err)
+      error.value = err.message || '审核申请失败'
+      throw err
+    } finally {
+      operationLoading.value = false
+    }
+  }
+
+  /**
    * 更新搜索参数
    * @param {Object} params - 搜索参数
    */
@@ -417,6 +497,8 @@ export const useLostItemStore = defineStore('lostItem', () => {
     searchParams,
     pagination,
     filters,
+    pendingClaims,
+    pendingPagination,
 
     // 计算属性
     hasItems,
@@ -433,6 +515,8 @@ export const useLostItemStore = defineStore('lostItem', () => {
     claimItem,
     deleteItem,
     getAdminItems,
+    getPendingClaimsForAdmin,
+    approveClaimAction,
     updateSearchParams,
     resetSearchParams,
     updateFilters,

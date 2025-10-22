@@ -384,10 +384,22 @@ class LostItemAPI {
   // 获取待审核申请列表
   static async getPendingClaims(params) {
     try {
+      // 自动补充 adminId（若未提供）
+      const finalParams = { ...params }
+      if (!finalParams.adminId) {
+        try {
+          const { useAuthStore } = await import('../stores/auth.js')
+          const authStore = useAuthStore()
+          finalParams.adminId = authStore.currentUser?.id
+        } catch {
+          void 0
+        }
+      }
+
       const response = await request({
         url: '/api/lost-items/pending-claims',
         method: 'get',
-        params
+        params: finalParams,
       })
       return response
     } catch (error) {
@@ -399,10 +411,27 @@ class LostItemAPI {
   // 审核申请
   static async approveClaim(data) {
     try {
+      // 兼容旧动作值并转换为后端要求的枚举
+      const actionMap = { approve: 'APPROVED', APPROVE: 'APPROVED', approved: 'APPROVED', reject: 'REJECTED', REJECT: 'REJECTED', rejected: 'REJECTED' }
+      const finalData = { ...data, action: actionMap[data.action] || data.action }
+
+      // 自动补充 adminId 到查询参数
+      let adminId = data.adminId
+      if (!adminId) {
+        try {
+          const { useAuthStore } = await import('../stores/auth.js')
+          const authStore = useAuthStore()
+          adminId = authStore.currentUser?.id
+        } catch {
+          void 0
+        }
+      }
+
       const response = await request({
         url: '/api/lost-items/approve-claim',
         method: 'post',
-        data
+        params: { adminId },
+        data: finalData,
       })
       return response
     } catch (error) {

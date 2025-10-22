@@ -32,24 +32,29 @@
         </div>
       </div>
 
-      <!-- 颜色选择 -->
+      <!-- 颜色选择（移动端仅展示前4种，其余通过底部抽屉选择） -->
       <div class="search-form__field">
         <label class="search-form__label">颜色</label>
         <div class="search-form__color-grid">
           <button
-            v-for="(name, color) in COLOR_NAMES"
-            :key="color"
+            v-for="item in visibleColorList"
+            :key="item.key"
             type="button"
             class="search-form__color-option"
-            :class="{ 'search-form__color-option--active': formData.color === color }"
-            @click="toggleColor(color)"
+            :class="{ 'search-form__color-option--active': formData.color === item.key }"
+            @click="toggleColor(item.key)"
           >
             <span
               class="search-form__color-dot"
-              :style="{ backgroundColor: getColorValue(color) }"
+              :style="{ backgroundColor: getColorValue(item.key) }"
             ></span>
-            <span class="search-form__color-name">{{ name }}</span>
+            <span class="search-form__color-name">{{ item.name }}</span>
           </button>
+        </div>
+        <div class="more-colors-wrapper" v-if="isMobile">
+          <BaseButton type="secondary" size="small" @click="openColorDialog">
+            更多颜色
+          </BaseButton>
         </div>
       </div>
 
@@ -74,10 +79,29 @@
       <BaseButton type="secondary" :disabled="loading" @click="handleReset"> 重置 </BaseButton>
     </div>
   </form>
+  <el-dialog v-model="showColorDialog" title="选择颜色" :width="isMobile ? '90%' : '520px'" destroy-on-close>
+    <div class="dialog-color-grid">
+      <button
+        v-for="item in colorEntries"
+        :key="item.key"
+        type="button"
+        class="search-form__color-option"
+        :class="{ 'search-form__color-option--active': formData.color === item.key }"
+        @click="selectColor(item.key)"
+      >
+        <span class="search-form__color-dot" :style="{ backgroundColor: getColorValue(item.key) }"></span>
+        <span class="search-form__color-name">{{ item.name }}</span>
+      </button>
+    </div>
+
+    <template #footer>
+      <BaseButton type="secondary" size="small" @click="closeColorDialog">关闭</BaseButton>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import BaseInput from '../common/BaseInput.vue'
 import BaseButton from '../common/BaseButton.vue'
 import { ITEM_TYPE_NAMES, COLORS, COLOR_NAMES, getBuildingOptions } from '../../constants/enums.js'
@@ -128,6 +152,41 @@ const buildingOptions = computed(() => {
   return getBuildingOptions()
 })
 
+// 设备环境与颜色展示控制
+const isMobile = ref(false)
+const showColorDialog = ref(false)
+
+const colorEntries = computed(() => {
+  return Object.entries(COLOR_NAMES).map(([key, name]) => ({ key, name }))
+})
+
+const visibleColorList = computed(() => {
+  const list = colorEntries.value
+  return isMobile.value ? list.slice(0, 4) : list
+})
+
+const openColorDialog = () => {
+  showColorDialog.value = true
+}
+
+const closeColorDialog = () => {
+  showColorDialog.value = false
+}
+
+// 监听窗口尺寸适配移动端
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 640
+}
+
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
+})
+
 // 方法
 const getColorValue = color => {
   const colorMap = {
@@ -163,6 +222,11 @@ const toggleColor = color => {
   if (props.autoSubmit) {
     debouncedSubmit()
   }
+}
+
+const selectColor = color => {
+  toggleColor(color)
+  closeColorDialog()
 }
 
 const handleSubmit = () => {
@@ -338,6 +402,16 @@ watch(
   margin-top: 24px;
   padding-top: 20px;
   border-top: 1px solid #f3f4f6;
+}
+
+.more-colors-wrapper {
+  margin-top: 8px;
+}
+
+.dialog-color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
 
 /* 响应式设计 */

@@ -2,8 +2,8 @@
   <div class="lost-item-list-view">
     <!-- 页面标题 -->
     <div class="page-header">
-      <h1 class="page-title">失物招领</h1>
-      <p class="page-subtitle">浏览和搜索校园失物信息</p>
+      <h1 class="page-title">民大失物招领系统</h1>
+      <p class="page-subtitle">LostAndFound</p>
     </div>
 
     <!-- 搜索区域 -->
@@ -296,7 +296,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto 1.5rem auto;
   padding: 1rem;
   background: white;
@@ -311,15 +311,15 @@ onUnmounted(() => {
 
 /* 列表区域 */
 .list-section {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
 /* 失物网格 */
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
@@ -330,8 +330,8 @@ onUnmounted(() => {
 
 .skeleton-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
 .skeleton-card {
@@ -434,7 +434,8 @@ onUnmounted(() => {
 
 /* 分页区域 */
 .pagination-section {
-  margin-top: 3rem;
+  margin: 3rem auto 0 auto;
+  max-width: 800px;
   padding: 2rem;
   background: white;
   border-radius: 12px;
