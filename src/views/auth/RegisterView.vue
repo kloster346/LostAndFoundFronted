@@ -96,7 +96,7 @@ const registerForm = reactive({
 const rules = reactive({
   studentId: [
     { required: true, message: '学号不能为空', trigger: 'blur' },
-    { pattern: /^[0-9]{8,12}$/, message: '学号格式不正确', trigger: 'blur' },
+    { pattern: /^\d{15}$/, message: '学号格式不正确', trigger: 'blur' },
   ],
   username: [
     { required: true, message: '用户名不能为空', trigger: 'blur' },
