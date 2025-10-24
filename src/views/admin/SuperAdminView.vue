@@ -293,18 +293,17 @@
               @sort-change="handleAdminsSortChange"
             >
               <el-table-column prop="id" label="ID" width="80" />
-              <el-table-column prop="username" label="用户名" />
-              <el-table-column prop="email" label="邮箱" />
-              <el-table-column prop="role" label="角色" />
-              <el-table-column prop="isActive" label="状态">
-                <template #default="scope">
-                  <el-tag :type="scope.row.isActive ? 'success' : 'danger'">
-                    {{ scope.row.isActive ? '活跃' : '非活跃' }}
-                  </el-tag>
-                </template>
+              <el-table-column prop="username" label="用户名" min-width="120" sortable="custom">
+                <template #default="scope">{{ scope.row.username || '未知' }}</template>
               </el-table-column>
-              <el-table-column prop="createdAt" label="发布时间" width="160">
-                <template #default="scope">{{ scope.row.createdAt ? formatDateTime(scope.row.createdAt) : '未知' }}</template>
+              <el-table-column prop="college" label="学院" min-width="120">
+                <template #default="scope">{{ scope.row.college || '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="officeLocation" label="办公室位置" min-width="140">
+                <template #default="scope">{{ scope.row.officeLocation || '未设置' }}</template>
+              </el-table-column>
+              <el-table-column prop="phone" label="手机号" width="130">
+                <template #default="scope">{{ scope.row.phone || '未设置' }}</template>
               </el-table-column>
               <el-table-column prop="createTime" label="创建时间" width="160" sortable="custom">
                 <template #default="scope">{{ scope.row.createTime ? formatDateTime(scope.row.createTime) : '未知' }}</template>
@@ -814,7 +813,7 @@ const handleAdminsPageChange = page => {
 }
 
 const handleAdminsSortChange = ({ prop, order }) => {
-  adminsSort.by = prop || 'createdAt'
+  adminsSort.by = prop || 'createTime'
   adminsSort.order = order === 'ascending' ? 'asc' : 'desc'
   adminsPagination.current = 1
   loadAdmins()
