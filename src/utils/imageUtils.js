@@ -26,6 +26,7 @@ export function getImageUrl(imagePath) {
   // 确保路径以/开头
   const normalizedPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`
 
+
   return `${baseUrl}${normalizedPath}`
 }
 

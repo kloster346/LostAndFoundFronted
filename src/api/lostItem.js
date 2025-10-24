@@ -1,5 +1,6 @@
 import request, { upload } from './index.js'
 import { API_ENDPOINTS } from '../constants/api.js'
+import imageUtils from '@/utils/imageUtils.js'
 
 /**
  * 数据转换辅助函数
@@ -42,8 +43,9 @@ function transformLostItemData(backendItem) {
     claimTime: backendItem.claimTime,
 
     // 图片信息
-    imageUrl: backendItem.imageUrl,
-    images: backendItem.images || (backendItem.imageUrl ? [backendItem.imageUrl] : []),
+    
+    imageUrl: imageUtils.getImageUrl(backendItem.imageUrl),
+    images: imageUtils.getImageUrl(backendItem.imageUrl) || (imageUtils.getImageUrl(backendItem.imageUrl) ? [imageUtils.getImageUrl(backendItem.imageUrl)] : []),
 
     // 保留其他可能的字段
     ...Object.keys(backendItem).reduce((acc, key) => {
@@ -195,6 +197,7 @@ class LostItemAPI {
    * @returns {Promise<Object>} 失物详情
    */
   static async getLostItemById(id) {
+    
     try {
       if (!id || typeof id !== 'number') {
         throw new Error('失物ID不能为空且必须为数字')

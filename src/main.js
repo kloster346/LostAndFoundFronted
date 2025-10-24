@@ -28,8 +28,12 @@ const authStore = useAuthStore()
 ;(async () => {
   try {
     await authStore.initAuth()
+    // 启用跨窗口状态同步
+    authStore.setupStorageListener()
   } catch (error) {
     console.error('认证状态初始化失败:', error)
+    // 初始化失败时清除认证状态
+    await authStore.clearAuth()
   }
 
   app.use(errorHandler, {

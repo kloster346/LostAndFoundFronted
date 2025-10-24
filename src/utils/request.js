@@ -1,11 +1,63 @@
 import { apiClient } from '@/api/index.js'
 import { HTTP_STATUS } from '@/constants/api.js'
+import { useAuthStore } from '@/stores/auth.js'
+
+// 添加请求拦截器
+apiClient.interceptors.request.use(config => {
+  const authStore = useAuthStore()
+  if (authStore.token) {
+    config.headers.Authorization = `Bearer ${authStore.token}`
+  }
+  return config
+}, error => {
+  return Promise.reject(error)
+})
+
+// 添加响应拦截器
+apiClient.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+    const authStore = useAuthStore();
+    
+    if (error.response?.status === HTTP_STATUS.UNAUTHORIZED && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      try {
+        // 尝试刷新token
+        const newToken = await authStore.refreshUserInfo();
+        if (newToken) {
+          // 更新请求头并重试原始请求
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return apiClient(originalRequest);
+        }
+      } catch (refreshError) {
+        console.error('刷新token失败:', refreshError);
+      }
+      
+      // 刷新失败，清除认证状态并重定向到登录页
+      authStore.clearAuth();
+      window.location.href = '/login';
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  }
+);
 
 /**
  * 请求工具类
  * 提供高级请求方法和错误处理
  */
 export class RequestUtil {
+  static token = null
+
+  /**
+   * 设置全局token
+   * @param {string} token - 认证token
+   */
+  static setToken(token) {
+    this.token = token
+  }
   /**
    * 发送GET请求
    * @param {string} url - 请求URL

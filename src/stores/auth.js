@@ -66,6 +66,17 @@ export const useAuthStore = defineStore('auth', () => {
       const savedToken = localStorage.getItem(STORAGE_KEYS.TOKEN)
       if (savedToken) {
         token.value = savedToken
+        // 添加token自动刷新逻辑
+        if (isLoggedIn.value) {
+          // 每30分钟刷新一次token
+          setInterval(async () => {
+            try {
+              await refreshUserInfo()
+            } catch (error) {
+              console.warn('自动刷新token失败:', error)
+            }
+          }, 30 * 60 * 1000)
+        }
       }
 
       // 恢复用户信息
@@ -397,6 +408,22 @@ export const useAuthStore = defineStore('auth', () => {
     return hasPermission(USER_ROLES.SUPER_ADMIN)
   }
 
+  // 添加storage事件监听
+  const setupStorageListener = () => {
+    window.addEventListener('storage', (event) => {
+      if (event.key === STORAGE_KEYS.TOKEN) {
+        if (event.newValue) {
+          // 其他窗口更新了token，同步状态
+          token.value = event.newValue
+          isLoggedIn.value = true
+        } else {
+          // 其他窗口清除了token，登出
+          clearAuth()
+        }
+      }
+    })
+  }
+
   // ==================== 返回公开接口 ====================
 
   return {
@@ -427,6 +454,7 @@ export const useAuthStore = defineStore('auth', () => {
     hasPermission,
     canAccessAdmin,
     canAccessSuperAdmin,
+    setupStorageListener,
   }
 })
 
@@ -437,7 +465,9 @@ export const useAuthStore = defineStore('auth', () => {
  * @returns {Object} 认证store实例
  */
 export const getAuthStore = () => {
-  return useAuthStore()
+  const store = useAuthStore()
+  store.setupStorageListener()
+  return store
 }
 
 /**
