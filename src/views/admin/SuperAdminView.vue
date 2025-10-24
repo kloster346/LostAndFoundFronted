@@ -1,5 +1,5 @@
 <template>
-  <div class="super-admin-container">
+  <div class="super-admin-container light-theme">
     <!-- 页面头部 -->
     <div class="page-header">
       <div class="header-content">
@@ -177,7 +177,7 @@
               <el-table-column prop="publishTime" label="发布时间" width="180">
                 <template #default="scope">{{ formatDateTime(scope.row.publishTime) }}</template>
               </el-table-column>
-              
+
               <el-table-column label="操作" width="200" fixed="right">
                 <template #default="scope">
                   <el-button size="small" @click.stop="viewItemDetail(scope.row)">详情</el-button>
@@ -896,6 +896,30 @@ defineExpose({
   background-color: #f5f7fa;
 }
 
+/* 强制浅色主题变量，修复黑色块 */
+.super-admin-container.light-theme {
+  --bg-page: #f5f7fa;
+  --bg-color: #ffffff;
+  --bg-color-light: #fafbfc;
+  --bg-color-lighter: #f0f2f5;
+}
+
+/* 统一卡片与面板为浅色背景，消除黑色区域 */
+.stat-card,
+.chart-card,
+.items-list-card,
+.users-list-card,
+.admin-list-card {
+  background-color: #ffffff;
+}
+
+/* 面板头部改为浅色，避免深色块 */
+.panel-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #ebeef5;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
 .page-header {
   background: white;
   padding: 20px 24px;
@@ -943,11 +967,14 @@ defineExpose({
 .sidebar {
   width: 200px;
   flex-shrink: 0;
+  background: transparent; /* 防止全局深色主题把侧栏背景置黑导致黑边 */
 }
 
 .admin-menu {
   border-radius: 8px;
   overflow: hidden;
+  background: #fff; /* 统一菜单容器背景为白色，避免与外围背景产生黑边 */
+  border: 1px solid #ebeef5; /* 与页面风格一致的浅色边框 */
 }
 
 .content-area {

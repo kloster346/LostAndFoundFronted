@@ -124,6 +124,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useLostItemStore } from '../../stores/lostItem.js'
+import { useAuthStore } from '../../stores/auth.js'
 import SearchForm from '../../components/forms/SearchForm.vue'
 import LostItemCard from '../../components/cards/LostItemCard.vue'
 import BaseButton from '../../components/common/BaseButton.vue'
@@ -133,6 +134,7 @@ const router = useRouter()
 
 // 状态管理
 const lostItemStore = useLostItemStore()
+const authStore = useAuthStore()
 
 // 解构响应式状态（保持响应式连接）
 const { loading, error, pagination, hasItems, isEmpty, hasMore, filteredItems, isSearching } =
@@ -194,7 +196,12 @@ const handleItemClick = item => {
 }
 
 const handleClaim = item => {
-  // 跳转到失物领取页面
+  // 未登录时跳转到登录页面，并带上重定向回申领页
+  if (!authStore.isLoggedIn.value) {
+    router.push({ path: '/login', query: { redirect: `/lost-items/${item.id}/claim` } })
+    return
+  }
+  // 已登录则跳转到失物申领页面
   router.push(`/lost-items/${item.id}/claim`)
 }
 
