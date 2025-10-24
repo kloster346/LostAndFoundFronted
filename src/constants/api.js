@@ -61,6 +61,13 @@ export const API_ENDPOINTS = {
     ALL: '/api/admin/all',
   },
 
+  // 新增：超级管理员列表接口
+  SUPER_ADMIN: {
+    LOGIN: '/api/admin/super/login',
+    USERS: '/api/admin/super/users',
+    ADMINS: '/api/admin/super/admins',
+  },
+
   // 失物接口
   LOST_ITEMS: {
     PUBLISH: '/api/lost-items/publish',

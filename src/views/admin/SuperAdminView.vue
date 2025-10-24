@@ -214,14 +214,26 @@
           </div>
 
           <el-card class="users-list-card" shadow="hover">
-            <el-table :data="usersList" style="width: 100%" v-loading="usersLoading">
+            <el-table :data="usersList" style="width: 100%" v-loading="usersLoading" @sort-change="handleUsersSortChange">
               <el-table-column prop="id" label="ID" width="80" />
-              <el-table-column prop="username" label="用户名" min-width="120" />
-              <el-table-column prop="email" label="邮箱" min-width="180" />
-              <el-table-column prop="phone" label="手机号" width="130" />
-              <el-table-column prop="studentId" label="学号" width="120" />
-              <el-table-column prop="claimedCount" label="领取次数" width="100" />
-              <el-table-column prop="createdAt" label="注册时间" width="160" />
+              <el-table-column prop="username" label="用户名" min-width="120" sortable="custom">
+                <template #default="scope">{{ scope.row.username || '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="college" label="学院" min-width="120">
+                <template #default="scope">{{ scope.row.college || '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="phone" label="手机号" width="130">
+                <template #default="scope">{{ scope.row.phone || '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="studentId" label="学号" width="120">
+                <template #default="scope">{{ scope.row.studentId || '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="createTime" label="注册时间" width="160" sortable="custom">
+                <template #default="scope">{{ scope.row.createTime ? formatDateTime(scope.row.createTime) : '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="updateTime" label="更新时间" width="160" sortable="custom">
+                <template #default="scope">{{ scope.row.updateTime ? formatDateTime(scope.row.updateTime) : '未知' }}</template>
+              </el-table-column>
               <el-table-column label="操作" width="100" fixed="right">
                 <template #default="scope">
                   <el-button size="small" @click="viewUserDetail(scope.row)">详情</el-button>
@@ -274,15 +286,11 @@
           <!-- 管理员列表 -->
           <el-card class="admin-list-card" shadow="hover">
             <el-table
-              :data="
-                adminsList.slice(
-                  (adminsPagination.current - 1) * adminsPagination.size,
-                  adminsPagination.current * adminsPagination.size
-                )
-              "
+              :data="adminsList"
               style="width: 100%"
               v-loading="adminsLoading"
               @row-click="viewAdminDetail"
+              @sort-change="handleAdminsSortChange"
             >
               <el-table-column prop="id" label="ID" width="80" />
               <el-table-column prop="username" label="用户名" />
@@ -295,7 +303,15 @@
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column prop="createdAt" label="创建时间" />
+              <el-table-column prop="createdAt" label="发布时间" width="160">
+                <template #default="scope">{{ scope.row.createdAt ? formatDateTime(scope.row.createdAt) : '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="createTime" label="创建时间" width="160" sortable="custom">
+                <template #default="scope">{{ scope.row.createTime ? formatDateTime(scope.row.createTime) : '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="updateTime" label="更新时间" width="160" sortable="custom">
+                <template #default="scope">{{ scope.row.updateTime ? formatDateTime(scope.row.updateTime) : '未知' }}</template>
+              </el-table-column>
               <el-table-column label="操作" width="120">
                 <template #default="scope">
                   <el-button type="primary" size="small" @click.stop="viewAdminDetail(scope.row)">
@@ -392,30 +408,14 @@
         }
       "
     >
-      <div v-if="selectedUser" class="user-detail">
+      <div v-if="selectedUser" class="user-detail" v-loading="userDetailLoading">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="用户名">{{ selectedUser.username }}</el-descriptions-item>
-          <el-descriptions-item label="邮箱">{{ selectedUser.email }}</el-descriptions-item>
-          <el-descriptions-item label="真实姓名">{{
-            selectedUser.realName || '未设置'
-          }}</el-descriptions-item>
-          <el-descriptions-item label="手机号">{{
-            selectedUser.phone || '未设置'
-          }}</el-descriptions-item>
-          <el-descriptions-item label="学号/工号">{{
-            selectedUser.studentId || '未设置'
-          }}</el-descriptions-item>
-          <el-descriptions-item label="状态">
-            <el-tag :type="selectedUser.status === '正常' ? 'success' : 'danger'">
-              {{ selectedUser.status || '正常' }}
-            </el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item label="注册时间" :span="2">{{
-            selectedUser.createdAt
-          }}</el-descriptions-item>
-          <el-descriptions-item label="最后登录" :span="2">{{
-            selectedUser.lastLoginAt || '从未登录'
-          }}</el-descriptions-item>
+          <el-descriptions-item label="学院">{{ selectedUser.college || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{ selectedUser.phone || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="学号">{{ selectedUser.studentId || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="注册时间" :span="2">{{ formatDateTime(selectedUser.createTime) }}</el-descriptions-item>
+          <el-descriptions-item label="更新时间" :span="2">{{ formatDateTime(selectedUser.updateTime) }}</el-descriptions-item>
         </el-descriptions>
       </div>
 
@@ -438,28 +438,14 @@
         }
       "
     >
-      <div v-if="selectedAdmin" class="admin-detail">
+      <div v-if="selectedAdmin" class="admin-detail" v-loading="adminDetailLoading">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="用户名">{{ selectedAdmin.username }}</el-descriptions-item>
-          <el-descriptions-item label="邮箱">{{ selectedAdmin.email }}</el-descriptions-item>
-          <el-descriptions-item label="真实姓名">{{
-            selectedAdmin.realName || '未设置'
-          }}</el-descriptions-item>
-          <el-descriptions-item label="手机号">{{
-            selectedAdmin.phone || '未设置'
-          }}</el-descriptions-item>
-          <el-descriptions-item label="角色">{{ selectedAdmin.role }}</el-descriptions-item>
-          <el-descriptions-item label="状态">
-            <el-tag :type="selectedAdmin.status === 'active' ? 'success' : 'danger'">
-              {{ selectedAdmin.status === 'active' ? '活跃' : '禁用' }}
-            </el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item label="创建时间" :span="2">{{
-            selectedAdmin.createdAt
-          }}</el-descriptions-item>
-          <el-descriptions-item label="最后登录" :span="2">{{
-            selectedAdmin.lastLoginAt || '从未登录'
-          }}</el-descriptions-item>
+          <el-descriptions-item label="学院">{{ selectedAdmin.college || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="办公室位置">{{ selectedAdmin.officeLocation || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="手机号">{{ selectedAdmin.phone || '未设置' }}</el-descriptions-item>
+          <el-descriptions-item label="创建时间" :span="2">{{ formatDateTime(selectedAdmin.createTime) }}</el-descriptions-item>
+          <el-descriptions-item label="更新时间" :span="2">{{ formatDateTime(selectedAdmin.updateTime) }}</el-descriptions-item>
         </el-descriptions>
       </div>
 
@@ -492,6 +478,7 @@ import { getAllLostItems, deleteLostItem } from '@/api/lostItem'
 import { getAllUsers, getUserStats } from '@/api/user'
 import { getLostItemStats } from '@/api/statistics'
 import { getAllAdmins } from '@/api/admin'
+import SuperAdminAPI from '@/api/superAdmin'
 
 // 组件名称
 defineOptions({
@@ -529,6 +516,8 @@ const usersPagination = reactive({
 })
 const userDetailVisible = ref(false)
 const selectedUser = ref(null)
+const userDetailLoading = ref(false)
+const usersSort = reactive({ by: 'createTime', order: 'desc' })
 
 // 统计数据
 const statistics = reactive({
@@ -549,11 +538,39 @@ const adminsPagination = reactive({
 })
 const adminDetailVisible = ref(false)
 const selectedAdmin = ref(null)
+const adminDetailLoading = ref(false)
+const adminsSort = reactive({ by: 'createTime', order: 'desc' })
+
+const formatDateTime = (input) => {
+  if (!input) return '未设置'
+  try {
+    const normalized = typeof input === 'string' ? input.replace(' ', 'T') : input
+    const date = new Date(normalized)
+    if (isNaN(date.getTime())) return String(input)
+    const pad = n => String(n).padStart(2, '0')
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+  } catch {
+    return String(input)
+  }
+}
+
+// 新增：前端列 prop 到后端 sortBy 的映射
+const mapSortPropToBackend = (prop) => {
+  switch (prop) {
+    case 'createTime':
+      return 'create_time'
+    case 'updateTime':
+      return 'update_time'
+    case 'username':
+      return 'username'
+    default:
+      return 'create_time'
+  }
+}
 
 // 权限检查
 const checkSuperAdminPermission = () => {
-  const user = authStore.user
-  if (!user || user.role !== 'super_admin') {
+  if (!authStore.isSuperAdmin) {
     ElMessage.error('您没有访问权限')
     router.push('/login')
     return false
@@ -693,38 +710,17 @@ const handleItemsPageChange = page => {
 const loadUsers = async () => {
   usersLoading.value = true
   try {
-    // TODO: 后端暂未实现用户列表接口，使用模拟数据
-    // const params = {
-    //   page: usersPagination.current,
-    //   size: usersPagination.size,
-    //   keyword: userSearchKeyword.value || undefined
-    // }
-    // const response = await getAllUsers(params)
-
-    // 模拟数据
-    const mockUsers = [
-      {
-        id: 1,
-        username: 'user1',
-        email: 'user1@example.com',
-        phone: '13800138001',
-        role: 'USER',
-        createdAt: '2024-01-15 10:30:00',
-      },
-      {
-        id: 2,
-        username: 'user2',
-        email: 'user2@example.com',
-        phone: '13800138002',
-        role: 'USER',
-        createdAt: '2024-01-16 11:30:00',
-      },
-    ]
-
-    usersList.value = mockUsers
-    usersPagination.total = mockUsers.length
-
-    console.log('用户数据加载完成（使用模拟数据）')
+    const params = {
+      page: usersPagination.current,
+      size: usersPagination.size,
+      keyword: userSearchKeyword.value || undefined,
+      sortBy: mapSortPropToBackend(usersSort.by),
+      sortOrder: usersSort.order,
+    }
+    const response = await SuperAdminAPI.getUsers(params)
+    const backendData = response.data || {}
+    usersList.value = backendData.records || []
+    usersPagination.total = backendData.total || 0
   } catch (error) {
     console.error('加载用户数据失败:', error)
     ElMessage.error('加载用户数据失败')
@@ -744,8 +740,10 @@ const refreshUsers = () => {
 }
 
 const viewUserDetail = user => {
+  // 直接使用列表中的数据展示详情，避免无效的详情接口导致403
   selectedUser.value = user
   userDetailVisible.value = true
+  userDetailLoading.value = false
 }
 
 const handleUsersPageSizeChange = size => {
@@ -758,37 +756,28 @@ const handleUsersPageChange = page => {
   loadUsers()
 }
 
+const handleUsersSortChange = ({ prop, order }) => {
+  usersSort.by = prop || 'createTime'
+  usersSort.order = order === 'ascending' ? 'asc' : 'desc'
+  usersPagination.current = 1
+  loadUsers()
+}
+
 // 管理员管理相关方法
 const loadAdmins = async () => {
   adminsLoading.value = true
   try {
-    // TODO: 后端暂未实现管理员列表接口，使用模拟数据
-    // const response = await getAllAdmins()
-
-    // 模拟数据
-    const mockAdmins = [
-      {
-        id: 1,
-        username: 'admin1',
-        email: 'admin1@example.com',
-        phone: '13800138001',
-        role: 'LOST_ITEM_ADMIN',
-        createdAt: '2024-01-15 10:30:00',
-      },
-      {
-        id: 2,
-        username: 'admin2',
-        email: 'admin2@example.com',
-        phone: '13800138002',
-        role: 'LOST_ITEM_ADMIN',
-        createdAt: '2024-01-16 11:30:00',
-      },
-    ]
-
-    adminsList.value = mockAdmins
-    adminsPagination.total = mockAdmins.length
-
-    console.log('管理员数据加载完成（使用模拟数据）')
+    const params = {
+      page: adminsPagination.current,
+      size: adminsPagination.size,
+      keyword: adminSearchKeyword.value || undefined,
+      sortBy: mapSortPropToBackend(adminsSort.by),
+      sortOrder: adminsSort.order,
+    }
+    const response = await SuperAdminAPI.getAdmins(params)
+    const backendData = response.data || {}
+    adminsList.value = backendData.records || []
+    adminsPagination.total = backendData.total || 0
   } catch (error) {
     console.error('加载管理员数据失败:', error)
     ElMessage.error('加载管理员数据失败')
@@ -808,8 +797,10 @@ const refreshAdmins = () => {
 }
 
 const viewAdminDetail = admin => {
+  // 直接使用列表中的数据展示详情，避免无效的详情接口导致403
   selectedAdmin.value = admin
   adminDetailVisible.value = true
+  adminDetailLoading.value = false
 }
 
 const handleAdminsPageSizeChange = size => {
@@ -819,6 +810,13 @@ const handleAdminsPageSizeChange = size => {
 
 const handleAdminsPageChange = page => {
   adminsPagination.current = page
+  loadAdmins()
+}
+
+const handleAdminsSortChange = ({ prop, order }) => {
+  adminsSort.by = prop || 'createdAt'
+  adminsSort.order = order === 'ascending' ? 'asc' : 'desc'
+  adminsPagination.current = 1
   loadAdmins()
 }
 
