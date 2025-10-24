@@ -70,7 +70,7 @@
 
               <!-- 楼栋选择 -->
               <el-col :span="12">
-                <el-form-item label="发现楼栋" prop="building" required>
+                <el-form-item label="领取地点" prop="building" required>
                   <el-select
                     v-model="form.building"
                     placeholder="请选择楼栋"
@@ -88,13 +88,13 @@
               </el-col>
             </el-row>
 
-            <!-- 具体位置 -->
+            <!-- 发现位置（原具体位置） -->
             <el-row>
               <el-col :span="24">
-                <el-form-item label="具体位置" prop="location" required>
+                <el-form-item label="发现位置" prop="location" required>
                   <el-input
                     v-model="form.location"
-                    placeholder="请输入具体位置（如房间号、楼层等）"
+                    placeholder="请输入发现位置（如房间号、楼层等）"
                     clearable
                   />
                 </el-form-item>
@@ -189,10 +189,10 @@ export default {
       ],
       itemType: [{ required: true, message: '请选择物品类型', trigger: 'change' }],
       color: [{ required: true, message: '请选择物品颜色', trigger: 'change' }],
-      building: [{ required: true, message: '请选择发现楼栋', trigger: 'change' }],
+      building: [{ required: true, message: '请选择领取地点', trigger: 'change' }],
       location: [
-        { required: true, message: '请输入具体位置', trigger: 'blur' },
-        { min: 1, max: 100, message: '具体位置长度在 1 到 100 个字符', trigger: 'blur' },
+        { required: true, message: '请输入发现位置', trigger: 'blur' },
+        { min: 1, max: 100, message: '发现位置长度在 1 到 100 个字符', trigger: 'blur' },
       ],
       description: [
         { required: true, message: '请输入物品描述', trigger: 'blur' },

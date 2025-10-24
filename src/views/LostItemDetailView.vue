@@ -69,11 +69,11 @@
               <span>{{ getColorName(item.color) }}</span>
             </div>
             <div class="info-item">
-              <label>发现地点：</label>
+              <label>领取地点：</label>
               <span>{{ item.foundLocation }}</span>
             </div>
             <div class="info-item">
-              <label>具体位置：</label>
+              <label>发现位置：</label>
               <span>{{ getBuildingName(item.building) }}{{ item.specificLocation ? ' - ' + item.specificLocation : '' }}</span>
             </div>
           </div>

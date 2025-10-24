@@ -41,7 +41,7 @@
         </div>
 
         <div class="lost-item-card__meta-item">
-          <span class="lost-item-card__meta-label">发现地点:</span>
+          <span class="lost-item-card__meta-label">领取地点:</span>
           <span class="lost-item-card__meta-value">{{ item.foundLocation }}</span>
         </div>
 
