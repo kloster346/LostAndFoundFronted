@@ -66,6 +66,8 @@ export const API_ENDPOINTS = {
     LOGIN: '/api/admin/super/login',
     USERS: '/api/admin/super/users',
     ADMINS: '/api/admin/super/admins',
+    // 新增：超管获取所有失物列表
+    LOST_ITEMS: '/api/admin/super/lost-items',
   },
 
   // 失物接口

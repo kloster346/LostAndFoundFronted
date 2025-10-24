@@ -153,10 +153,14 @@
             >
               <el-table-column prop="id" label="ID" width="80" />
               <el-table-column prop="name" label="失物名称" min-width="120" />
-              <el-table-column prop="type" label="类型" width="100" />
-              <el-table-column prop="color" label="颜色" width="80" />
-              <el-table-column prop="location" label="发现位置" min-width="150" />
-              <el-table-column prop="adminName" label="发布管理员" width="120" />
+              <el-table-column label="类型" width="100">
+                <template #default="scope">{{ getItemTypeName(scope.row.type) }}</template>
+              </el-table-column>
+              <el-table-column label="颜色" width="80">
+                <template #default="scope">{{ getColorName(scope.row.color) }}</template>
+              </el-table-column>
+              <el-table-column prop="foundLocation" label="捡到地点" min-width="150" />
+              <el-table-column prop="adminUsername" label="发布管理员" width="120" />
               <el-table-column prop="isClaimed" label="状态" width="100">
                 <template #default="scope">
                   <el-tag :type="scope.row.isClaimed ? 'success' : 'warning'">
@@ -164,7 +168,16 @@
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column prop="createdAt" label="发布时间" width="160" />
+              <el-table-column prop="claimerName" label="领取人" width="120">
+                <template #default="scope">{{ scope.row.claimerName || '未知' }}</template>
+              </el-table-column>
+              <el-table-column prop="claimTime" label="领取时间" width="180">
+                <template #default="scope">{{ scope.row.claimTime ? formatDateTime(scope.row.claimTime) : '未领取' }}</template>
+              </el-table-column>
+              <el-table-column prop="publishTime" label="发布时间" width="180">
+                <template #default="scope">{{ formatDateTime(scope.row.publishTime) }}</template>
+              </el-table-column>
+              
               <el-table-column label="操作" width="200" fixed="right">
                 <template #default="scope">
                   <el-button size="small" @click.stop="viewItemDetail(scope.row)">详情</el-button>
@@ -352,23 +365,23 @@
       <div v-if="selectedItem" class="item-detail">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="失物名称">{{ selectedItem.name }}</el-descriptions-item>
-          <el-descriptions-item label="类型">{{ selectedItem.type }}</el-descriptions-item>
-          <el-descriptions-item label="颜色">{{ selectedItem.color }}</el-descriptions-item>
-          <el-descriptions-item label="发现位置">{{ selectedItem.location }}</el-descriptions-item>
+          <el-descriptions-item label="类型">{{ getItemTypeName(selectedItem.type) }}</el-descriptions-item>
+          <el-descriptions-item label="颜色">{{ getColorName(selectedItem.color) }}</el-descriptions-item>
+          <el-descriptions-item label="捡到地点">{{ selectedItem.foundLocation }}</el-descriptions-item>
           <el-descriptions-item label="发布管理员">{{
-            selectedItem.adminName
+            selectedItem.adminUsername
           }}</el-descriptions-item>
           <el-descriptions-item label="状态">
             <el-tag :type="selectedItem.isClaimed ? 'success' : 'warning'">
               {{ selectedItem.isClaimed ? '已领取' : '待领取' }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="发布时间" :span="2">{{
-            selectedItem.createdAt
-          }}</el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{
-            selectedItem.description || '暂无描述'
-          }}</el-descriptions-item>
+          <el-descriptions-item label="领取人姓名" v-if="selectedItem.isClaimed">{{ selectedItem.claimerName || '未知' }}</el-descriptions-item>
+          <el-descriptions-item label="领取人电话" v-if="selectedItem.isClaimed">{{ selectedItem.claimerPhone || '未知' }}</el-descriptions-item>
+          <el-descriptions-item label="领取人学号" v-if="selectedItem.isClaimed">{{ selectedItem.claimerStudentId || '未知' }}</el-descriptions-item>
+          <el-descriptions-item label="领取时间" v-if="selectedItem.isClaimed">{{ selectedItem.claimTime ? formatDateTime(selectedItem.claimTime) : '未知' }}</el-descriptions-item>
+          <el-descriptions-item label="发布时间" :span="2">{{ formatDateTime(selectedItem.publishTime) }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="2">{{ selectedItem.description || '暂无描述' }}</el-descriptions-item>
         </el-descriptions>
 
         <div v-if="selectedItem.imageUrl" class="item-image" style="margin-top: 20px">
@@ -473,11 +486,12 @@ import {
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { getAllLostItems, deleteLostItem } from '@/api/lostItem'
+import { deleteLostItem } from '@/api/lostItem'
 import { getAllUsers, getUserStats } from '@/api/user'
 import { getLostItemStats } from '@/api/statistics'
 import { getAllAdmins } from '@/api/admin'
 import SuperAdminAPI from '@/api/superAdmin'
+import { getItemTypeName, getColorName } from '@/constants/enums'
 
 // 组件名称
 defineOptions({
@@ -516,7 +530,7 @@ const usersPagination = reactive({
 const userDetailVisible = ref(false)
 const selectedUser = ref(null)
 const userDetailLoading = ref(false)
-const usersSort = reactive({ by: 'createTime', order: 'desc' })
+const usersSort = reactive({ by: 'id', order: 'asc' })
 
 // 统计数据
 const statistics = reactive({
@@ -556,6 +570,8 @@ const formatDateTime = (input) => {
 // 新增：前端列 prop 到后端 sortBy 的映射
 const mapSortPropToBackend = (prop) => {
   switch (prop) {
+    case 'id':
+      return 'id'
     case 'createTime':
       return 'create_time'
     case 'updateTime':
@@ -641,9 +657,10 @@ const loadAllItems = async () => {
       keyword: itemSearchKeyword.value || undefined,
     }
 
-    const response = await getAllLostItems(params)
-    allItemsList.value = response.data || []
-    itemsPagination.total = response.total || 0
+    const response = await SuperAdminAPI.getLostItems(params)
+    const backendData = response.data || {}
+    allItemsList.value = backendData.records || []
+    itemsPagination.total = backendData.total || 0
   } catch (error) {
     console.error('加载失物数据失败:', error)
     ElMessage.error('加载失物数据失败')
@@ -675,7 +692,7 @@ const deleteItem = item => {
   })
     .then(async () => {
       try {
-        await deleteLostItem(item.id)
+        await deleteLostItem(item.id, authStore.currentUser?.id, true)
         ElMessage.success('删除成功')
         loadAllItems()
       } catch (error) {

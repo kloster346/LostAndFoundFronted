@@ -32,6 +32,21 @@ const SuperAdminAPI = {
     })
   },
 
+  // 新增：获取所有失物（超管）
+  async getLostItems(params = {}) {
+    return await request({
+      url: API_ENDPOINTS.SUPER_ADMIN.LOST_ITEMS,
+      method: 'get',
+      params: {
+        pageNum: params.page || 1,
+        pageSize: params.size || 10,
+        keyword: params.keyword,
+        sortBy: params.sortBy || 'create_time',
+        sortOrder: params.sortOrder || 'desc',
+      },
+    })
+  },
+
   // 获取用户详情
   async getUserById(userId) {
     return await request({ url: `${API_ENDPOINTS.SUPER_ADMIN.USERS}/${userId}` , method: 'get' })
