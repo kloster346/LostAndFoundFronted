@@ -1,5 +1,5 @@
 <template>
-  <div class="my-items-container">
+  <div class="my-items-container light-theme">
     <div class="content-wrapper">
       <!-- 页面标题和操作 -->
       <el-row class="header-section" justify="space-between" align="middle">
@@ -483,6 +483,15 @@ export default {
   padding: 2rem 0;
 }
 
+/* 轻主题变量覆盖，保持本页浅色风格 */
+.my-items-container.light-theme {
+  --bg-page: #f9fafb;
+  --bg-color: #ffffff;
+  --bg-color-light: #f5f7fa;
+  --bg-color-lighter: #f9fafb;
+  --border-lighter: #ebeef5;
+}
+
 .content-wrapper {
   max-width: 1200px;
   margin: 0 auto;
@@ -515,6 +524,8 @@ export default {
 
 .stat-card {
   height: 100%;
+  background-color: #ffffff;
+  border: 1px solid #ebeef5;
 }
 
 .stat-content {
