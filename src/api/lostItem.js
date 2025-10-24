@@ -212,6 +212,54 @@ class LostItemAPI {
   }
 
   /**
+   * 更新失物
+   * @param {number} id - 失物ID
+   * @param {Object} lostItemData - 更新信息
+   * @param {string} [lostItemData.itemName]
+   * @param {string} [lostItemData.itemType]
+   * @param {string} [lostItemData.color]
+   * @param {string} [lostItemData.description]
+   * @param {string} [lostItemData.building]
+   * @param {string} [lostItemData.location]
+   * @param {Array<File>} [lostItemData.images]
+   * @param {number} lostItemData.adminId - 管理员ID
+   * @returns {Promise<Object>} 更新结果
+   */
+  static async updateLostItem(id, lostItemData) {
+    if (!id || typeof id !== 'number') {
+      throw new Error('失物ID不能为空且必须为数字')
+    }
+    if (!lostItemData || typeof lostItemData !== 'object') {
+      throw new Error('失物信息不能为空')
+    }
+    if (!lostItemData.adminId) {
+      throw new Error('管理员ID不能为空')
+    }
+
+    const formData = new FormData()
+    formData.append('adminId', lostItemData.adminId)
+
+    if (lostItemData.itemName) formData.append('name', lostItemData.itemName)
+    if (lostItemData.itemType) formData.append('type', lostItemData.itemType)
+    if (lostItemData.color) formData.append('color', lostItemData.color)
+    if (lostItemData.description) formData.append('description', lostItemData.description)
+    if (lostItemData.building) formData.append('building', lostItemData.building)
+    if (lostItemData.location) formData.append('specificLocation', lostItemData.location)
+
+    if (lostItemData.images && lostItemData.images.length > 0) {
+      formData.append('image', lostItemData.images[0])
+    }
+
+    const response = await request({
+      method: 'put',
+      url: `${API_ENDPOINTS.LOST_ITEMS.DETAIL}/${id}`,
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return response.data || response
+  }
+
+  /**
    * 删除失物
    * @param {number} id - 失物ID
    * @param {number} adminId - 管理员ID
@@ -451,6 +499,7 @@ export const {
   publishLostItem,
   claimLostItem,
   getLostItemById,
+  updateLostItem,
   deleteLostItem,
   searchLostItems,
   getAllLostItems,

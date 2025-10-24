@@ -61,6 +61,16 @@ const router = createRouter({
       },
     },
     {
+      path: '/admin/items/edit/:id',
+      name: 'AdminEditItem',
+      component: () => import('../views/admin/EditItemView.vue'),
+      meta: {
+        title: '编辑失物',
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
+    {
       path: '/admin/super',
       name: 'SuperAdmin',
       component: () => import('../views/admin/SuperAdminView.vue'),
