@@ -42,7 +42,7 @@
 
         <div class="lost-item-card__meta-item">
           <span class="lost-item-card__meta-label">领取地点:</span>
-          <span class="lost-item-card__meta-value">{{ item.foundLocation }}</span>
+          <span class="lost-item-card__meta-value">{{ getBuildingName(item.building) }}</span>
         </div>
 
         <div class="lost-item-card__meta-item">
@@ -87,6 +87,7 @@ import {
   ITEM_TYPE_NAMES,
   COLORS,
   COLOR_NAMES,
+  getBuildingName,
 } from '../../constants/enums.js'
 import { getImageUrl, handleImageError } from '../../utils/imageUtils.js'
 

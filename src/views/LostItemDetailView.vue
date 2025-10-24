@@ -70,11 +70,11 @@
             </div>
             <div class="info-item">
               <label>领取地点：</label>
-              <span>{{ item.foundLocation }}</span>
+              <span>{{ getBuildingName(item.building) }}</span>
             </div>
             <div class="info-item">
               <label>发现位置：</label>
-              <span>{{ getBuildingName(item.building) }}{{ item.specificLocation ? ' - ' + item.specificLocation : '' }}</span>
+              <span>{{ resolvedSpecificLocation }}</span>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import LostItemAPI from '@/api/lostItem.js'
 import { getItemTypeName, getColorName, getBuildingName } from '@/constants/enums'
@@ -170,6 +170,34 @@ export default {
         loading.value = false
       }
     }
+
+    // 解析与回退：发现位置（具体位置）
+    const resolvedSpecificLocation = computed(() => {
+      const data = item.value || {}
+      // 首选：统一映射后的 location 字段
+      if (data.location && String(data.location).trim()) {
+        return String(data.location).trim()
+      }
+      // 其次：旧字段 specificLocation（如果后端直接返回）
+      if (data.specificLocation && String(data.specificLocation).trim()) {
+        return String(data.specificLocation).trim()
+      }
+      // 再次：从拼接的 foundLocation 清洗出具体位置
+      const found = data.foundLocation ? String(data.foundLocation) : ''
+      if (found) {
+        const buildingName = data.building ? getBuildingName(data.building) : ''
+        let cleaned = found
+        // 去掉开头的中文楼名
+        if (buildingName && cleaned.startsWith(buildingName)) {
+          cleaned = cleaned.slice(buildingName.length)
+        }
+        // 去掉形如 [楼栋X] 的前缀
+        cleaned = cleaned.replace(/^\[[^\]]+\]\s*/, '')
+        cleaned = cleaned.trim()
+        if (cleaned) return cleaned
+      }
+      return '未提供'
+    })
 
     // 格式化日期
     const formatDate = dateString => {
@@ -239,6 +267,7 @@ export default {
       getBuildingName,
       getImageUrl,
       handleImageError,
+      resolvedSpecificLocation,
     }
   },
 }

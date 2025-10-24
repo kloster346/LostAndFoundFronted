@@ -35,7 +35,7 @@
           <div class="item-basic-info">
             <h3>{{ item.name }}</h3>
             <p class="item-type">类型：{{ getItemTypeName(item.type) }}</p>
-            <p class="item-location">拾取地点：{{ getBuildingName(item.foundLocation) }}</p>
+            <p class="item-location">拾取地点：{{ getBuildingName(item.building) }}</p>
             <p class="item-date">拾取时间：{{ formatDate(item.foundTime) }}</p>
           </div>
         </div>

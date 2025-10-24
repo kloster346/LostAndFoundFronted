@@ -159,7 +159,12 @@
               <el-table-column label="颜色" width="80">
                 <template #default="scope">{{ getColorName(scope.row.color) }}</template>
               </el-table-column>
-              <el-table-column prop="foundLocation" label="捡到地点" min-width="150" />
+              <!-- 原：捡到地点(foundLocation) 改为：领取地点(中文楼名) -->
+              <el-table-column label="领取地点" min-width="140">
+                <template #default="scope">{{ getBuildingName(scope.row.building) }}</template>
+              </el-table-column>
+              <!-- 新增：发现位置（具体位置） -->
+              <el-table-column prop="specificLocation" label="发现位置" min-width="150" />
               <el-table-column prop="adminUsername" label="发布管理员" width="120" />
               <el-table-column prop="isClaimed" label="状态" width="100">
                 <template #default="scope">
@@ -177,7 +182,6 @@
               <el-table-column prop="publishTime" label="发布时间" width="180">
                 <template #default="scope">{{ formatDateTime(scope.row.publishTime) }}</template>
               </el-table-column>
-
               <el-table-column label="操作" width="200" fixed="right">
                 <template #default="scope">
                   <el-button size="small" @click.stop="viewItemDetail(scope.row)">详情</el-button>
@@ -367,7 +371,10 @@
           <el-descriptions-item label="失物名称">{{ selectedItem.name }}</el-descriptions-item>
           <el-descriptions-item label="类型">{{ getItemTypeName(selectedItem.type) }}</el-descriptions-item>
           <el-descriptions-item label="颜色">{{ getColorName(selectedItem.color) }}</el-descriptions-item>
-          <el-descriptions-item label="捡到地点">{{ selectedItem.foundLocation }}</el-descriptions-item>
+          <!-- 原：捡到地点(foundLocation) 改为：领取地点(中文楼名) -->
+          <el-descriptions-item label="领取地点">{{ getBuildingName(selectedItem.building) }}</el-descriptions-item>
+          <!-- 新增：发现位置（具体位置） -->
+          <el-descriptions-item label="发现位置">{{ selectedItem.specificLocation || '未提供' }}</el-descriptions-item>
           <el-descriptions-item label="发布管理员">{{
             selectedItem.adminUsername
           }}</el-descriptions-item>
@@ -491,7 +498,7 @@ import { getAllUsers, getUserStats } from '@/api/user'
 import { getLostItemStats } from '@/api/statistics'
 import { getAllAdmins } from '@/api/admin'
 import SuperAdminAPI from '@/api/superAdmin'
-import { getItemTypeName, getColorName } from '@/constants/enums'
+import { getItemTypeName, getColorName, getBuildingName } from '@/constants/enums'
 
 // 组件名称
 defineOptions({
